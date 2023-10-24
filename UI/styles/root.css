@@ -1,0 +1,46 @@
+:root {
+   /* Colors */
+   --primary-base-color: #222222;
+   --secondary-base-color: #363435;
+   --base-color3: #494949;
+   --normal-text-color: #c5cbc8;
+   --highlight-text-color: #e1d8e2;
+   --primary-accent-color: #e881d3;
+   --secondary-accent-color: #d881c9;
+   --control-highlight-color: #524e4f80;
+   --control-mousedown-color: #524e4f;
+   --text-selection-color: #c5cbc83a;
+   --text-highlight-color: #d881c96e;
+   --text-selected-highlight-color: #d881c9a4;
+   --editor-caret-color: var(--highlight-text-color);
+
+   --color-red: #e81123;
+
+
+
+   /* Fonts */
+   --font-family: 'Segoe UI';
+   --editor-font-family: 'Segoe UI';
+   --editor-font-size: 1.9ch;
+
+   /* Dimensions */
+   --menubar-height: 32px;
+   --sidebar-width: 26px;
+   --scrollbar-width: 8px;
+   --prompt-width: min(300px, 75%);
+   --findpanel-width: min(300px, 75vw);
+   --editor-finepanel-added-space: 2lh;
+   --editor-top-padding: 6px;
+
+
+
+
+
+
+   /* actionmenu */
+   --actionmenu-background-color: color-mix(in srgb, var(--secondary-base-color) 80%, transparent);
+   --actionmenu-control-background-color: color-mix(in srgb, var(--secondary-base-color) 20%, transparent);
+   --actionmenu-control-hover-color: color-mix(in srgb, var(--base-color3) 60%, transparent);
+   --actionmenu-control-mousedown-color: var(--base-color3);
+   --actionmenu-control-fontsize: 1.75ch;
+}

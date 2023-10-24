@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="UTF-8">
+      <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+      <link rel="stylesheet" href="styles/root.css">
+      <link rel="stylesheet" href="styles/index.css">
+      <script defer src="../src/helper/Tools.js"></script>
+      <script defer src="../assets/code/jquery-3.7.1.min.js"></script>
+      <script defer src="../src/UIHandlerClass.js"></script>
+      <script defer src="../src/UIHandler.js"></script>
+      <title>Vitrum</title>
+   </head>
+
+   <body>
+      <ul class="menubar">
+         <li class="menubar-wrapper" id="MW-ko3m">
+            <div class="menubar-btn" id="MB-ko3m">
+               <!-- SVGs embedded here so that its color can be dynamically changed -->
+               <svg class="menuitem-icon" id="MI-ko3m" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M329.385-257.308h301.23v-45.384h-301.23v45.384Zm0-167.308h301.23v-45.383h-301.23v45.383Zm-91.691 324.615q-23.529 0-40.611-17.082-17.082-17.082-17.082-40.611v-644.612q0-23.529 17.082-40.611 17.082-17.082 40.611-17.082h347.537l194.768 194.768v507.537q0 23.529-17.082 40.611-17.082 17.082-40.611 17.082H237.694ZM562.539-644.77v-169.845H237.694q-4.616 0-8.463 3.846-3.846 3.847-3.846 8.463v644.612q0 4.616 3.846 8.463 3.847 3.846 8.463 3.846h484.612q4.616 0 8.463-3.846 3.846-3.847 3.846-8.463V-644.77H562.539ZM225.385-814.615v169.845-169.845 669.23V-814.615Z"/></svg>
+               File
+            </div>
+            <ul class="dropdown-menu" id="MD-ko3m">
+               <li class="menuitem btn_new-file">
+                  New <span id="shotkey-new_file">Ctrl+N</span>
+               </li>
+               <li class="menuitem btn_new-file-window">
+                  New Window <span id="shotkey-new_window">Ctrl+Shift+N</span>
+               </li>
+               <li class="menuitem btn_open-file">
+                  Open... <span id="shotkey-open_file">Ctrl+O</span>
+               </li>
+               <li class="menuitem btn_reopen-with-encoding" title="Text not loaded correctly? Reopen with different encodings may help">
+                  Reopen with Encoding...
+               </li>
+               <li class="menuitem btn_rename-file" title="Rename current active document">
+                  Rename <span id="shotkey-rename_file">F2</span>
+               </li>
+               <li class="menuitem btn_save-file">
+                  Save <span id="shotkey-save">Ctrl+S</span>
+               </li>
+               <li class="menuitem btn_save-file-as">
+                  Save As... <span id="shotkey-save_as">Ctrl+Shift+S</span>
+               </li>
+               <li class="menuitem btn_close-app">Exit</li>
+            </ul>
+         </li>
+         <li class="menubar-wrapper" id="MW-md21">
+            <div class="menubar-btn" id="MB-md21">
+               <svg class="menuitem-icon" id="MI-md21" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M480-120v-71l216-216 71 71-216 216h-71ZM120-330v-60h300v60H120Zm690-49-71-71 29-29q8-8 21-8t21 8l29 29q8 8 8 21t-8 21l-29 29ZM120-495v-60h470v60H120Zm0-165v-60h470v60H120Z"/></svg>
+               Edit
+            </div>
+
+            <ul class="dropdown-menu" id="MD-md21">
+               <li class="menuitem btn_undo">Undo <span id="shotkey-new_file">Ctrl+Z</span></li>
+               <li class="menuitem btn_redo">Redo <span id="shotkey-new_window">Ctrl+Shift+Z</span></li>
+               <li class="menuitem btn_cut">Cut <span id="shotkey-open_file">Ctrl+X</span></li>
+               <li class="menuitem btn_copy">Copy <span id="shotkey-save">Ctrl+C</span></li>
+               <li class="menuitem btn_paste">Paste <span id="shotkey-paste">Ctrl+V</span></li>
+               <li class="menuitem btn_find-replace">Find & Replace<span id="shotkey-find">Ctrl+F</span></li>
+               <li class="menuitem btn_insert" hidden>Insert... <span id="shotkey-insert">Ctrl+Shift+I</span></li>
+               <li class="menuitem-seperator"><span>─────────────</span></li>
+               <li class="menuitem btn_edit-preferences">Preferences...</li>
+            </ul>
+         </li>
+
+         <div class="actionbar"></div>
+
+         <!-- minimize close ... -->
+         <div class="window-controlbar">
+            <button id="btn-minimize" tabindex="-1">
+               <svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -670 960 920"><path d="M260-160v-30.769h440.231V-160H260Z"/></svg>
+            </button>
+            <button id="btn-maximize_toggle" tabindex="-1">
+               <svg xmlns="http://www.w3.org/2000/svg" viewBox="180 -1040 545 1160"><path d="M197.694-140.001q-23.529 0-40.611-17.082-17.082-17.082-17.082-40.611v-564.612q0-23.529 17.082-40.611 17.082-17.082 40.611-17.082h564.612q23.529 0 40.611 17.082 17.082 17.082 17.082 40.611v564.612q0 23.529-17.082 40.611-17.082 17.082-40.611 17.082H197.694Zm0-45.384h564.612q4.616 0 8.463-3.846 3.846-3.847 3.846-8.463v-564.612q0-4.616-3.846-8.463-3.847-3.846-8.463-3.846H197.694q-4.616 0-8.463 3.846-3.846 3.847-3.846 8.463v564.612q0 4.616 3.846 8.463 3.847 3.846 8.463 3.846Z"/></svg>
+            </button>
+            <button class="btn_close-app" tabindex="-1">
+               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="m250.923-218.924-31.999-31.999L448.001-480 218.924-709.077l31.999-31.999L480-511.999l229.077-229.077 31.999 31.999L511.999-480l229.077 229.077-31.999 31.999L480-448.001 250.923-218.924Z"/></svg>
+            </button>
+         </div>
+      </ul>
+
+
+      <ul class="actionmenu">
+         <li class="actionmenu-wrapper" id="actionmenu-common-section">
+            <div class="actionmenu-item" id="actionmenu-font-preview">
+               <text>Aa</text>
+               <sup>
+                  <span id="fontsize-display" title="Font Size (px)">34</span><br>
+                  <span id="letter-spacing-display" title="Letter Spacing (ch)">-0.12</span><br>
+                  <span id="line-spacing-display" title="Line Spacing (ch)">2.23</span>
+               </sup>
+            </div>
+            <div class="actionmenu-item custom-select" id="actionmenu-font-select"
+               title="Select Primary Font Family">
+               <div
+                  class="custom-select-selector"
+                  role="combobox"
+                  aria-labelledby="select button"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                  aria-controls="select-dropdown">
+                  <input class="selected-value"></input>
+                  <span class="custom-select-arrow"></span>
+               </div>
+               <ul class="custom-select-dropdown" role="listbox" id="select-dropdown">
+                  <!-- <li role="option">
+                     <input type="radio" name="choice-font" id="github" />
+                     <label for="github">GitHub</label>
+                  </li>
+                  <li role="option">
+                     <input type="radio" name="choice-font" id="instagram" />
+                     <label for="instagram">Instagram</label>
+                  </li>
+                  <li role="option">
+                     <input type="radio" name="choice-font" id="facebook" />
+                     <label for="facebook">Facebook</label>
+                  </li>
+                  <li role="option">
+                     <input type="radio" name="choice-font" id="twitter" />
+                     <label for="twitter">Twitter</label>
+                  </li>
+                  <li role="option">
+                     <input type="radio" name="choice-font" id="reddit" />
+                     <label for="reddit">Reddit</label>
+                  </li> -->
+               </ul>
+            </div>
+
+            <div class="actionmenu-item" id="actionmenu-font-increase-btn" title="Increase Font Size">
+               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" ><path d="m40-200 210-560h100l210 560h-96l-51-143H187l-51 143H40Zm176-224h168l-82-232h-4l-82 232Zm504 104v-120H600v-80h120v-120h80v120h120v80H800v120h-80Z"/></svg>
+            </div>
+            <div class="actionmenu-item" id="actionmenu-font-decrease-btn" title="Decrease Font Size">
+               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="m40-200 210-560h100l210 560h-96l-51-143H187l-51 143H40Zm176-224h168l-82-232h-4l-82 232Zm384-16v-80h320v80H600Z"/></svg>
+            </div>
+            <div class="actionmenu-item" id="actionmenu-toggle-wrap-btn" title="Toggle Word Wrap">
+               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M588-132 440-280l148-148 56 58-50 50h96q29 0 49.5-20.5T760-390q0-29-20.5-49.5T690-460H160v-80h530q63 0 106.5 43.5T840-390q0 63-43.5 106.5T690-240h-96l50 50-56 58ZM160-240v-80h200v80H160Zm0-440v-80h640v80H160Z"/></svg>
+            </div>
+
+            <div class="actionmenu-item custom-select" id="actionmenu-letter-spacing-select"
+               title="Select Letter Spacing">
+               <div
+                  class="custom-select-selector"
+                  role="combobox"
+                  aria-labelledby="select button"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                  aria-controls="select-dropdown">
+                  <div class="selected-value">
+                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M320-80 160-240l160-160 57 56-64 64h334l-63-64 56-56 160 160L640-80l-57-56 64-64H313l63 64-56 56ZM200-480v-400h80v400h-80Zm240 0v-400h80v400h-80Zm240 0v-400h80v400h-80Z"/></svg>
+                  </div>
+                  <!-- <span class="custom-select-arrow"></span> -->
+               </div>
+               <ul class="custom-select-dropdown" role="listbox" id="select-dropdown">
+                  <li role="option">
+                     <input type="radio" name="CS-letter-spacing" id="LTS-tight"/>
+                     <label for="LTS-tight">
+                        spacing&nbsp;<strong>TIGHT</strong>&ensp;(spacing -0.12ch)
+                     </label>
+                  </li>
+                  <li role="option">
+                     <input type="radio" name="CS-letter-spacing" id="LTS-compact"/>
+                     <label for="LTS-compact">
+                        spacing&nbsp;<strong>Compact</strong>&ensp;(spacing -68mch)
+                     </label>
+                  </li>
+                  <li role="option">
+                     <input type="radio" name="CS-letter-spacing" id="LTS-normal"/>
+                     <label for="LTS-normal">
+                        spacing&nbsp;<strong>Normal</strong>&ensp;(spacing 35mch)
+                     </label>
+                  </li>
+                  <li role="option">
+                     <input type="radio" name="CS-letter-spacing" id="LTS-microspread"/>
+                     <label for="LTS-microspread">
+                        spacing&nbsp;<strong>Microspread</strong><br>
+                        (spacing 0.1ch)
+                     </label>
+                  </li>
+                  <li role="option">
+                     <input type="radio" name="CS-letter-spacing" id="LTS-spread"/>
+                     <label for="LTS-spread">
+                        spacing&nbsp;<strong>Spread</strong><br>
+                        (spacing 0.29ch)
+                     </label>
+                  </li>
+                  <li role="option">
+                     <input type="radio" name="CS-letter-spacing" id="LTS-neighborhood"/>
+                     <label for="LTS-neighborhood">
+                        spacing&nbsp;<strong>Neighborhood</strong><br>
+                        (spacing 0.42ch)
+                     </label>
+                  </li>
+                  <li role="option">
+                     <input type="radio" name="CS-letter-spacing" id="LTS-solarsystem"/>
+                     <label for="LTS-solarsystem">LS-
+                        spacing&nbsp;<strong>SOLAR-SYSTEM</strong><br>
+                        (spacing 0.73ch)
+                     </label>
+                  </li>
+            </div>
+
+            <div class="actionmenu-item custom-select" id="actionmenu-line-spacing-select"
+               title="Select Line Spacing">
+               <div
+                  class="custom-select-selector"
+                  role="combobox"
+                  aria-labelledby="select button"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                  aria-controls="select-dropdown">
+                  <div class="selected-value">
+                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M240-160 80-320l56-56 64 62v-332l-64 62-56-56 160-160 160 160-56 56-64-62v332l64-62 56 56-160 160Zm240-40v-80h400v80H480Zm0-240v-80h400v80H480Zm0-240v-80h400v80H480Z"/></svg>
+                  </div>
+                  <!-- <span class="custom-select-arrow"></span> -->
+               </div>
+               <ul class="custom-select-dropdown" role="listbox" id="select-dropdown">
+                  <li role="option">
+                     <input type="radio" name="CS-line-spacing" id="LS-tight"/>
+                     <label for="LS-tight">
+                        line spacing&nbsp;<strong>TIGHT</strong><br>
+                        with line height of 1.4ch
+                     </label>
+                  </li>
+                  <li role="option">
+                     <input type="radio" name="CS-line-spacing" id="LS-compact"/>
+                     <label for="LS-compact">
+                        line spacing&nbsp;<strong>Compact</strong><br>
+                        with line height of 2.1ch
+                     </label>
+                  </li>
+                  <li role="option">
+                     <input type="radio" name="CS-line-spacing" id="LS-normal"/>
+                     <label for="LS-normal">
+                        line spacing&nbsp;<strong>Normal</strong><br>
+                        with line height of 2.23ch
+                     </label>
+                  </li>
+                  <li role="option">
+                     <input type="radio" name="CS-line-spacing" id="LS-microspread"/>
+                     <label for="LS-microspread">
+                        line spacing&nbsp;<strong>Microspread</strong><br>
+                        with line height of 2.75ch
+                     </label>
+                  </li>
+                  <li role="option">
+                     <input type="radio" name="CS-line-spacing" id="LS-spread"/>
+                     <label for="LS-spread">
+                        line spacing&nbsp;<strong>Spread</strong><br>
+                        with line height of 3.18ch
+                     </label>
+                  </li>
+                  <li role="option">
+                     <input type="radio" name="CS-line-spacing" id="LS-neighborhood"/>
+                     <label for="LS-neighborhood">
+                        line spacing&nbsp;<strong>Neighborhood</strong><br>
+                        with line height of 3.5ch
+                     </label>
+                  </li>
+                  <li role="option">
+                     <input type="radio" name="CS-line-spacing" id="LS-solarsystem"/>
+                     <label for="LS-solarsystem">
+                        line spacing&nbsp;<strong>SOLAR-SYSTEM</strong><br>
+                        with line height of 4ch
+                     </label>
+                  </li>
+            </div>
+            <div class="actionmenu-item custom-select" id="actionmenu-encoding-select"
+               title="Choose Text Encoding">
+               <div
+                  class="custom-select-selector"
+                  role="combobox"
+                  aria-labelledby="select button"
+                  aria-haspopup="listbox"
+                  aria-expanded="false"
+                  aria-controls="select-dropdown">
+                  <input class="selected-value"></input>
+                  <span class="custom-select-arrow"></span>
+               </div>
+               <ul class="custom-select-dropdown" role="listbox" id="select-dropdown">
+                  <li role="option">
+                     <input type="radio" name="CS-encoding" id="EC-latin1"/>
+                     <label for="EC-latin1">Latin-1 (ISO 8859-1)</label>
+                  </li>
+                  <li role="option">
+                     <input type="radio" name="CS-encoding" id="EC-ucs-2"/>
+                     <label for="EC-ucs-2">UCS-2</label>
+                  </li>
+                  <li role="option">
+                     <input type="radio" name="CS-encoding" id="EC-utf-8"/>
+                     <label for="EC-utf-8">UTF-8</label>
+                  </li>
+                  <li role="option">
+                     <input type="radio" name="CS-encoding" id="EC-utf16le"/>
+                     <label for="EC-utf16le">UTF-16 LE</label>
+                  </li>
+            </div>
+         </li>
+      </ul>
+
+
+      <div id="prompt" hidden>
+         <input class="" id="prompt-input" type="text" placeholder="enter something..."/>
+         <ul id="prompt-panel" hidden>
+            <li><input type="text"/><button></button></li>
+            <li class="selected">text 2.....</li>
+            <li>text 3.....</li>
+            <li>text 4.....</li>
+            <li>text 5.....</li>
+         </ul>
+      </div>
+
+      <div id="findpanel" hidden>
+         <button class="" id="findpanel-expand-btn" title="Show Replace Option" tabindex="-1">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 770"><path d="M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z"/></svg>
+         </button>
+         <ul>
+            <li id="findpanel-find">
+               <input class="" id="findpanel-find-input" type="text" placeholder="Find"  tabindex="0"/>
+               <div class="inside">
+                  <button class="" id="findpanel-matchcase-btn" title="Match Case" tabindex="-1">
+                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="m159-280 150-400h72l150 400h-69l-36-102H264l-36 102h-69Zm126-160h120l-58-166h-4l-58 166Zm369 171q-49 0-77-25.5T549-364q0-42 32.5-68.5T665-459q23 0 42.5 3.5T741-444v-14q0-27-18.5-43T672-517q-21 0-39.5 9T601-482l-43-32q19-27 48-41t67-14q62 0 95 29.5t33 85.5v176h-59v-34h-3q-13 20-35 31.5T654-269Zm10-50q32 0 54.5-22.5T741-396q-14-8-32-12t-33-4q-32 0-49 12.5T610-364q0 20 15 32.5t39 12.5Z"/></svg>
+                  </button>
+                  <button id="findpanel-matchword-btn" title="Match Whole Word" tabindex="-1">
+                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M40-199v-200h80v120h720v-120h80v200H40Zm342-161v-34h-3q-13 20-35 31.5T294-351q-49 0-77-25.5T189-446q0-42 32.5-68.5T305-541q23 0 42.5 3.5T381-526v-14q0-27-18.5-43T312-599q-21 0-39.5 9T241-564l-43-32q19-27 48-41t67-14q62 0 95 29.5t33 85.5v176h-59Zm-66-134q-32 0-49 12.5T250-446q0 20 15 32.5t39 12.5q32 0 54.5-22.5T381-478q-14-8-32-12t-33-4Zm185 134v-401h62v113l-3 40h3q3-5 24-25.5t66-20.5q64 0 101 46t37 106q0 60-36.5 105.5T653-351q-41 0-62.5-18T563-397h-3v37h-59Zm143-238q-40 0-62 29.5T560-503q0 37 22 66t62 29q40 0 62.5-29t22.5-66q0-37-22.5-66T644-598Z"/></svg>
+                  </button>
+                  <button id="findpanel-useregex-btn" title="Use Regular Expression" tabindex="-1">
+                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M197-199q-56-57-86.5-130T80-482q0-80 30-153t87-130l57 57q-46 45-70 103.5T160-482q0 64 24.5 122.5T254-256l-57 57Zm183-41q-25 0-42.5-17.5T320-300q0-25 17.5-42.5T380-360q25 0 42.5 17.5T440-300q0 25-17.5 42.5T380-240Zm139-200v-71l-61 36-40-70 61-35-61-35 40-70 61 36v-71h80v71l61-36 40 70-61 35 61 35-40 70-61-36v71h-80Zm244 241-57-57q46-45 70-103.5T800-482q0-64-24.5-122.5T706-708l57-57q56 57 86.5 130T880-482q0 80-30 153t-87 130Z"/></svg>
+                  </button>
+               </div>
+               <text id="findpanel-resultcount">0 found</text>
+               <button id="findpanel-previous-btn" title="Previous Match" tabindex="-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M440-80v-647L256-544l-56-56 280-280 280 280-56 57-184-184v647h-80Z"/></svg>
+               </button>
+               <button id="findpanel-next-btn" title="Next Match" tabindex="-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M480-80 200-360l56-56 184 183v-647h80v647l184-184 56 57L480-80Z"/></svg>
+               </button>
+               <button class="" id="findpanel-matchinselected-btn" title="Find in Selection" tabindex="-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M120-240v-80h480v80H120Zm0-200v-80h720v80H120Zm0-200v-80h720v80H120Z"/></svg>
+               </button>
+               <button id="findpanel-close-btn" title="Close" tabindex="-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="m250.923-218.924-31.999-31.999L448.001-480 218.924-709.077l31.999-31.999L480-511.999l229.077-229.077 31.999 31.999L511.999-480l229.077 229.077-31.999 31.999L480-448.001 250.923-218.924Z"/></svg>
+               </button>
+            </li>
+            <li id="findpanel-replace" hidden>
+               <input class="" id="findpanel-replace-input" type="text" placeholder="Replace" tabindex="1"/>
+               <div class="inside">
+                  <button class="texthack" id="findpanel-preservecase-btn" title="Preserve Case" tabindex="-1">
+                     <text>AB</text>
+                  </button>
+               </div>
+               <button id="findpanel-replace-btn" title="Replace" tabindex="-1">
+                  <text>RS</text>
+               </button>
+               <button id="findpanel-replaceall-btn" title="Replace All" tabindex="-1">
+                  <text>RA</text>
+               </button>
+            </li>
+            <div id="findpanel-replace"></div>
+         </ul>
+      </div>
+
+
+
+      <ul class="editor-container">
+         <ul class="sidebar">
+            <!-- <li class="selected nosaved">Tabasafsafha A<button>
+               <svg class="icon-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="m250.923-218.924-31.999-31.999L448.001-480 218.924-709.077l31.999-31.999L480-511.999l229.077-229.077 31.999 31.999L511.999-480l229.077 229.077-31.999 31.999L480-448.001 250.923-218.924Z"/></svg>
+               <svg class="icon-nosave" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="M791-55 686-160H240q-33 0-56.5-23.5T160-240v-120h80v120h366L503-343l-23 23-200-200 23-23L55-791l57-57 736 736-57 57ZM617-457l-57-57 64-64 56 58-63 63Zm-97-97-80-80v-166h80v246Zm280 280-80-80v-6h80v86Z"/></svg>
+            </button></li> -->
+            <!-- <li class="deselected">Tab B</li>
+            <li class="deselected">Tab C</li> -->
+         </ul>
+         <li class="editor" id="no-editor-text" >
+            <h4>No opened</h4>
+            <h1>Document</h1>
+            <text>
+               You can <span class="btn_open-file">open</span> or <span class="btn_new-file">create</span> new one.
+            </text>
+         </li>
+         <!-- <li class="editor">
+            <div class="backdrop">
+               <div class="display-area" id="da">ggggg<br><br><br><br><br><br>k</div>
+            </div>
+            <textarea class="interactive-area"></textarea>
+         </li> -->
+      </ul>
+   </body>
+</html>

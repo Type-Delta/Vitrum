@@ -1,0 +1,7 @@
+/test/
+/node_modules/
+
+
+state.json
+user-config.conf
+config.conf

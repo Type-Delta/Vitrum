@@ -1,0 +1,1149 @@
+/*/////////////  Vars ///////////////*/
+
+
+
+/*///////////// Globle Selectors ///////////////*/
+* {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+   user-select: none;
+   color: var(--normal-text-color);
+   font-family: var(--font-family), 'Segoe UI', sans-serif;
+}
+
+body {
+   background-color: var(--primary-base-color);
+   /* overflow: hidden; */
+   position: relative;
+}
+
+ul {
+   list-style: none;
+}
+
+.btn_close-app:hover {
+   background-color: var(--color-red) !important;
+}
+
+/* Make hidden Attribute Stronger */
+[hidden] {
+   display: none !important;
+}
+
+mark {
+   border-radius: 3px;
+   color: inherit;
+   background-color: var(--text-highlight-color);
+}
+
+mark.selected {
+   background-color: var(--text-selected-highlight-color) !important;
+}
+
+code {
+   white-space: pre-wrap;
+   font-family: inherit;
+   font-style: inherit;
+   font-weight: inherit;
+   font-size: inherit;
+   padding: none;
+   color: inherit;
+}
+
+
+
+/*///////////// Custom Styling ///////////////*/
+/* Scrollbar */
+::-webkit-scrollbar {
+   width: var(--scrollbar-width);
+   height: var(--scrollbar-width);
+}
+
+::-webkit-scrollbar-button, ::-webkit-scrollbar-corner {
+   display: none;
+}
+
+::-webkit-scrollbar-track {
+   background-color: var(--secondary-base-color);
+}
+
+::-webkit-scrollbar-thumb {
+   background-color: color-mix(in srgb, var(--normal-text-color) 10%, transparent);
+   border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+   background-color: color-mix(in srgb, var(--normal-text-color) 20%, transparent);
+}
+::-webkit-scrollbar-thumb:hover:active {
+   background-color: color-mix(in srgb, var(--normal-text-color) 35%, transparent);
+}
+
+
+
+/* Selection */
+::selection {
+   background-color: var(--text-selection-color);
+}
+
+
+
+
+
+
+/* Select (Combobox) */
+.custom-select > .custom-select-selector {
+   width: 100%;
+   padding: 10px 8px;
+   border-style: none;
+   border-radius: 0.25rem;
+   cursor: pointer;
+
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}
+
+.custom-select > .custom-select-selector > .selected-value {
+   text-align: left;
+   width: 88%;
+   border: none;
+   background-color: transparent;
+   outline: none;
+}
+
+.custom-select > .custom-select-selector > .custom-select-arrow {
+   border-left: 5px solid transparent;
+   border-right: 5px solid transparent;
+   border-top: 6px solid var(--normal-text-color);
+   transition: transform ease-in-out 0.3s;
+}
+
+.custom-select > .custom-select-dropdown {
+   position: absolute;
+   list-style: none;
+   width: max-content;
+   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+   border-radius: 4px;
+   padding: 10px;
+   margin-top: 27px;
+   max-height: 200px;
+   overflow-y: auto;
+   transition: 0.4s ease;
+
+   transform: scaleY(0);
+   /* height: 0px; */
+   opacity: 0;
+   visibility: hidden;
+   /* display: none; */
+}
+
+.custom-select > .custom-select-dropdown:focus-within {
+   box-shadow: 0 10px 25px rgba(94, 108, 233, 0.6);
+}
+
+.custom-select > .custom-select-dropdown li {
+   position: relative;
+   cursor: pointer;
+   display: flex;
+   align-items: center;
+   height: max-content;
+}
+
+.custom-select > .custom-select-dropdown li label {
+   width: 100%;
+   padding: 5px 10px 6px 10px;
+   cursor: pointer;
+   align-items: center;
+}
+
+
+.custom-select > .custom-select-dropdown li:hover,
+.custom-select > .custom-select-dropdown input:checked~label {
+   background-color: #f2f2f2;
+}
+
+.custom-select > .custom-select-dropdown input:focus~label {
+   background-color: #dfdfdf;
+}
+
+.custom-select > .custom-select-dropdown input[type="radio"] {
+   position: absolute;
+   left: 0;
+   opacity: 0;
+}
+
+/* interactivity */
+.custom-select.active .custom-select-arrow {
+   transform: rotate(180deg);
+}
+
+.custom-select.active .custom-select-dropdown {
+   opacity: 1;
+   visibility: visible;
+   /* display: unset; */
+   transform: scaleY(1);
+   /* height: unset; */
+}
+
+
+
+
+
+
+
+/* Tooltip (not working yet, fix later https://stackoverflow.com/questions/2011142/how-to-change-the-style-of-the-title-attribute-inside-an-anchor-tag) */
+/*
+[data-title]:hover:after {
+   opacity: 1;
+   transition: all 0.1s ease 0.5s;
+   visibility: visible;
+}
+
+[data-title]:after {
+   content: attr(data-title);
+   background-color: #00FF00;
+   color: #111;
+   font-size: 150%;
+   position: absolute;
+   padding: 1px 5px 2px 5px;
+   bottom: -1.6em;
+   left: 100%;
+   white-space: nowrap;
+   box-shadow: 1px 1px 3px #222222;
+   opacity: 0;
+   border: 1px solid #111111;
+   z-index: 99999;
+   visibility: hidden;
+}
+
+[data-title] {
+   position: relative;
+}
+*/
+
+
+
+
+
+/*///////////// Menubar ///////////////*/
+.menubar {
+   background-color: var(--secondary-base-color);
+   display: flex;
+   flex-direction: row;
+   width: 100%;
+   height: var(--menubar-height);
+   /* margin: 0;
+   padding: 0; */
+   position: relative;
+   list-style-type: none;
+   overflow: hidden;
+   z-index: 40;
+   box-shadow: 0px 8px 13px 0px rgba(0,0,0,0.15);
+}
+
+/* every elements in .menubar */
+.menubar li div {
+   background-color: transparent;
+   color: var(--normal-text-color);
+   font-size: 0.9em;
+   border: 0;
+   height: 100%;
+   display: flex;
+   flex-direction: row;
+   justify-content: center;
+   align-items: center;
+   vertical-align: middle;
+   width: calc(var(--menubar-height) * 2);
+}
+
+.menubar li {
+   display: inline-block;
+}
+
+.menubar > li > .menubar-btn {
+   transition-duration: 0.2s;
+}
+.menubar > li > .menubar-btn:hover {
+   background-color: var(--control-highlight-color);
+}
+.menubar > li > .menubar-btn:hover:active {
+   background-color: var(--control-mousedown-color);
+}
+
+
+.menuitem-icon {
+   margin: 0 4% 0 -5%;
+   width: calc(var(--menubar-height) * .67);
+   height: calc(var(--menubar-height) * .67);
+   fill: var(--normal-text-color);
+}
+
+
+.menubar > li .dropdown-menu {
+   background-color: var(--secondary-base-color);
+   width: 190px;
+   min-width: auto;
+   /* vertical-align: middle; */
+   position: fixed;
+   z-index: 199;
+   display: none;
+   cursor: pointer;
+   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+
+
+.menubar > li .dropdown-menu .menuitem {
+   background-color: var(--secondary-base-color);
+   font-size: 0.8em;
+   display: block;
+   width: auto;
+   overflow: hidden;
+   padding: 5px 10px 5px 10px;
+   transition-duration: 0.3s;
+}
+.menubar > li .dropdown-menu .menuitem:hover:not(.inactive) {
+   background-color: var(--control-highlight-color);
+   margin-left: 8px;
+   border-radius: 0px 5px 0px 5px;
+}
+.menubar > li .dropdown-menu .menuitem:hover:active:not(.inactive) {
+   background-color: var(--control-mousedown-color);
+}
+/* MenuItem Shot Keys text */
+.menubar > li .dropdown-menu .menuitem span {
+   color: color-mix(in srgb, var(--normal-text-color) 50%, transparent);
+   font-size: 0.99em;
+   /* margin-left: 5%; */
+   float:  right;
+}
+
+.menubar > li .dropdown-menu .menuitem.inactive {
+   color: color-mix(in srgb, var(--normal-text-color) 50%, transparent) !important;
+   cursor: context-menu;
+}
+
+
+
+.menubar > li .dropdown-menu .menuitem-seperator {
+   width: 100%;
+   height: 8px;
+   opacity: 50%;
+   text-align: center;
+   line-height: 100%;
+   display: block;
+   overflow: hidden;
+}
+
+.menubar > li .dropdown-menu .menuitem-seperator > span {
+   display: flex;
+   justify-content: center;
+   /* display: inline-block; */
+   vertical-align: middle;
+   line-height: 7px;
+}
+
+
+.menubar > .actionbar {
+   -webkit-app-region: drag; /* to make this element a draggble part of window */
+   background-color: var(--control-highlight-color);
+   margin: 0px 8px 8px 8px;
+   border-radius: 0px 0px 6px 6px;
+   width: 100%;
+}
+
+
+.menubar > .window-controlbar {
+   display: flex;
+   /* position: absolute;
+   right: 0; */
+   height: var(--menubar-height);
+}
+
+.menubar > .window-controlbar > button {
+   background-color: var(--secondary-base-color);
+   width: calc(var(--menubar-height) * 1.47);
+   padding: 5px;
+   border: none;
+   transition-duration: 0.2s;
+}
+.menubar > .window-controlbar > button:hover {
+   background-color: var(--control-highlight-color);
+}
+.menubar > .window-controlbar > button:hover:active {
+   background-color: var(--control-mousedown-color);
+}
+
+.menubar > .window-controlbar > button > svg {
+   width: calc(var(--menubar-height) * .67);
+   height: calc(var(--menubar-height) * .67);
+   fill: var(--normal-text-color);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*///////////// Actionmenu ///////////////*/
+.actionmenu {
+   background-color: var(--actionmenu-background-color);
+   backdrop-filter: blur(4px);
+   width: 100%;
+   padding: 10px var(--actionmenu-side-padding);
+   position: absolute;
+
+   --actionmenu-side-padding: 63px;
+   --actionmenu-grid-size: 30px;
+   --fontselect-left-margin: -18px;
+}
+
+.actionmenu > .actionmenu-wrapper {
+   display: grid;
+   /* grid-auto-flow: column; */
+   grid-template-columns: 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px 30px;
+   grid-template-rows: 30px 30px 30px;
+   column-gap: 2px;
+   justify-content: left;
+}
+
+.actionmenu .actionmenu-item {
+   background-color: var(--actionmenu-control-background-color);
+   /* background-color: red; */
+   display: flex;
+   justify-content: center;
+   vertical-align: middle;
+   transition-duration: .15s;
+}
+
+.actionmenu .actionmenu-item > svg {
+   padding-top: 10%;
+   width: 25px;
+   height: 25px;
+   fill: var(--normal-text-color);
+}
+
+.actionmenu .custom-select > .custom-select-selector {
+   font-size: var(--actionmenu-control-fontsize);
+   background-color: inherit;
+   text-wrap: nowrap;
+   overflow: hidden;
+}
+
+.actionmenu .custom-select .selected-value {
+   cursor: pointer;
+}
+.actionmenu .custom-select > .custom-select-dropdown label {
+   color: var(--normal-text-color);
+   font-size: var(--actionmenu-control-fontsize);
+}
+.actionmenu .custom-select > .custom-select-dropdown li:hover,
+.actionmenu .custom-select > .custom-select-dropdown input:checked~label {
+   background-color: color-mix(in srgb, var(--base-color3) 80%, transparent);
+}
+.actionmenu .custom-select > .custom-select-dropdown input:focus~label {
+   background-color: var(--base-color3) 80%;
+}
+
+
+
+/* Font preview */
+.actionmenu #actionmenu-font-preview {
+   font-size: 37px;
+   color: var(--normal-text-color);
+   width: max-content;
+   justify-self: right;
+   border-style: solid;
+   border-width: 0px 5px 0px 0px;
+   border-color: color-mix(in srgb, var(--secondary-accent-color) 80%, transparent);
+   padding: 4px 4px 5px 5px;
+   margin: 4px 0px 4px 8px;
+   grid-row: 1 / span 2;
+   grid-column: 1 / span 2;
+}
+
+.actionmenu #actionmenu-font-preview > text {
+   font-variant-numeric: tabular-nums lining-nums;
+   color: var(--normal-text-color);
+}
+.actionmenu #actionmenu-font-preview > sup {
+   font-family: 'Segoe UI', sans-serif;
+   line-height: 0.35ch;
+   letter-spacing: -0.024ch;
+   text-align: right;
+}
+
+.actionmenu #actionmenu-font-preview > sup > #fontsize-display {
+   font-size: small;
+   color: color-mix(in srgb, var(--normal-text-color) 70%, transparent);
+   transition-duration: 0.3s;
+}
+.actionmenu #actionmenu-font-preview > sup > #letter-spacing-display,
+.actionmenu #actionmenu-font-preview > sup > #line-spacing-display {
+   font-size: x-small;
+   color: color-mix(in srgb, var(--normal-text-color) 70%, transparent);
+   transition-duration: 0.3s;
+}
+.actionmenu #actionmenu-font-preview > sup > #fontsize-display:hover,
+.actionmenu #actionmenu-font-preview > sup > #letter-spacing-display:hover,
+.actionmenu #actionmenu-font-preview > sup > #line-spacing-display:hover {
+   color: var(--normal-text-color);
+}
+
+
+
+
+/* Font increase */
+.actionmenu #actionmenu-font-increase-btn {
+   margin: 4px 0px 0px 1px;
+   border-radius: 6px 6px 0px 0px;
+   padding: 1px 0px 0px 0px;
+   grid-column: 3;
+   grid-row: 1;
+}
+.actionmenu #actionmenu-font-increase-btn:hover {
+   background-color: var(--actionmenu-control-hover-color);
+}
+.actionmenu #actionmenu-font-increase-btn:hover:active {
+   background-color: var(--actionmenu-control-mousedown-color);
+}
+
+
+/* Font decrease */
+.actionmenu #actionmenu-font-decrease-btn {
+   margin: 0px 0px 3px 1px;
+   border-radius: 0px 0px 6px 6px;
+   padding: 0px 2px 7px 2px;
+   grid-column: 3;
+   grid-row: 2;
+}
+.actionmenu #actionmenu-font-decrease-btn:hover {
+   background-color: var(--actionmenu-control-hover-color);
+}
+.actionmenu #actionmenu-font-decrease-btn:hover:active {
+   background-color: var(--actionmenu-control-mousedown-color);
+}
+
+
+/* Fontselect */
+.actionmenu #actionmenu-font-select {
+   margin: 3px 0px 3px var(--fontselect-left-margin);
+   outline-style: none;
+   border-style: solid;
+   border-color: var(--normal-text-color);
+   border-width: 0px 0px 2px 0px;
+   grid-column: 1 / span 6;
+   grid-row: 3;
+   cursor: pointer;
+}
+.actionmenu #actionmenu-font-select > .custom-select-dropdown {
+   background-color: var(--secondary-base-color);
+   left: calc(var(--actionmenu-side-padding) + var(--fontselect-left-margin));
+   min-width: calc((var(--actionmenu-grid-size) * 6) - var(--fontselect-left-margin));
+}
+
+
+
+/* Toggle wrap */
+.actionmenu #actionmenu-toggle-wrap-btn {
+   margin-top: 4px;
+   border-radius: 6px;
+}
+.actionmenu #actionmenu-toggle-wrap-btn.selected > svg {
+   fill: color-mix(in srgb, var(--secondary-accent-color) 80%, transparent);
+}
+.actionmenu #actionmenu-toggle-wrap-btn:hover {
+   background-color: var(--actionmenu-control-hover-color);
+}
+.actionmenu #actionmenu-toggle-wrap-btn:hover:active {
+   background-color: var(--actionmenu-control-mousedown-color);
+}
+
+
+
+/* Encoding select */
+.actionmenu #actionmenu-encoding-select {
+   grid-column: 4 / span 3;
+   grid-row: 2;
+   margin: 2px 0px;
+   border-style: solid;
+   border-width: 3px 0px 0px 0px;
+   border-color: color-mix(in srgb, var(--secondary-accent-color) 80%, transparent);
+   cursor: pointer;
+}
+.actionmenu #actionmenu-encoding-select > .custom-select-dropdown {
+   background-color: var(--secondary-base-color);
+   left: calc(var(--actionmenu-side-padding) + (var(--actionmenu-grid-size) * 4));
+   min-width: calc((var(--actionmenu-grid-size) * 6) - var(--fontselect-left-margin));
+}
+
+
+
+/* Letter spacing select */
+.actionmenu #actionmenu-letter-spacing-select {
+   margin-top: 6px;
+   border-radius: 6px;
+}
+.actionmenu #actionmenu-letter-spacing-select:hover {
+   background-color: var(--actionmenu-control-hover-color);
+}
+.actionmenu #actionmenu-letter-spacing-select:hover:active {
+   background-color: var(--actionmenu-control-mousedown-color);
+}
+.actionmenu #actionmenu-letter-spacing-select .custom-select-selector {
+   padding: 0;
+   background-color: transparent;
+}
+
+.actionmenu #actionmenu-letter-spacing-select .selected-value svg {
+   fill: var(--normal-text-color);
+   width: 100%;
+   padding: 7px 3px 2px 6px;
+}
+.actionmenu #actionmenu-letter-spacing-select > .custom-select-dropdown {
+   background-color: var(--secondary-base-color);
+   left: calc(var(--actionmenu-side-padding) + (var(--actionmenu-grid-size) * 4));
+   min-width: calc((var(--actionmenu-grid-size) * 6) - var(--fontselect-left-margin));
+}
+
+.actionmenu #actionmenu-letter-spacing-select >
+.custom-select-dropdown > li > #LTS-tight ~ label {
+   letter-spacing: -0.12ch;
+}
+.actionmenu #actionmenu-letter-spacing-select >
+.custom-select-dropdown > li > #LTS-compact ~ label {
+   letter-spacing: -0.068ch;
+}
+.actionmenu #actionmenu-letter-spacing-select >
+.custom-select-dropdown > li > #LTS-normal ~ label {
+   letter-spacing: 0.035ch;
+}
+.actionmenu #actionmenu-letter-spacing-select >
+.custom-select-dropdown > li > #LTS-microspread ~ label {
+   letter-spacing: 0.1ch;
+}
+.actionmenu #actionmenu-letter-spacing-select >
+.custom-select-dropdown > li > #LTS-spread ~ label {
+   letter-spacing: 0.29ch;
+}
+.actionmenu #actionmenu-letter-spacing-select >
+.custom-select-dropdown > li > #LTS-neighborhood ~ label {
+   letter-spacing: 0.42ch;
+}
+
+.actionmenu #actionmenu-letter-spacing-select >
+.custom-select-dropdown > li > #LTS-solarsystem ~ label {
+   letter-spacing: 0.73ch;
+}
+
+
+
+/* Line spacing select */
+.actionmenu #actionmenu-line-spacing-select {
+   margin-top: 6px;
+   border-radius: 6px;
+}
+.actionmenu #actionmenu-line-spacing-select:hover {
+   background-color: var(--actionmenu-control-hover-color);
+}
+.actionmenu #actionmenu-line-spacing-select:hover:active {
+   background-color: var(--actionmenu-control-mousedown-color);
+}
+
+.actionmenu #actionmenu-line-spacing-select .custom-select-selector {
+   padding: 0;
+   background-color: transparent;
+}
+
+.actionmenu #actionmenu-line-spacing-select .selected-value svg {
+   fill: var(--normal-text-color);
+   width: 100%;
+   padding: 4px 2px 0px 2px;
+}
+.actionmenu #actionmenu-line-spacing-select > .custom-select-dropdown {
+   background-color: var(--secondary-base-color);
+   left: calc(var(--actionmenu-side-padding) + (var(--actionmenu-grid-size) * 5));
+   min-width: calc((var(--actionmenu-grid-size) * 6) - var(--fontselect-left-margin));
+}
+
+.actionmenu #actionmenu-line-spacing-select >
+.custom-select-dropdown > li > #LS-tight ~ label {
+   line-height: 1.4ch;
+}
+.actionmenu #actionmenu-line-spacing-select >
+.custom-select-dropdown > li > #LS-compact ~ label {
+   line-height: 2.1ch;
+}
+.actionmenu #actionmenu-line-spacing-select >
+.custom-select-dropdown > li > #LS-normal ~ label {
+   line-height: 2.23ch;
+}
+.actionmenu #actionmenu-line-spacing-select >
+.custom-select-dropdown > li > #LS-microspread ~ label {
+   line-height: 2.75ch;
+}
+.actionmenu #actionmenu-line-spacing-select >
+.custom-select-dropdown > li > #LS-spread ~ label {
+   line-height: 3.18ch;
+}
+.actionmenu #actionmenu-line-spacing-select >
+.custom-select-dropdown > li > #LS-neighborhood ~ label {
+   line-height: 3.5ch;
+}
+
+.actionmenu #actionmenu-line-spacing-select >
+.custom-select-dropdown > li > #LS-solarsystem ~ label {
+   line-height: 4ch;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*///////////// Prompt ///////////////*/
+#prompt {
+   z-index: 297;
+   position: absolute;
+   left: calc(50% - (var(--prompt-width) / 2));
+   width: var(--prompt-width);
+   padding: 4px;
+   margin-top: 6px;
+   top: 0;
+   background-color: color-mix(in srgb, var(--base-color3) 15%, transparent);
+   backdrop-filter: blur(4px);
+   border-radius: 5px;
+   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+#prompt > #prompt-input {
+   width: 100%;
+   background-color: var(--secondary-base-color);
+   color: var(--normal-text-color);
+   caret-color: var(--editor-caret-color);
+   border-style: solid;
+   border-width: 3.5px;
+   border-radius: 5px;
+   border-color: var(--base-color3);
+   outline: none;
+   padding: 3px 5px;
+}
+
+#prompt > #prompt-panel {
+   color: transparent;
+   margin-top: 3px;
+   padding: 2px;
+}
+
+#prompt > #prompt-panel > li {
+   border-radius: 2px;
+   padding: 0px 5px 2px 5px;
+   transition-duration: 0.15s;
+   display: flex;
+   flex-direction: row;
+}
+#prompt > #prompt-panel > li:hover:not(.selected) {
+   background-color: color-mix(in srgb, var(--base-color3) 50%, transparent);
+}
+
+#prompt > #prompt-panel > li.selected {
+   background-color: var(--secondary-accent-color);
+}
+
+
+#prompt > #prompt-panel > li > input {
+   width: 90%;
+   background-color: var(--secondary-base-color);
+   color: var(--normal-text-color);
+   caret-color: var(--editor-caret-color);
+   border-style: solid;
+   border-width: 0px 0px 0px 3.5px;
+   border-color: var(--base-color3);
+   margin: 0px 0px 0px -5px;
+   outline: none;
+   padding: 3px 4px;
+}
+
+#prompt > #prompt-panel > li > button {
+   width: 20%;
+}
+
+
+
+
+
+
+
+/*///////////// Find & Replace panel ///////////////*/
+#findpanel {
+   z-index: 97;
+   position: absolute;
+   left: calc(100% - (var(--findpanel-width)) - 6px);
+   width: var(--findpanel-width);
+   padding: 4px 4px 4px 3px;
+   top: var(--menubar-height);
+   display: flex;
+   flex-direction: row;
+   background-color: color-mix(in srgb, var(--base-color3) 15%, transparent);
+   backdrop-filter: blur(4px);
+   border-radius: 0px 0px 5px 5px;
+   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+#findpanel > #findpanel-expand-btn {
+   background-color: transparent;
+   border: none;
+   margin: 2px 0px;
+   transition-duration: 0.15s;
+   border-radius: 2px;
+}
+#findpanel > #findpanel-expand-btn:hover {
+   background-color: color-mix(in srgb, var(--base-color3) 50%, transparent);
+}
+
+#findpanel > #findpanel-expand-btn > svg {
+   margin: 0px -3px;
+   width: 17px;
+   height: 17px;
+   fill: var(--normal-text-color);
+   transform: translate(-1px, 2px) rotate(-90deg);
+   transition-duration: .3s;
+}
+
+#findpanel > #findpanel-expand-btn.expanded > svg {
+   transform: translate(-1px, 2px) rotate(0deg);
+}
+
+
+
+#findpanel > ul > li {
+   overflow: hidden;
+   display: flex;
+   margin: 2px 4px;
+   text-align: center;
+   vertical-align: middle;
+}
+
+#findpanel > ul > li > input {
+   width: calc(var(--findpanel-width) * .516);
+   background-color: var(--secondary-base-color);
+   color: var(--normal-text-color);
+   font-size: small;
+   caret-color: var(--editor-caret-color);
+   border: none;
+   outline-style: none;
+   outline-width: 0px;
+   outline-offset: -1px;
+   border-radius: 2px;
+   outline: none;
+   padding: 1px 0px 1px  2px;
+   margin-right: 4px;
+}
+
+#findpanel > ul > li > input.selected {
+   outline-color: var(--base-color3);
+   outline-style: solid;
+}
+
+#findpanel > ul > li > #findpanel-find-input {
+   padding-right: 58px;
+}
+#findpanel > ul > li > #findpanel-replace-input {
+   padding-right: 21px;
+}
+
+#findpanel > ul > li button {
+   background-color: transparent;
+   border: none;
+   padding: 1.5px;
+   margin-right: 2px;
+   transition-duration: 0.1s;
+   border-radius: 3px;
+}
+#findpanel > ul > li button:hover {
+   background-color: color-mix(in srgb, var(--base-color3) 50%, transparent);
+}
+
+#findpanel > ul > li button.selected {
+   background-color: color-mix(in srgb, var(--secondary-accent-color) 70%, transparent);
+}
+
+
+#findpanel > ul > li button > text {
+   color: inherit;
+   font-size: small;
+   font-family: 'Segoe UI', sans-serif;
+}
+
+#findpanel > ul > li > text {
+   padding: 5px 0px;
+   margin: 0px 5px;
+   font-size: x-small;
+   text-align: center;
+   vertical-align: bottom;
+   text-wrap: nowrap;
+}
+
+
+#findpanel > ul > li > .inside {
+   display: flex;
+   position: absolute;
+   right: calc(var(--findpanel-width) * .428);
+   margin-top: 2px;
+   height: max-content;
+}
+#findpanel > ul > li > .inside > button {
+   display: flex;
+   height: 100%;
+}
+
+#findpanel > ul > li > .inside > button.texthack > text {
+   margin-top: -2px;
+   color: inherit;
+}
+
+#findpanel > ul > li button > svg {
+   margin: 0px -2px -2px -2px;
+   width: 18px;
+   height: 18px;
+   fill: var(--normal-text-color);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*/////////////   Editor   ///////////////*/
+.editor-container {
+   height: calc(100vh - var(--menubar-height));
+   display: grid;
+   grid-auto-flow: column;
+   grid-template-columns: var(--sidebar-width) calc(100vw - var(--sidebar-width));
+   grid-template-areas: 'sidebar editor';
+   z-index: 20;
+   /* overflow: hidden; */
+}
+
+.editor-container > .editor {
+   display: block;
+   grid-area: editor;
+}
+
+.editor-container > .editor > .backdrop {
+   position: absolute;
+   z-index: 1;
+   width: calc(100vw - var(--sidebar-width));
+   height: calc(100vh - var(--menubar-height));
+   overflow: auto;
+}
+
+.editor-container > .editor > .backdrop > .display-area,
+.editor-container > .editor > .interactive-area {
+   display: block;
+   position: absolute;
+   height: 100%;
+   caret-color: var(--editor-caret-color);
+   font-family: var(--editor-font-family);
+   font-size: var(--editor-font-size);
+   white-space: pre-line;
+   word-break: normal;
+   letter-spacing: 0px;
+   border: none;
+   outline: none;
+   width: calc(100vw - var(--sidebar-width));
+   height: calc(100vh - var(--menubar-height));
+   padding: var(--editor-top-padding) 10px 10px 7px;
+   -webkit-box-shadow: none;
+   box-shadow: none;
+   resize: none;
+   overflow: auto;
+}
+
+/* when Finepanel is active on this editor */
+.editor-container > .editor.findactive > .backdrop > .display-area,
+.editor-container > .editor.findactive > .interactive-area {
+   transition-duration: 0.3s;
+   padding-top: calc(var(--editor-top-padding) + var(--editor-finepanel-added-space)) !important;
+}
+
+.editor-container > .editor > .backdrop > .display-area {
+   background-color: var(--primary-base-color);
+   color: var(--normal-text-color);
+}
+
+.editor-container > .editor > .interactive-area {
+   z-index: 4;
+   background-color: transparent;
+   color: color-mix(in srgb, var(--secondary-accent-color) 70%, transparent);
+}
+
+.sidebar {
+   display: flex;
+   flex-direction: column;
+   align-items: right;
+   /* grid-row: 0; */
+   grid-area: sidebar;
+   height: 100%;
+   width: var(--sidebar-width);
+   background-color: var(--secondary-base-color);
+   overflow: auto;
+   overflow-x: hidden;
+}
+
+.sidebar > li {
+   writing-mode: vertical-lr;
+   display: inline-block;
+   border: none;
+   width: calc(var(--sidebar-width) * 0.8);
+   padding: 10px 5px 11px 1px;
+   font-size: 1.8ch;
+   text-align: center;
+   margin-left: calc(var(--sidebar-width) * 0.2099);
+   margin-bottom: 1px; /*default value need JS to update*/
+   border-radius: 0px 11px 3px 0px;
+   text-orientation: mixed;
+   transform: rotate(180deg);
+}
+.sidebar > li.selected {
+   background-color: var(--primary-base-color);
+   color: color-mix(in srgb, var(--secondary-accent-color) 50%, transparent);
+   z-index: 28;
+}
+.sidebar > li.deselected {
+   background-color: var(--base-color3);
+   color: color-mix(in srgb, var(--normal-text-color) 50%, transparent);
+}
+
+.sidebar > li.selected:hover {
+   /*place `transition-duration` here to prevent `transform` from effecting*/
+   transition-duration: 0.2s;
+   color: var(--secondary-accent-color);
+}
+.sidebar > li.deselected:hover {
+   transition-duration: 0.2s;
+   color: var(--normal-text-color);
+   background-color: var(--control-highlight-color);
+}
+
+
+.sidebar > li > button {
+   border: none;
+   width: calc(var(--sidebar-width) * 0.5299);
+   height: calc(var(--sidebar-width) * 0.5299);
+   margin: 4px 3px -4px 0px;
+   border-radius: 50%; /*make button a perfect circle*/
+   background-color: transparent;
+   transition-duration: 0.2s;
+}
+
+
+.sidebar > li.selected > button {
+   display: unset;
+   fill: var(--secondary-accent-color);
+}
+.sidebar > li.deselected.saved > button {
+   display: none;
+   fill: var(--normal-text-color);
+}
+
+.sidebar > li.deselected:hover.saved > button {
+   display: unset;
+}
+.sidebar > li > button:hover {
+   background-color: color-mix(in srgb, var(--color-red) 80%, transparent);
+   fill: var(--primary-base-color)
+}
+
+
+
+/* if the tab is saved */
+.sidebar > li.saved > button > .icon-nosave {
+   display: none;
+}
+
+/* if the tab is not saved */
+.sidebar > li.nosaved > button > .icon-nosave {
+   display: unset;
+}
+.sidebar > li.nosaved > button > .icon-close {
+   display: none;
+}
+.sidebar > li.nosaved > button:hover > .icon-nosave {
+   display: none;
+}
+.sidebar > li.nosaved > button:hover > .icon-close {
+   display: unset;
+}
+
+
+.sidebar > li > button > svg {
+   transform: rotate(90deg);
+}
+.sidebar > li.deselected > button > svg {
+   fill: color-mix(in srgb, var(--normal-text-color) 50%, transparent);
+}
+
+
+
+
+
+
+
+
+
+/*///////////// Editor Placeholder Message ///////////////*/
+#no-editor-text {
+   font-size: larger;
+   line-height: 2.7ch;
+   padding: min(44px, 9.1%) 0px 0px min(43px, 9.4%);
+}
+#no-editor-text > h4, text {
+   color: color-mix(in srgb, var(--normal-text-color) 60%, transparent);
+}
+#no-editor-text > text {
+   padding-left: 0.2ch;
+   line-height: 3.9ch;
+   font-size: 1.7ch;
+   letter-spacing: 0.02ch;
+}
+#no-editor-text > text > span {
+   color: var(--secondary-accent-color);
+   text-decoration: none;
+   cursor: pointer;
+}
+
+#no-editor-text > text > span:hover {
+   text-decoration: underline;
+}
+
+
+
+
+
+
+
