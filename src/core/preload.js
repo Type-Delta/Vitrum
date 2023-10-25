@@ -16,6 +16,8 @@ contextBridge.exposeInMainWorld('coreAPI', {
    handleUpdateAvaliableFontlist: (callback) => {ipcRenderer.on('update-fontlist', callback)},
    handleUpdateAppState: (callback) => {ipcRenderer.on('update-state', callback)},
 
+   handleFetchUIState: (callback) => {ipcRenderer.on('fetch-ui-state_fetch', callback)},
+
    sendCloseAppCmd: () => ipcRenderer.send('cmd-closeapp'),
    sendToggleMaximizeAppCmd: () => ipcRenderer.send('cmd-toggle-maximizeapp'),
    sendMinimizeAppCmd: () => ipcRenderer.send('cmd-minimizeapp'),
@@ -31,12 +33,14 @@ contextBridge.exposeInMainWorld('coreAPI', {
    sendEditorContentUpdate: (id, content) => ipcRenderer.send('editor-content-changed', id, content),
    sendFindnReplaceUpdate: (id, option) => ipcRenderer.send('find_replace-update', id, option),
 
+   sendRespondUIState: (state) => ipcRenderer.send('find_replace-update', state),
+
    fetchAvaliableFontlist: () => ipcRenderer.send('fetch-avaliable-fontlist'),
 
    askCore: async (question, ...args) => {
       return new Promise((resolve, reject) => {
          ipcRenderer.send('ask', question, ...args);
-         ipcRenderer.on('answer', handleCoresAnswer);
+         ipcRenderer.once('answer', handleCoresAnswer);
          const timeout = setTimeout(() => {
             resolve(null);
          }, QUESTION_TIMEOUT_MS);
@@ -45,7 +49,6 @@ contextBridge.exposeInMainWorld('coreAPI', {
             if(qAnswered != question) return;
 
             clearTimeout(timeout);
-            ipcRenderer.removeListener('answer', handleCoresAnswer);
             resolve(answer);
          }
       });
@@ -54,14 +57,13 @@ contextBridge.exposeInMainWorld('coreAPI', {
    async sendConsoleOutput(Text, options, prefix = undefined, color = undefined){
       return new Promise((resolve, reject) => {
          ipcRenderer.send('sendConsoleOutput_send', [Text, options, prefix, color]);
-         ipcRenderer.on('sendConsoleOutput_return', handleSCOReturn);
+         ipcRenderer.once('sendConsoleOutput_return', handleSCOReturn);
          const timeout = setTimeout(() => {
             resolve(null);
          }, SCO_TIMEOUT_MS);
 
          function handleSCOReturn(eEvent, returnValue){
             clearTimeout(timeout);
-            ipcRenderer.removeListener('sendConsoleOutput_return', handleSCOReturn);
             resolve(returnValue);
          }
       });

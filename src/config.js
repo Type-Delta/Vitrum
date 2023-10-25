@@ -32,7 +32,7 @@ class Config {
    MIN_LOG_CONTENT = 1000;
    LOG_FOLDER_PATH = './logs';
    MAX_LOG_FILE = 10;
-   WRITE_LOG_FILE = false;
+   WRITE_LOG_FILE = true;
 
 
    constructor(){

@@ -6,11 +6,12 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
       <link rel="stylesheet" href="styles/root.css">
-      <link rel="stylesheet" href="styles/index.css">
-      <script defer src="../src/helper/Tools.js"></script>
-      <script defer src="../assets/code/jquery-3.7.1.min.js"></script>
-      <script defer src="../src/UIHandlerClass.js"></script>
-      <script defer src="../src/UIHandler.js"></script>
+      <link rel="stylesheet" href="styles/mainWindow.css">
+      <script defer src="../helper/Tools.js"></script>
+      <script defer src="../../assets/code/jquery-3.7.1.min.js"></script>
+      <script defer src="../../assets/code/setZeroTimeout.js"></script>
+      <script defer src="handler/mainWindow.Class.js"></script>
+      <script defer src="handler/mainWindow.js"></script>
       <title>Vitrum</title>
    </head>
 
@@ -83,7 +84,7 @@
       </ul>
 
 
-      <ul class="actionmenu">
+      <ul class="actionmenu" hidden>
          <li class="actionmenu-wrapper" id="actionmenu-common-section">
             <div class="actionmenu-item" id="actionmenu-font-preview">
                <text>Aa</text>
@@ -106,26 +107,6 @@
                   <span class="custom-select-arrow"></span>
                </div>
                <ul class="custom-select-dropdown" role="listbox" id="select-dropdown">
-                  <!-- <li role="option">
-                     <input type="radio" name="choice-font" id="github" />
-                     <label for="github">GitHub</label>
-                  </li>
-                  <li role="option">
-                     <input type="radio" name="choice-font" id="instagram" />
-                     <label for="instagram">Instagram</label>
-                  </li>
-                  <li role="option">
-                     <input type="radio" name="choice-font" id="facebook" />
-                     <label for="facebook">Facebook</label>
-                  </li>
-                  <li role="option">
-                     <input type="radio" name="choice-font" id="twitter" />
-                     <label for="twitter">Twitter</label>
-                  </li>
-                  <li role="option">
-                     <input type="radio" name="choice-font" id="reddit" />
-                     <label for="reddit">Reddit</label>
-                  </li> -->
                </ul>
             </div>
 

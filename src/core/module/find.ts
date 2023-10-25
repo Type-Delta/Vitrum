@@ -1,9 +1,9 @@
 /**Fine and Replace Module
  * for Find and Replace element
  */;
-import { FindOption } from "../helper/Definitions";
-import { getMatchAllResults, escapeRegExp, strSplice } from "../helper/Tools";
-import { EditorEffect } from "../UIHandlerClass.js";
+import { FindOption } from "../../helper/Definitions";
+import { getMatchAllResults, escapeRegExp, strSplice } from "../../helper/Tools";
+import { EditorEffect } from "../../UI/handler/mainWindow.Class";
 
 
 // to compile: tsc ./src/module/find.ts --target esnext --module commonjs

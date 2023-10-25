@@ -1,8 +1,8 @@
 {
   "name": "vitrum",
   "version": "0.0.1",
-  "description": "A simple portable text editor",
-  "main": "src/vitrum.js",
+  "description": "A simple text editor",
+  "main": "src/core/vitrum.js",
   "scripts": {
     "start": "electron --trace-warnings .",
     "dectools": "tsc src/helper/Tools.js --declaration --allowJs --emitDeclarationOnly"

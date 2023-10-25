@@ -5,14 +5,14 @@ const Diff = require('diff');
 
 const editorEmitter = new EventEmitter();
 
-const to = require('./helper/Tools.js');
-const { editors, HTMLElementIDs } = require('./Global.js');
+const to = require('../helper/Tools.js');
+const { editors, HTMLElementIDs } = require('../Global.js');
 let {
    OPTIMIZATION_MODE,
    TRIM_TRAILING_WHITESPACE,
    MAX_HISTORY_SIZE
-} = require('./config.js');
-const { sendConsoleOutput } = require('./utilities.js')
+} = require('../config.js');
+const { sendConsoleOutput } = require('../utilities.js')
 
 class TextChange {
    added;

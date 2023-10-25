@@ -31,6 +31,16 @@ class MatchResult {
 }
 
 
+class TFIDFValues {
+   TF;
+   IDF;
+   TF_IDF;
+   constructor(TF){
+      this.TF = TF;
+   }
+}
+
+
 const Tools = {
    /**format JSON string to make it more human-readable
     * ***Waring:* in the current version this function will remove any White-Space in the string which can cause MASSIVE INFORMATION LOSS!!**
@@ -330,16 +340,6 @@ const Tools = {
        * array contains TFIDFValues for every words in every Document
        */
       TFIDF_of(documents){
-         class TFIDFValues {
-            TF;
-            IDF;
-            TF_IDF;
-            constructor(TF){
-               this.TF = TF;
-            }
-         }
-
-
          const docCount = documents.length;
          /**
           * @type {Map<string, TFIDFValues>[]}
@@ -1755,7 +1755,7 @@ const Tools = {
       /**callback when user clicked outside the given element
        * @param {HTMLElement} element
        * @param {Function} callback
-       * @returns {Listener} use this to clear event listener
+       * @returns {Function} use this to clear event listener
        */
       onClickOutside(element, callback) {
          const outsideClickListener = event => {
@@ -1791,7 +1791,7 @@ const Tools = {
        *    // . . .
        *    clearClickOutside(listener);
        * }
-       * @param {Listener} listener
+       * @param {Function} listener
        */
       clearClickOutside(listener) {
          document.removeEventListener('click', listener);
@@ -1803,7 +1803,7 @@ const Tools = {
        * user click outside this element
        * @param {HTMLElement} element
        * @param {string|HTMLElement} elemToHide
-       * @returns {Listener} use this to clear event listener
+       * @returns {Function} use this to clear event listener
        */
       hideOnClickOutside(element, elemToHide = 'this') {
          const targetElem = elemToHide === 'this'?element:elemToHide;
@@ -2060,6 +2060,89 @@ const Tools = {
          _this.selectionStart = start;
          _this.selectionEnd = end + addedLength;
       },
+
+
+      /**Function used to determine the order of the elements.
+       * It is expected to return a negative value
+       * if the first argument is less than the second argument,
+       * zero if they're equal, and a positive value otherwise.
+       * If omitted, the elements are sorted in ascending, ASCII character order,
+       * judging from the `textContent` value.
+       * @callback CompareFunction
+       * @param {HTMLElement} elemA
+       * @param {HTMLElement} elemB
+       * @returns {number}
+       */
+
+      /**Sort elements inplace, this function does not modify the given Array/Collection
+      * but the actual orders of those elements in the `document`
+      * @param {HTMLCollection|HTMLElement[]} elements an array of Element or HTMLCollection
+      * @param {CompareFunction} compareFn
+      * Function used to determine the order of the elements.
+      * It is expected to return a negative value
+      * if the first argument is less than the second argument,
+      * zero if they're equal, and a positive value otherwise.
+      * If omitted, the elements are sorted in ascending, ASCII character order,
+      * judging from the `textContent` value.
+      */
+      sortElements(
+         elements,
+         compareFn = (a, b) => a.textContent.localeCompare(b.textContent)
+      ){
+         if(elements instanceof HTMLCollection) elements = [...elements];
+         const parent = elements[0].parentElement;
+
+         quickSort(0, elements.length);
+
+         function quickSort(start, end){
+            if(end === start) return;
+            const pivot = get3Median(start, end);
+            let pivotIndex = elements.findIndex(e => e.isSameNode(pivot));
+
+            for(let i = start; i < end; i++){
+               if(elements[i].isSameNode(pivot)) continue;
+
+               if(compareFn(elements[i], pivot) <= 0){
+                  if(i < pivotIndex) continue;
+                  pivot.insertAdjacentElement('beforebegin', elements[i]);
+               }
+               else{
+                  if(i > pivotIndex) continue;
+                  pivot.insertAdjacentElement('afterend', elements[i]);
+               }
+            }
+
+            const sorted = [...parent.children];
+            pivotIndex = sorted.findIndex(e => e.isSameNode(pivot));
+
+            for(let i = start; i < end; i++) elements[i] = sorted[i];
+            quickSort(start, pivotIndex);
+            quickSort(pivotIndex + 1, end);
+         }
+
+
+         function get3Median(start, end){
+            const first = elements[start];
+            const mid = elements[(end - start) >> 1];
+            const last = elements[end - 1];
+            let medElem, belowMed;
+
+            // find the potential median: the greater value of two is the potential median
+            if(compareFn(first, mid) < 0){ // first is lessthen mid
+               medElem = mid;
+               belowMed = first;
+            }else{
+               medElem = first;
+               belowMed = mid;
+            }
+
+            // find the real median
+            if(compareFn(medElem, last) < 0);// potential median is lessthen last: potential median is median
+            else if(compareFn(last, belowMed) < 0) medElem = belowMed;
+            else medElem = last;
+            return medElem;
+         }
+      }
    }
 }
 

@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /**Fine and Replace Module
  * for Find and Replace element
  */ ;
-const Tools_1 = require("../helper/Tools");
-const UIHandlerClass_js_1 = require("../UIHandlerClass.js");
+const Tools_1 = require("../../helper/Tools");
+const mainWindow_Class_1 = require("../../UI/handler/mainWindow.Class");
 // to compile: tsc ./src/module/find.ts --target esnext --module commonjs
 class FindnReplace {
     _selectedIndex = 0;
@@ -19,8 +19,8 @@ class FindnReplace {
     /**find and create EditorEffects base on the match result
      */
     findAndCreateEffects(content, option) {
-        const selectedEffect = new UIHandlerClass_js_1.EditorEffect('selected-highlight', 'find');
-        const effect = new UIHandlerClass_js_1.EditorEffect('highlight', 'find');
+        const selectedEffect = new mainWindow_Class_1.EditorEffect('selected-highlight', 'find');
+        const effect = new mainWindow_Class_1.EditorEffect('highlight', 'find');
         const matchs = this.findAndMatchAll(content, option);
         for (const match of matchs) {
             if (match.isSelected) {

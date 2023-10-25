@@ -73,18 +73,33 @@ declare class MCJsonText {
 }
 
 
+declare interface UIStateEditor {
+   fontFamily: string,
+   fontSize: number,
+   encoding: string,
+   lineSpacing: number,
+   letterSpacing: number
+}
+
+declare interface UIState {
+   editor: UIStateEditor
+}
+
 
 
 export interface CoreAPI {
-   handleCreateEditorUI: (Function: callback) => void
-   handleSetActiveEditorUI: (Function: callback) => void
-   handleDestroyEditorUI: (Function: callback) => void
-   handleUpdateEditorSaveStatus: (Function: callback) => void
-   handleSetEditorTabName: (Function: callback) => void
-   handleUpdateEditorContent: (Function: callback) => void
-   handleUpdateEditorEffects: (Function: callback) => void
-   handleUpdateAvaliableFontlist: (Function: callback) => void
-   handleUpdateAppState: (Function: callback) => void
+   handleCreateEditorUI: (callback: Function) => void
+   handleSetActiveEditorUI: (callback: Function) => void
+   handleDestroyEditorUI: (callback: Function) => void
+   handleUpdateEditorSaveStatus: (callback: Function) => void
+   handleSetEditorTabName: (callback: Function) => void
+   handleUpdateEditorContent: (callback: Function) => void
+   handleUpdateEditorEffects: (callback: Function) => void
+   handleUpdateAvaliableFontlist: (callback: Function) => void
+   handleUpdateAppState: (callback: Function) => void
+
+   handleFetchUIState: (callback: Function) => void
+
 
    sendCloseAppCmd: () => void
    sendToggleMaximizeAppCmd: () => void
@@ -100,6 +115,8 @@ export interface CoreAPI {
    sendRedoCmd: (id: string) => void
    sendEditorContentUpdate: (id: string, content: string) => void
    sendFindnReplaceUpdate: (id: string, option) => void
+
+   sendRespondUIState: (state: UIState) => void
 
    fetchAvaliableFontlist: () => void
 

@@ -2,14 +2,16 @@ if(!window.coreAPI) throw new Error('Handler not loaded by Electron!');
 
 try{
    // for Definitions only
-   const to = require('./helper/Tools.js');
-   const { EditorEffect } = require('./UIHandlerClass.js');
+   const to = require('../../helper/Tools.js');
+   const { EditorEffect } = require('./mainWindow.Class.js');
+   const { setZeroTimeout } = require('../../../assets/code/setZeroTimeout.js')
 }catch{};
 
 
 const {
    sendConsoleOutput
 } = window.coreAPI;
+
 const { WebKit } = to;
 const {
    KeyBind,
@@ -19,11 +21,11 @@ const {
    isVisible,
    onClickOutside,
    onceClickOutside,
-   clearClickOutside,
    hideAllElements,
    hideOnClickOutside,
    hideOtherElements,
-   handleTextarea_TabKeyPressed
+   handleTextarea_TabKeyPressed,
+   sortElements
 } = WebKit;
 
 
@@ -392,9 +394,17 @@ class CustomSelect {
       const searchValue = this.selectedInputElement.value;
       if(!searchValue){
          // make all option visible
-         for(const option of this.dropdownElement.children){
-            if(option.hidden) option.hidden = false;
-         }
+         queueMicrotask(() => {
+            console.log(`reset`);
+            sortElements(
+               this.dropdownElement.children,
+               (a, b) => {
+                  if(a.hidden) a.hidden = false;
+                  if(b.hidden) b.hidden = false;
+                  return a.children[1].textContent.localeCompare(b.children[1].textContent);
+               }
+            )
+         })
          return;
       }
 
@@ -406,14 +416,7 @@ class CustomSelect {
       const scoreMax = Math.max(...searchRes.map(v => v.score));
       const filteredSearchRes = searchRes.filter(v => v.score > scoreMax * 0.5);
       console.log(filteredSearchRes);
-      // let i = 0;
-      // for(const option of this.dropdownElement.children){
-      //    if(filteredSearchRes.includes(option.children[1].textContent)){
-      //       if(option.hidden) option.hidden = false;
-      //       continue;
-      //    }
-      //    if(!option.hidden) option.hidden = true;
-      // }
+
 
       let dropdownItems = [...this.dropdownElement.children];
       let topIndex = 0;
@@ -433,33 +436,6 @@ class CustomSelect {
             this.dropdownElement.children[i].hidden = true;
       }
 
-
-
-      // let dropdownItems = [...this.dropdownElement.children];
-      // dropdownItems.sort((elemA, elemB) => {
-      //    const s_resA = filteredSearchRes.find(res =>
-      //       res.string == elemA.children[1].textContent
-      //    );
-      //    const s_resB = filteredSearchRes.find(res =>
-      //       res.string == elemB.children[1].textContent
-      //    );
-
-      //    if(!s_resA){
-      //       if(!elemA.hidden) elemA.hidden = true;
-      //       return 0;
-      //    }else if(elemA.hidden) elemA.hidden = false;
-
-      //    if(!s_resB){
-      //       if(!elemB.hidden) elemB.hidden = true;
-      //       return 0;
-      //    }else if(elemB.hidden) elemB.hidden = false;
-
-      //    return s_resB.score - s_resA.score;
-      // });
-
-      // this.clearOptions();
-      // for(let i = 0; i < dropdownItems.length; i++)
-      //    this.dropdownElement.appendChild(dropdownItems[i]);
    }
 
    #handleClickOutside = () => {
@@ -503,10 +479,97 @@ class CustomSelect {
       if(!this.#events.has(eventName)) return;
       (this.#events.get(eventName))(...params);
    }
-
-
 }
 
+
+
+
+class Timer {
+   /**time remaining in the clock
+    * @type {number}
+    */
+   time;
+   /**how often should timer do the counting
+    * @type {'ms','s','m'}
+    */
+   resolution;
+   isRunning = false;
+   maxTime;
+
+   #res;
+   #interval;
+   #lastCheck;
+   #onceEndCallback;
+   #waitCallback;
+   /**how often should timer do the counting
+    * @param {number} time start time
+    * @param {'ms','s','m'} resolution
+    */
+   constructor(time, resolution = 'ms'){
+      this.maxTime = this.time = time;
+      this.resolution = resolution;
+
+      switch(resolution){
+         case 'ms':
+            this.#res = 1;
+            break;
+         case 's':
+            this.#res = 1000;
+            break;
+         case 'm':
+            this.#res = 1e3 * 60;
+            break;
+      }
+   }
+
+   start(){
+      if(this.isRunning||this.time <= 0) return;
+      this.#interval = setInterval(
+         this.#checkTime, this.#res == 1? 4: this.#res / 100
+      );
+      this.isRunning = true;
+      this.#lastCheck = Date.now();
+   }
+
+   stop(){
+      if(!this.isRunning) return;
+      clearInterval(this.#interval);
+      this.isRunning = false;
+   }
+
+   reset(){
+      this.time = this.maxTime;
+   }
+
+   async wait(){
+      if(!this.isRunning) return;
+
+      return new Promise((resolve, reject) => {
+         this.#waitCallback = () => {
+            this.#waitCallback = null;
+            resolve();
+         }
+      });
+   }
+
+   onceEnd(callback){
+      this.#onceEndCallback = callback;
+   }
+
+   #checkTime(){
+      const delta = (Date.now() - this.#lastCheck) / this.#res;
+      this.time -= delta;
+      if(this.time > 0) return;
+
+      this.stop();
+      this.time = 0;
+      if(this.#onceEndCallback){
+         this.#onceEndCallback();
+         this.#onceEndCallback = null;
+      }
+      if(this.#waitCallback) this.#waitCallback();
+   }
+}
 
 
 
@@ -909,7 +972,9 @@ const EditorUI = {
       lineSpacing: '2ch',
       letterSpacing: '0ch',
       useLineWrap: 'pre-line',
+      /**@type {string} */
       encoding: null,
+      /**@type {string} */
       fontFamily: null
    },
 
@@ -950,7 +1015,6 @@ const EditorUI = {
                editor.textAreaElement.style.fontFamily = this.global.fontFamily;
          }
       }
-
    },
 
 
@@ -1351,10 +1415,6 @@ const EditorUI = {
          text + textarea.value.slice(textarea.selectionEnd);
       EditorUI.handleTextarea_change(editor);
    },
-
-
-
-
 }
 
 
@@ -1681,6 +1741,11 @@ const ActionmenuUI = {
       fontPreview: null,
    },
 
+   /**the Actionmenu element
+    * @type {HTMLUListElement}
+    */
+   actionmenuElement: null,
+
    valueMap: {
       lineSpacingSelect: [
          ['LS-tight', 1.4],
@@ -1731,7 +1796,15 @@ const ActionmenuUI = {
    /**TF-IDF map for fontlist
     */
    fonts_TFIDFMap: null,
-
+   /**indicated that mouse is currently on the Actionmenu or not
+    */
+   isMouseHover: false,
+   /**
+    * @type {Timer}
+    */
+   expandTimer: null,
+   retractDelay: 500,
+   isExplanded: false,
 
    init(){
       this.Common.fontFamilySelect = new CustomSelect(
@@ -1777,7 +1850,16 @@ const ActionmenuUI = {
       document.querySelector(
          '.actionmenu .actionmenu-wrapper > #actionmenu-font-decrease-btn'
       ).addEventListener('click', this.handleDecreaseFontSize_click);
+
+
+      this.actionmenuElement = document.querySelector('body > .actionmenu');
+      this.actionmenuElement.addEventListener('mouseenter', this.handleMouseEnter);
+      this.actionmenuElement.addEventListener('mouseleave', this.handleMouseLeave);
       this.isReady = true;
+
+
+      this.expandTimer = new Timer(500, 'ms');
+      ActionbarUI.onMouseEnter(this.triggerExpand);
    },
 
    /**handle changed of the selected value
@@ -1862,9 +1944,21 @@ const ActionmenuUI = {
       EditorUI.global.encoding = newValueID.replace('EC-', '');
    },
 
+   handleMouseEnter(){
+      if(!this.isExplanded||!this.expandTimer) return;
+      this.expandTimer.stop();
+      this.expandTimer.reset();
+      this.isMouseHover = true;
+   },
+
+   handleMouseLeave(){
+      if(!this.isExplanded||!this.expandTimer) return;
+      this.isMouseHover = false;
+      this.triggerRetractWait();
+   },
+
 
    update(){
-      console.log(EditorUI.global);
       const fontID = fontToValueID(EditorUI.global.fontFamily);
       const letterSpcID = this.valueMap.getValueIDFromValue(
          EditorUI.global.letterSpacing.slice(0, -2),
@@ -1921,6 +2015,8 @@ const ActionmenuUI = {
          select.enable = true;
       }
 
+      this.Common.fontFamilySelect.selectedInputElement.title = 'Select Font Family';
+
       select.clearOptions();
       for(const fontName of fontList){
          const v_id = fontToValueID(fontName);
@@ -1935,11 +2031,63 @@ const ActionmenuUI = {
       }
 
       select.update();
+   },
+
+
+
+   triggerExpand(){
+      this.actionmenuElement.hidden = false;
+      this.isExplanded = true;
+   },
+
+
+   triggerRetractWait(){
+      if(!this.isExplanded) return;
+
+      this.expandTimer.start();
+      this.expandTimer.onceEnd(this.triggerRetract);
+   },
+
+
+   triggerRetract(){
+      this.actionmenuElement.hidden = true;
+      this.expandTimer.reset();
+      this.isExplanded = false;
+      this.isMouseHover = false;
    }
 }
 
 
 
+
+const ActionbarUI = {
+   /**
+    * @type {HTMLDivElement}
+    */
+   wrapperElement: null,
+   onMouseEnterCallback: null,
+
+   init(){
+      this.wrapperElement = document.querySelector('.menubar > .actionbar');
+      this.wrapperElement.addEventListener(
+         'mouseenter', this.handleWrapper_mouseenter
+      );
+   },
+
+   /**
+    * @param {Function} callback
+    */
+   onMouseEnter(callback){
+      this.onMouseEnterCallback = callback;
+   },
+
+   /**
+    * @param {MouseEvent} ev
+    */
+   handleWrapper_mouseenter(ev){
+      if(this.onMouseEnterCallback) this.onMouseEnterCallback();
+   }
+}
 
 
 
@@ -1987,6 +2135,7 @@ function init(){
 
    FindpanelUI.setupEventListeners();
    ActionmenuUI.init();
+   ActionbarUI.init();
 
 
    // KeyboardEvents
@@ -2053,11 +2202,12 @@ window.coreAPI.handleUpdateEditorEffects((eEvent, id, newEffects) => {
 });
 
 window.coreAPI.handleUpdateAvaliableFontlist((eEvent, fontList) => {
-   ActionmenuUI.updateFontlist(fontList);
+   setZeroTimeout(
+      () => ActionmenuUI.updateFontlist(fontList), 0
+   );
 });
 
 window.coreAPI.handleUpdateAppState((eEvent, state) => {
-   console.log(state);
    EditorUI.global.fontFamily = state.editor.fontFamily;
    EditorUI.global.fontSize = state.editor.fontSize + 'px';
    EditorUI.global.encoding = state.editor.encoding;
@@ -2081,8 +2231,34 @@ window.coreAPI.handleUpdateAppState((eEvent, state) => {
 
          clearInterval(actionmenuUIWaitInterval);
          actionmenuUIWaitInterval = null;
-      }, 20);
+      }, 10);
    }
+});
+
+
+window.coreAPI.handleFetchUIState(() => {
+   const fontSize = EditorUI.global.fontSize? parseInt(
+      EditorUI.global.fontSize.slice(0, EditorUI.global.fontSize.length - 2)
+   ): null;
+
+   const letterSpacing = EditorUI.global.letterSpacing? parseInt(
+      EditorUI.global.letterSpacing.slice(0, EditorUI.global.letterSpacing.length - 2)
+   ): null;
+
+   const lineSpacing = EditorUI.global.lineSpacing? parseInt(
+      EditorUI.global.lineSpacing.slice(0, EditorUI.global.lineSpacing.length - 2)
+   ): null;
+
+
+   window.coreAPI.sendRespondUIState({
+      editor: {
+         encoding: EditorUI.global.encoding,
+         fontFamily: EditorUI.global.fontFamily,
+         fontSize,
+         letterSpacing,
+         lineSpacing
+      }
+   });
 });
 
 

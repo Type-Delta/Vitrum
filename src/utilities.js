@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const { ncc, redexOf } = require('./helper/Tools.js');
+const { ncc, redexOf, sleep } = require('./helper/Tools.js');
 const { VERSION, logs } = require('./Global.js');
 const {
    MIN_LOG_CONTENT,
@@ -284,49 +284,57 @@ const Utilities = {
     * write logs from cache to log folder
     */
    async writeLog_file(coreLogs = logs){
-      if(coreLogs.content == null||coreLogs.content.length < MIN_LOG_CONTENT) return;
+      return new Promise((resolve, reject) => {
+         sleep(1000 * 10); // TEST
 
-      const D = new Date();
-      if(
-         coreLogs.to?.startsWith(
-            `${D.getFullYear()}-${D.getMonth()+1}-${D.getDate()}_${D.getHours()}:${D.getMinutes()}`
-         )
-      ) return;
+         if(coreLogs.content == null||coreLogs.content.length < MIN_LOG_CONTENT) resolve();
 
-      let currentLogFileName = `${coreLogs.from.split(':')[0]}`
-      const logFileList = fs.readdirSync(LOG_FOLDER_PATH).filter(file => file.endsWith('.log'));
-      let logFileMStimelist = [];
-      let sameLogCount = 0;
-      let logFileCount = 0;
-      for(const logFile of logFileList){
-         logFileMStimelist.push(parseInt(logFile.split('#')[1].replace('.log', '')));
-         logFileCount++;
-         if(logFile.startsWith(currentLogFileName)) sameLogCount++;
-      }
+         const D = new Date();
+         if(
+            coreLogs.to?.startsWith(
+               `${D.getFullYear()}-${D.getMonth()+1}-${D.getDate()}_${D.getHours()}:${D.getMinutes()}`
+            )
+         ) resolve();
 
-      if(logFileCount >= MAX_LOG_FILE){
-         logFileMStimelist.sort((a, b) => a - b);
-         console.log(logFileMStimelist[0]);
-
+         let currentLogFileName = `${coreLogs.from.split(':')[0]}`;
+         const logFileList = fs.readdirSync(LOG_FOLDER_PATH).filter(file => file.endsWith('.log'));
+         let logFileMStimelist = [];
+         let sameLogCount = 0;
+         let logFileCount = 0;
          for(const logFile of logFileList){
-            if(logFile.includes(logFileMStimelist[0].toString())){
-                  fs.rmSync(LOG_FOLDER_PATH.concat(logFile));
+            logFileMStimelist.push(parseInt(logFile.split('#')[1].replace('.log', '')));
+            logFileCount++;
+            if(logFile.startsWith(currentLogFileName)) sameLogCount++;
+         }
+
+         if(logFileCount >= MAX_LOG_FILE){
+            logFileMStimelist.sort((a, b) => a - b);
+
+            for(const logFile of logFileList){
+               if(logFile.includes(logFileMStimelist[0].toString())){
+                     fs.rmSync(LOG_FOLDER_PATH.concat(logFile));
+               }
             }
          }
-      }
 
-      coreLogs.to = `${D.getFullYear()}-${D.getMonth()+1}-${D.getDate()}_${D.getHours()}:${D.getMinutes()}:${D.getSeconds()}`;
+         coreLogs.to = `${D.getFullYear()}-${D.getMonth()+1}-${D.getDate()}_${D.getHours()}:${D.getMinutes()}:${D.getSeconds()}`;
 
-      let headers = `___________________________________
+         let headers = `___________________________________
    Session from: ${coreLogs.from}
    To: ${coreLogs.to}
    Version: ${VERSION}
    ___________________________________\n\n`;
 
-      currentLogFileName = currentLogFileName.concat(`_id${sameLogCount + 1}_#${D.getTime()}.log`);
-
-      fs.writeFileSync(LOG_FOLDER_PATH.concat(currentLogFileName), headers.concat(coreLogs.content));
-      coreLogs.content = null;
+         currentLogFileName = currentLogFileName.concat(`_id${sameLogCount + 1}_#${D.getTime()}.log`);
+         fs.writeFile(
+            LOG_FOLDER_PATH.concat(currentLogFileName),
+            headers.concat(coreLogs.content),
+            { encoding: 'utf-8' },
+            () => {
+               coreLogs.content = null;
+               resolve();
+         });
+      });
    },
 
 

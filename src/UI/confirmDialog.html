@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html>
-   <header>
+   <head>
       <meta charset="UTF-8">
       <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
       <link rel="stylesheet" href="styles/root.css">
       <link rel="stylesheet" href="styles/confirmDialog.css">
+      <script defer src="handler/confirmDialog.js"></script>
       <title>Vitrum.confirmDialog</title>
-   </header>
+   </head>
 
    <body>
       <div class="border">
@@ -45,6 +46,5 @@
          </div>
       </div>
       <!-- <script defer src="../src/helper/Tools.js"></script> -->
-      <script defer src="../src/dialog/confirmDialog.js"></script>
    </body>
 </html>

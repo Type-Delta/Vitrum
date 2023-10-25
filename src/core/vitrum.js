@@ -2,9 +2,9 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const { readFileSync, renameSync } = require('fs');
 const path = require('node:path');
 const FontList = require('font-list');
-const { pass } = require('./helper/Tools.js');
+const { pass } = require('../helper/Tools.js');
 
-const { writeLog_file, sendConsoleOutput } = require('./utilities.js');
+const { writeLog_file, sendConsoleOutput } = require('../utilities.js');
 const { EditorManager, mergeEdits } = require('./editor.js');
 const { writeState, State, loadState } = require('./state.js');
 let {
@@ -12,19 +12,32 @@ let {
    LAST_OPENFILE_PATH,
    DEFAULT_ENCODING,
    WRITE_LOG_FILE
-} = require('./config.js');
+} = require('../config.js');
 let {
    currentState
-} = require('./Global.js');
+} = require('../Global.js');
 
 // import { FindOption } from './helper/Definitions'; // for Definitions only
 const FR = require('./module/find.js').default;
 
+
+
+
+
+
+
+// Consts
+const MAINWINDOW_HTML_PATH = './src/UI/mainWindow.html';
+const CONFIRMDIALOG_HTML_PATH = './src/UI/confirmDialog.html';
+const MESSAGEDIALOG_HTML_PATH = './src/UI/messageDialog.html';
 const FileFilter = [
    { name: 'Plain Text', extensions: ['txt'] },
    { name: 'Mark Down', extensions: ['md'] },
    { name: 'All Files', extensions: ['*'] }
 ];
+
+
+
 
 
 
@@ -36,7 +49,6 @@ const FileFilter = [
 let AvaliableFontsFamilies = null;
 /**@type {BrowserWindow} */
 let mainWindow;
-let aleadySendStateToWindow = false;
 let mainWindowReady = false;
 
 
@@ -51,9 +63,18 @@ let mainWindowReady = false;
 
 
 
-app.whenReady().then(() => {
-
+app.whenReady().then(async () => {
    // Setup stuff
+   try{
+      currentState = await loadState(STATE_PATH);
+   }catch(err){
+      sendConsoleOutput(
+         '#mdo9d | failed to load state file\nError message: ' + err.stack,
+         'warn', 'Vitrum'
+      );
+      currentState = new State();
+   }
+
    mainWindow = createMainWindow();
    app.on('activate', () => {
       if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
@@ -61,19 +82,7 @@ app.whenReady().then(() => {
 
    Vitrum.loadAvaliableFontsList();
 
-   loadState(STATE_PATH).then(state => {
-      currentState = state;
 
-      // incase loadState() took longer to load than mainWindow
-      if(!aleadySendStateToWindow&&mainWindowReady)
-         mainWindow.webContents.send('update-state', currentState);
-   }).catch(err => {
-      sendConsoleOutput(
-         '#mdo9d | failed to load state file\nError message: ' + err.stack,
-         'warn', 'Vitrum'
-      );
-      currentState = new State();
-   });
 
 
 
@@ -208,8 +217,8 @@ app.on('window-all-closed', () => {
  */
 const createMainWindow = () => {
    let win = new BrowserWindow({
-      width: 900,
-      height: 600,
+      width: 800,
+      height: 540,
       frame: false,
       title: 'Vitrum',
 
@@ -222,8 +231,7 @@ const createMainWindow = () => {
       }
    });
    win.openDevTools();
-   win.loadFile('./UI/index.html');
-   // require('@electron/remote/main').enable(win.webContents);
+   win.loadFile(MAINWINDOW_HTML_PATH);
    return win;
 }
 
@@ -234,13 +242,21 @@ const Vitrum = {
    /**close the application
     */
    async close(){
-      const state = new State(
-         mainWindow.getSize(),
-         EditorManager.getAllEditors()
-      );
-      writeState(STATE_PATH, state);
+      let write_state, write_log;
+      if(currentState){
+         const uiState = await this.fetchUIState();
 
-      if(WRITE_LOG_FILE) await writeLog_file();
+         currentState.windowSize = mainWindow.getSize();
+         currentState.openedEditors = EditorManager.getAllEditors();
+         currentState.editor = uiState.editor;
+         write_state = writeState(STATE_PATH, currentState);
+      }
+
+      if(WRITE_LOG_FILE){
+         write_log = writeLog_file();
+      }
+
+      await Promise.all([write_state, write_log]);
       app.quit();
    },
 
@@ -302,7 +318,7 @@ const Vitrum = {
             }
          });
 
-         await dialogWin.loadFile('./UI/confirmDialog.html');
+         await dialogWin.loadFile(CONFIRMDIALOG_HTML_PATH);
 
          dialogWin.webContents.send('confirm-dialog_setText', title, description);
 
@@ -344,7 +360,7 @@ const Vitrum = {
             }
          });
 
-         await dialogWin.loadFile('./UI/messageDialog.html');
+         await dialogWin.loadFile(MESSAGEDIALOG_HTML_PATH);
 
          dialogWin.webContents.send('message-dialog_setText', title, description);
 
@@ -384,7 +400,10 @@ const Vitrum = {
    async savedFile(id, saveAs = false){
       const editor = EditorManager.getEditorWithID(id);
       if(!editor){
-         process?.emitWarning('#dvsl2 | can\'t find Editor with id \'' + id + "'");
+         sendConsoleOutput(
+            '#dvsl2 | can\'t find Editor with id \'' + id + "'",
+            'warn', 'Vitrum'
+         );
          return;
       }
 
@@ -459,7 +478,10 @@ const Vitrum = {
    renameEditorFile(id, newName){
       const editor = EditorManager.getEditorWithID(id);
       if(!editor){
-         process?.emitWarning('#adwl2 | can\'t find Editor with id \'' + id + "'");
+         sendConsoleOutput(
+            '#adwl2 | can\'t find Editor with id \'' + id + "'",
+            'warn', 'Vitrum'
+         );
          return;
       }
 
@@ -524,11 +546,12 @@ const Vitrum = {
          {
             const editor = EditorManager.getEditorWithID(activeEditorID);
             if(!editor){
-               process?.emitWarning('#adql8 | can\'t find Editor with id \'' + activeEditorID + "'");
+               sendConsoleOutput(
+                  '#adql8 | can\'t find Editor with id \'' + activeEditorID + "'",
+                  'warn', 'Vitrum'
+               );
                return;
             }
-
-            // console.log('replace| ', editor.content, findOption, FR.selectedIndex);
 
             editor.updateHistory();
             if(editor.history.length >= 2)
@@ -547,7 +570,10 @@ const Vitrum = {
       function updateEffects(){
          const editor = EditorManager.getEditorWithID(activeEditorID);
          if(!editor){
-            process?.emitWarning('#adiw1 | can\'t find Editor with id \'' + activeEditorID + "'");
+            sendConsoleOutput(
+               '#adiw1 | can\'t find Editor with id \'' + activeEditorID + "'",
+               'warn', 'Vitrum'
+            );
             return;
          }
          // console.log(editor.content, findOption);
@@ -588,6 +614,36 @@ const Vitrum = {
          }
       }
    },
+
+
+   /**
+    * @typedef {Object} UIState
+    * @property {{
+    *    fontFamily: string,
+    *    fontSize: number,
+    *    encoding: string,
+    *    lineSpacing: number,
+    *    letterSpacing: number
+    * }} editor - editor settings
+    */
+   /**fetch editor settings and UI layout from the mainWorld
+    * @returns {Promise<UIState>}
+    */
+   async fetchUIState(){
+      return new Promise((resolve, reject) => {
+         mainWindow.webContents.send('fetch-ui-state_fetch');
+         ipcMain.once('fetch-ui-state_respond', handleUIStateRes);
+         const timeout = setTimeout(() => {
+            resolve(null);
+         }, 1000);
+
+         function handleUIStateRes(eEvent, state){
+            clearTimeout(timeout);
+            resolve(state);
+         }
+      });
+   },
+
 
    /**load installed and avaliable font families
     * and send update signal to Every components that depends on it

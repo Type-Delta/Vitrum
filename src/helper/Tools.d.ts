@@ -1,3 +1,9 @@
+declare class TFIDFValues {
+    constructor(TF: any);
+    TF: any;
+    IDF: any;
+    TF_IDF: any;
+}
 /**for `Tools.getMatchAllResult()`
  */
 declare class MatchResult {
@@ -150,11 +156,7 @@ export declare namespace DataScienceKit {
      * @returns {Map<string, TFIDFValues>[]}
      * array contains TFIDFValues for every words in every Document
      */
-    function TFIDF_of(documents: string[][]): Map<string, {
-        TF: any;
-        IDF: any;
-        TF_IDF: any;
-    }>[];
+    function TFIDF_of(documents: string[][]): Map<string, TFIDFValues>[];
 }
 /**return digit in the given index as Number
  * (index can be negative)
@@ -382,7 +384,7 @@ export declare function proximate(X: number, originValue: number, maxOffset: num
  * @returns {Number} position of the string that match the searcher, if none, `-1` would return
  */
 export declare function redexOf(string: string, searcher: string | RegExp, position?: number): number;
-/**Search Arrays of string for the top best match from the search query (like Google search w/o Linked List search),
+/**Search Array of string for the top best match from the search query (like Google search w/o Linked List search),
  * **this function will also ranked the best match result**
  * @param {string[]}stringArr an Array of string to search from
  * @param {string}query the Search query
@@ -393,8 +395,8 @@ export declare function redexOf(string: string, searcher: string | RegExp, posit
  * **`maxResult`**: define the max result from the Top search result,
  * **`TF_IDFMaps`**: TF_IDF Maps for every string in the `stringArr` or
  * string "builtin" to use builtin function to automaticly determine the TF_IDF values
- * (**Note that:** calculate TF_IDF value can be **VERY resources INTENSIVE** it's best
- * to precalculate and keep them outside)
+ * (**Note that:** calculating TF_IDF value can be **VERY resources INTENSIVE** it's best
+ * to precalculate them outside)
  * @example
  * const fonts = ["Kristen ITC", "Juice ITC"..."Symbol", "Kristen ITC"];
  * const fontTFIDF = TFIDF_of(
@@ -462,9 +464,9 @@ export declare namespace WebKit {
     /**callback when user clicked outside the given element
      * @param {HTMLElement} element
      * @param {Function} callback
-     * @returns {Listener} use this to clear event listener
+     * @returns {Function} use this to clear event listener
      */
-    export function onClickOutside(element: HTMLElement, callback: Function): Listener;
+    export function onClickOutside(element: HTMLElement, callback: Function): Function;
     /**callback when user clicked outside the given element
      * **Similar to `onClickOutside()` but only invoke ONCE!**
      * @param {HTMLElement} element
@@ -478,16 +480,16 @@ export declare namespace WebKit {
      *    // . . .
      *    clearClickOutside(listener);
      * }
-     * @param {Listener} listener
+     * @param {Function} listener
      */
-    export function clearClickOutside(listener: Listener): void;
+    export function clearClickOutside(listener: Function): void;
     /**make the element automatically hide its self when
      * user click outside this element
      * @param {HTMLElement} element
      * @param {string|HTMLElement} elemToHide
-     * @returns {Listener} use this to clear event listener
+     * @returns {Function} use this to clear event listener
      */
-    export function hideOnClickOutside(element: HTMLElement, elemToHide?: string | HTMLElement): Listener;
+    export function hideOnClickOutside(element: HTMLElement, elemToHide?: string | HTMLElement): Function;
     /**set all selected elements that matched the `specifier` as visible
      * and hide others the that doesn't match
      * @param {string} selector querySelector for 'selected elements'
@@ -518,5 +520,28 @@ export declare namespace WebKit {
      * @param {HTMLTextAreaElement} _this element that cause this `KeyboardEvent`
      */
     export function handleTextarea_TabKeyPressed(event: KeyboardEvent, _this: HTMLTextAreaElement): void;
+    /**Function used to determine the order of the elements.
+     * It is expected to return a negative value
+     * if the first argument is less than the second argument,
+     * zero if they're equal, and a positive value otherwise.
+     * If omitted, the elements are sorted in ascending, ASCII character order,
+     * judging from the `textContent` value.
+     * @callback CompareFunction
+     * @param {HTMLElement} elemA
+     * @param {HTMLElement} elemB
+     * @returns {number}
+     */
+    /**Sort elements inplace, this function does not modify the given Array/Collection
+    * but the actual orders of those elements in the `document`
+    * @param {HTMLCollection|HTMLElement[]} elements an array of Element or HTMLCollection
+    * @param {CompareFunction} compareFn
+    * Function used to determine the order of the elements.
+    * It is expected to return a negative value
+    * if the first argument is less than the second argument,
+    * zero if they're equal, and a positive value otherwise.
+    * If omitted, the elements are sorted in ascending, ASCII character order,
+    * judging from the `textContent` value.
+    */
+    export function sortElements(elements: HTMLCollection | HTMLElement[], compareFn?: (elemA: HTMLElement, elemB: HTMLElement) => number): void;
 }
 export {};
