@@ -37,6 +37,13 @@ contextBridge.exposeInMainWorld('coreAPI', {
 
    fetchAvaliableFontlist: () => ipcRenderer.send('fetch-avaliable-fontlist'),
 
+
+   sendUserDragWindow: (mouseX, mouseY) => ipcRenderer.send('user-drag-window', mouseX, mouseY),
+   sendUserDragWindowStart: (x, y) => ipcRenderer.send('user-drag-window-start', x, y),
+   sendUserDragWindowStop: () => ipcRenderer.send('user-drag-window-stop'),
+
+
+
    askCore: async (question, ...args) => {
       return new Promise((resolve, reject) => {
          ipcRenderer.send('ask', question, ...args);

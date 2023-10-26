@@ -13,7 +13,7 @@ const {
    sendConsoleOutput
 } = window.coreAPI;
 
-const { WebKit } = to;
+const { WebKit, Timer } = to;
 const {
    KeyBind,
    Keyboard,
@@ -488,93 +488,6 @@ class CustomSelect {
 
 
 
-class Timer {
-   /**time remaining in the clock
-    * @type {number}
-    */
-   time;
-   /**how often should timer do the counting
-    * @type {'ms','s','m'}
-    */
-   resolution;
-   isRunning = false;
-   maxTime;
-
-   #res;
-   #interval;
-   #lastCheck = 0;
-   #onceEndCallback;
-   #waitCallback;
-   /**how often should timer do the counting
-    * @param {number} time start time
-    * @param {'ms','s','m'} resolution
-    */
-   constructor(time, resolution = 'ms'){
-      this.maxTime = this.time = time;
-      this.resolution = resolution;
-
-      switch(resolution){
-         case 'ms':
-            this.#res = 1;
-            break;
-         case 's':
-            this.#res = 1000;
-            break;
-         case 'm':
-            this.#res = 1e3 * 60;
-            break;
-      }
-   }
-
-   start(){
-      if(this.isRunning||this.time <= 0) return;
-      this.isRunning = true;
-      this.#lastCheck = Date.now();
-      this.#interval = setInterval(
-         this.#checkTime, this.#res == 1? 4: this.#res / 100
-      );
-   }
-
-   stop(){
-      if(!this.isRunning) return;
-      clearInterval(this.#interval);
-      this.isRunning = false;
-   }
-
-   reset(){
-      this.time = this.maxTime;
-   }
-
-   async wait(){
-      if(!this.isRunning) return;
-
-      return new Promise((resolve, reject) => {
-         this.#waitCallback = () => {
-            this.#waitCallback = null;
-            resolve();
-         }
-      });
-   }
-
-   onceEnd(callback){
-      this.#onceEndCallback = callback;
-   }
-
-   #checkTime = () => {
-      const delta = (Date.now() - this.#lastCheck) / this.#res;
-      this.time -= delta;
-      if(this.time > 0) return;
-
-      this.stop();
-      this.time = 0;
-      if(this.#onceEndCallback){
-         this.#onceEndCallback();
-         this.#onceEndCallback = null;
-      }
-      if(this.#waitCallback) this.#waitCallback();
-   }
-}
-
 
 
 
@@ -962,24 +875,24 @@ const EditorUI = {
     * @type {Map<string, EditorEffect[]>}
     */
    EffectBase: new Map(),
-   // global: {
-   //    fontSize: null,
-   //    lineSpacing: null,
-   //    letterSpacing: null,
-   //    useLineWrap: null,
-   //    encoding: null,
-   //    fontFamily: null
-   // },
    global: {
-      fontSize: '16px',
-      lineSpacing: '2ch',
-      letterSpacing: '0ch',
-      useLineWrap: 'pre-line',
-      /**@type {string} */
+      fontSize: null,
+      lineSpacing: null,
+      letterSpacing: null,
+      useLineWrap: null,
       encoding: null,
-      /**@type {string} */
       fontFamily: null
    },
+   // global: {
+   //    fontSize: '16px',
+   //    lineSpacing: '2ch',
+   //    letterSpacing: '0ch',
+   //    useLineWrap: 'pre-line',
+   //    /**@type {string} */
+   //    encoding: null,
+   //    /**@type {string} */
+   //    fontFamily: null
+   // },
 
 
 
@@ -1029,7 +942,7 @@ const EditorUI = {
          return;
       }
 
-      let content = editor.textAreaElement.value + ''; // clone the content
+      let content = editor.textAreaElement.value + '';
 
 
       if(effects?.length){
@@ -1851,14 +1764,14 @@ const ActionmenuUI = {
          '.actionmenu .actionmenu-wrapper > #actionmenu-font-decrease-btn'
       ).addEventListener('click', this.handleDecreaseFontSize_click);
 
-
       this.actionmenuElement = document.querySelector('body > .actionmenu');
       this.actionmenuElement.addEventListener('mouseenter', this.handleMouseEnter);
       this.actionmenuElement.addEventListener('mouseleave', this.handleMouseLeave);
+      this.actionmenuElement.hidden = false;
       this.isReady = true;
 
 
-      this.expandTimer = new Timer(1500, 'ms');
+      this.expandTimer = new Timer(500, 'ms');
       ActionbarUI.onMouseEnter(this.triggerExpand);
       ActionbarUI.onMouseLeave(this.triggerRetractWait);
    },
@@ -1946,15 +1859,12 @@ const ActionmenuUI = {
    },
 
    handleMouseEnter(){
-      // console.log(`menu enter`);
       if(!ActionmenuUI.isExplanded||!ActionmenuUI.expandTimer) return;
-      ActionmenuUI.expandTimer.stop();
-      ActionmenuUI.expandTimer.reset();
+      ActionmenuUI.triggerExpand();
       ActionmenuUI.isMouseHover = true;
    },
 
    handleMouseLeave(){
-      // console.log(`menu out`);
       if(!ActionmenuUI.isExplanded||!ActionmenuUI.expandTimer) return;
       ActionmenuUI.isMouseHover = false;
       ActionmenuUI.triggerRetractWait();
@@ -1980,11 +1890,13 @@ const ActionmenuUI = {
       }
 
       if(letterSpcID&&letterSpcID != this.Common.letterSpacingSelect.selectedValue){
+         console.log(`letter update`);
          this.Common.letterSpacingSelect.setSelectedValue(letterSpcID);
          this.handleLetterSpacing_chnge(letterSpcID, false);
       }
 
       if(lineSpcID&&lineSpcID != this.Common.lineSpacingSelect.selectedValue){
+         console.log(`letter update`);
          this.Common.lineSpacingSelect.setSelectedValue(lineSpcID);
          this.handleLineSpacing_change(lineSpcID, false);
       }
@@ -2041,7 +1953,13 @@ const ActionmenuUI = {
    triggerExpand(){
       // console.log(`expand`);
       ActionmenuUI.actionmenuElement.hidden = false;
+      gsap.to('body > .actionmenu', {
+         y: 0, duration: .22
+      });
       ActionmenuUI.isExplanded = true;
+      if(ActionmenuUI.expandTimer.isRunning){
+         ActionmenuUI.expandTimer.stop().reset();
+      }
    },
 
 
@@ -2049,14 +1967,20 @@ const ActionmenuUI = {
       // console.log(`wait`);
       if(!ActionmenuUI.isExplanded) return;
 
-      ActionmenuUI.expandTimer.start();
-      ActionmenuUI.expandTimer.onceEnd(ActionmenuUI.triggerRetract);
+      ActionmenuUI.expandTimer.start()
+         .onceEnd(ActionmenuUI.triggerRetract);
    },
 
 
    triggerRetract(){
       // console.log(`retract`);
-      ActionmenuUI.actionmenuElement.hidden = true;
+      const { height } = ActionmenuUI.actionmenuElement.getBoundingClientRect();
+      gsap.to('body > .actionmenu', {
+         y: -height, duration: .2,
+         onComplete() {
+            ActionmenuUI.actionmenuElement.hidden = true;
+         }
+      });
       ActionmenuUI.expandTimer.reset();
       ActionmenuUI.isExplanded = false;
       ActionmenuUI.isMouseHover = false;
@@ -2078,12 +2002,17 @@ const ActionbarUI = {
    wrapperElement: null,
    onMouseEnterCallback: null,
    onMouseLeaveCallback: null,
-   mouseInside: false,
+
+
 
    init(){
       this.wrapperElement = document.querySelector('.menubar > .actionbar');
-      document.querySelector('body > .menubar').addEventListener(
-         'mousemove', this.handleMenubar_mousemove
+
+      this.wrapperElement.addEventListener('mouseenter',
+         this.handleMouseEnter
+      );
+      this.wrapperElement.addEventListener('mouseleave',
+         this.handleMouseLeave
       );
    },
 
@@ -2098,29 +2027,50 @@ const ActionbarUI = {
       this.onMouseLeaveCallback = callback;
    },
 
-   /**
-    * @param {MouseEvent} ev
-    */
-   handleMenubar_mousemove: (ev) => {
-      const barRect = ActionbarUI.wrapperElement.getBoundingClientRect();
-      console.log(ev.screenX, ev.screenY, isPosInside(ev.screenX, ev.screenY, barRect));
-      if(!isPosInside(ev.screenX, ev.screenY, barRect)&&ActionbarUI.mouseInside){
-         // console.log(`bar leave`);
-         ActionbarUI.mouseInside = false;
-         if(ActionbarUI.onMouseLeaveCallback)
-            ActionbarUI.onMouseLeaveCallback();
-         return;
-      }
-
-      if(ActionbarUI.mouseInside) return;
-
-      // console.log(`bar enter`);
+   handleMouseEnter: () => {
       if(ActionbarUI.onMouseEnterCallback) ActionbarUI.onMouseEnterCallback();
-      ActionbarUI.mouseInside = true;
+   },
+
+
+   handleMouseLeave: () => {
+      if(ActionbarUI.onMouseLeaveCallback) ActionbarUI.onMouseLeaveCallback();
    }
 }
 
 
+
+
+/**because using -webkit-app-region would disable all element's
+ * MouseEvent, we have to manually make it draggable
+ * https://github.com/electron/electron/issues/1354
+ */
+const DraggableWindow = {
+   moveWindowInterval: null,
+
+   init(){
+      // element that will be the draggable part of window
+      document.querySelector('.menubar > .actionbar')
+         .addEventListener('mousedown', this.onMouseDown);
+   },
+
+   onMouseDown(e) {
+      document.addEventListener('mouseup', DraggableWindow.onMouseUp);
+      window.coreAPI.sendUserDragWindowStart(
+         e.clientX,
+         e.clientY
+      );
+      DraggableWindow.moveWindowInterval = setInterval(DraggableWindow.moveWindow, 8);
+   },
+
+   onMouseUp(e) {
+      document.removeEventListener('mouseup', DraggableWindow.onMouseUp);
+      clearInterval(DraggableWindow.moveWindowInterval);
+   },
+
+   moveWindow() {
+      window.coreAPI.sendUserDragWindow();
+   },
+}
 
 
 
@@ -2167,6 +2117,7 @@ function init(){
    FindpanelUI.setupEventListeners();
    ActionbarUI.init();
    ActionmenuUI.init();
+   DraggableWindow.init();
 
 
    // KeyboardEvents
@@ -2267,11 +2218,11 @@ window.coreAPI.handleFetchUIState(() => {
       EditorUI.global.fontSize.slice(0, EditorUI.global.fontSize.length - 2)
    ): null;
 
-   const letterSpacing = EditorUI.global.letterSpacing? parseInt(
+   const letterSpacing = EditorUI.global.letterSpacing? parseFloat(
       EditorUI.global.letterSpacing.slice(0, EditorUI.global.letterSpacing.length - 2)
    ): null;
 
-   const lineSpacing = EditorUI.global.lineSpacing? parseInt(
+   const lineSpacing = EditorUI.global.lineSpacing? parseFloat(
       EditorUI.global.lineSpacing.slice(0, EditorUI.global.lineSpacing.length - 2)
    ): null;
 

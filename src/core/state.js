@@ -20,7 +20,8 @@ const _State = {
          fontSize: 16,
          encoding: 'utf-8',
          lineSpacing: 2.75,
-         letterSpacing: 0.035
+         letterSpacing: 0.035,
+         useLineWrap: false
       }
       /**
        * @type {Map<string, Editor>}

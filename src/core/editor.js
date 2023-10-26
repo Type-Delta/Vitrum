@@ -366,7 +366,7 @@ const EditorManager = {
          editor.filePath = path;
          editor.readonly = readonly;
       }
-      editors.set(id, editor);
+      editors.set(editor.id, editor);
       editor.createUI();
       return editor;
    },

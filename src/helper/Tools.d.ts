@@ -64,6 +64,200 @@ export class SpawnMirror {
      */
     static createMirror(child: any): void;
 }
+export class Timer {
+    /**a very simple Countdown Timer
+     *
+     * **Note That**: the highest resolution this timer can do is 4ms
+     * because the minimum delay `setInterval()` can do is 4ms
+     *
+     * however, this can varies
+     * @param {number} time start time
+     * @param {'ms','s','m'} resolution
+     */
+    constructor(time: number, resolution?: string);
+    /**time remaining in the clock
+     * @type {number}
+     */
+    time: number;
+    /**this also control how often should timer do the checking
+     * @type {'ms','s','m'}
+     */
+    resolution: 'ms';
+    isRunning: boolean;
+    maxTime: number;
+    /**start the timer
+     *
+     * once `Timer.time` reach 0 will automatically stop
+     */
+    start(): {
+        /**time remaining in the clock
+         * @type {number}
+         */
+        time: number;
+        /**this also control how often should timer do the checking
+         * @type {'ms','s','m'}
+         */
+        resolution: 'ms';
+        isRunning: boolean;
+        maxTime: number;
+        "__#2@#res": number;
+        "__#2@#interval": any;
+        "__#2@#lastCheck": number;
+        "__#2@#onceEndCallback": any;
+        "__#2@#waitCallback": any;
+        start(): any;
+        /**stop and reset the Timer
+         */
+        stop(): any;
+        /**pause Timer
+         */
+        pause(): void;
+        reset(): any;
+        /**wait for Timer to end (finish counting)
+         * @returns {Promise<void>}
+         */
+        wait(): Promise<void>;
+        /**@callback OnceEndCallback
+         * @returns {void}
+         */
+        /**call a callback funtion once Timer finish counting
+         * @param {OnceEndCallback} callback
+         */
+        onceEnd(callback: () => void): any;
+        "__#2@#checkTime": () => void;
+    };
+    /**stop and reset the Timer
+     */
+    stop(): {
+        /**time remaining in the clock
+         * @type {number}
+         */
+        time: number;
+        /**this also control how often should timer do the checking
+         * @type {'ms','s','m'}
+         */
+        resolution: 'ms';
+        isRunning: boolean;
+        maxTime: number;
+        "__#2@#res": number;
+        "__#2@#interval": any;
+        "__#2@#lastCheck": number;
+        "__#2@#onceEndCallback": any;
+        "__#2@#waitCallback": any;
+        /**start the timer
+         *
+         * once `Timer.time` reach 0 will automatically stop
+         */
+        start(): any;
+        stop(): any;
+        /**pause Timer
+         */
+        pause(): void;
+        reset(): any;
+        /**wait for Timer to end (finish counting)
+         * @returns {Promise<void>}
+         */
+        wait(): Promise<void>;
+        /**@callback OnceEndCallback
+         * @returns {void}
+         */
+        /**call a callback funtion once Timer finish counting
+         * @param {OnceEndCallback} callback
+         */
+        onceEnd(callback: () => void): any;
+        "__#2@#checkTime": () => void;
+    };
+    /**pause Timer
+     */
+    pause(): void;
+    reset(): {
+        /**time remaining in the clock
+         * @type {number}
+         */
+        time: number;
+        /**this also control how often should timer do the checking
+         * @type {'ms','s','m'}
+         */
+        resolution: 'ms';
+        isRunning: boolean;
+        maxTime: number;
+        "__#2@#res": number;
+        "__#2@#interval": any;
+        "__#2@#lastCheck": number;
+        "__#2@#onceEndCallback": any;
+        "__#2@#waitCallback": any;
+        /**start the timer
+         *
+         * once `Timer.time` reach 0 will automatically stop
+         */
+        start(): any;
+        /**stop and reset the Timer
+         */
+        stop(): any;
+        /**pause Timer
+         */
+        pause(): void;
+        reset(): any;
+        /**wait for Timer to end (finish counting)
+         * @returns {Promise<void>}
+         */
+        wait(): Promise<void>;
+        /**@callback OnceEndCallback
+         * @returns {void}
+         */
+        /**call a callback funtion once Timer finish counting
+         * @param {OnceEndCallback} callback
+         */
+        onceEnd(callback: () => void): any;
+        "__#2@#checkTime": () => void;
+    };
+    /**wait for Timer to end (finish counting)
+     * @returns {Promise<void>}
+     */
+    wait(): Promise<void>;
+    /**@callback OnceEndCallback
+     * @returns {void}
+     */
+    /**call a callback funtion once Timer finish counting
+     * @param {OnceEndCallback} callback
+     */
+    onceEnd(callback: () => void): {
+        /**time remaining in the clock
+         * @type {number}
+         */
+        time: number;
+        /**this also control how often should timer do the checking
+         * @type {'ms','s','m'}
+         */
+        resolution: 'ms';
+        isRunning: boolean;
+        maxTime: number;
+        "__#2@#res": number;
+        "__#2@#interval": any;
+        "__#2@#lastCheck": number;
+        "__#2@#onceEndCallback": any;
+        "__#2@#waitCallback": any;
+        /**start the timer
+         *
+         * once `Timer.time` reach 0 will automatically stop
+         */
+        start(): any;
+        /**stop and reset the Timer
+         */
+        stop(): any;
+        /**pause Timer
+         */
+        pause(): void;
+        reset(): any;
+        /**wait for Timer to end (finish counting)
+         * @returns {Promise<void>}
+         */
+        wait(): Promise<void>;
+        onceEnd(callback: () => void): any;
+        "__#2@#checkTime": () => void;
+    };
+    #private;
+}
 declare class KeyBind {
     /**
      * @param {string} strKeyBind raw keybinding, each keys seperated by '+'

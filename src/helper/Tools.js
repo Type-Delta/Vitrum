@@ -1,7 +1,7 @@
 //////////// Tools ////////////
 /**tools for Javascript
- * @version 2.9.13
- * @changes add isPosInside()
+ * @version 2.10.13
+ * @changes added Timer
  */
 "use strict";
 
@@ -1714,6 +1714,130 @@ const Tools = {
          return String.fromCharCode(
             brack.charCodeAt(0) + (brack[0] == '('? 1 :2)
          );
+      }
+   },
+
+
+
+   Timer: class Timer {
+      /**time remaining in the clock
+       * @type {number}
+       */
+      time;
+      /**this also control how often should timer do the checking
+       * @type {'ms','s','m'}
+       */
+      resolution;
+      isRunning = false;
+      maxTime;
+
+      #res;
+      #interval;
+      #lastCheck = 0;
+      #onceEndCallback;
+      #waitCallback;
+      /**a very simple Countdown Timer
+       *
+       * **Note That**: the highest resolution this timer can do is 4ms
+       * because the minimum delay `setInterval()` can do is 4ms
+       *
+       * however, this can varies
+       * @param {number} time start time
+       * @param {'ms','s','m'} resolution
+       */
+      constructor(time, resolution = 'ms'){
+         this.maxTime = this.time = time;
+         this.resolution = resolution;
+
+         switch(resolution){
+            case 'ms':
+               this.#res = 1;
+               break;
+            case 's':
+               this.#res = 1000;
+               break;
+            case 'm':
+               this.#res = 1e3 * 60;
+               break;
+         }
+      }
+
+      /**start the timer
+       *
+       * once `Timer.time` reach 0 will automatically stop
+       */
+      start(){
+         if(this.isRunning||this.time <= 0) return;
+         this.isRunning = true;
+         this.#lastCheck = Date.now();
+         this.#interval = setInterval(
+            this.#checkTime, this.#res == 1? 4: this.#res / 100
+         );
+         return this;
+      }
+
+      /**stop and reset the Timer
+       */
+      stop(){
+         if(!this.isRunning) return;
+         clearInterval(this.#interval);
+         this.isRunning = false;
+         return this.reset();
+      }
+
+      /**pause Timer
+       */
+      pause(){
+         if(!this.isRunning) return;
+         clearInterval(this.#interval);
+         this.isRunning = false;
+         return;
+      }
+
+      reset(){
+         this.time = this.maxTime;
+         return this;
+      }
+
+      /**wait for Timer to end (finish counting)
+       * @returns {Promise<void>}
+       */
+      async wait(){
+         if(!this.isRunning) return;
+
+         return new Promise((resolve, reject) => {
+            this.#waitCallback = () => {
+               this.#waitCallback = null;
+               resolve();
+            }
+         });
+      }
+
+      /**@callback OnceEndCallback
+       * @returns {void}
+       */
+      /**call a callback funtion once Timer finish counting
+       * @param {OnceEndCallback} callback
+       */
+      onceEnd(callback){
+         this.#onceEndCallback = callback;
+         return this;
+      }
+
+      #checkTime = () => {
+         const now = Date.now();
+         const delta = (now - this.#lastCheck) / this.#res;
+         this.time -= delta;
+         this.#lastCheck = now;
+         if(this.time > 0) return;
+
+         this.stop();
+         this.time = 0;
+         if(this.#onceEndCallback){
+            this.#onceEndCallback();
+            this.#onceEndCallback = null;
+         }
+         if(this.#waitCallback) this.#waitCallback();
       }
    },
 

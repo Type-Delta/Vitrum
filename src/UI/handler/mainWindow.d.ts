@@ -120,6 +120,12 @@ export interface CoreAPI {
 
    fetchAvaliableFontlist: () => void
 
+
+   sendUserDragWindow: (mouseX: number, mouseY: number) => void,
+   sendUserDragWindowStart: () => void,
+   sendUserDragWindowStop: () => void,
+
+
    /**ask Questions to Core, this system works like
     * predicates where MainWorld ask something and the IsolatedWorld (Core)
     * will answer in **Yes** or **No** (true|false)

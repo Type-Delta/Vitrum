@@ -1,8 +1,9 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, screen } = require('electron');
 const { readFileSync, renameSync } = require('fs');
 const path = require('node:path');
 const FontList = require('font-list');
 const { pass } = require('../helper/Tools.js');
+
 
 const { writeLog_file, sendConsoleOutput } = require('../utilities.js');
 const { EditorManager, mergeEdits } = require('./editor.js');
@@ -47,9 +48,12 @@ const FileFilter = [
 let AvaliableFontsFamilies = null;
 /**@type {BrowserWindow} */
 let mainWindow;
-
-
-
+const DragWindow = {
+   dragStartWidth: null,
+   dragStartHeight: null,
+   mouseX: null,
+   mouseY: null,
+}
 
 
 
@@ -77,10 +81,9 @@ app.whenReady().then(async () => {
       if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
    });
 
-   Vitrum.loadAvaliableFontsList();
 
 
-
+   queueMicrotask(Vitrum.loadAvaliableFontsList);
 
 
 
@@ -154,6 +157,40 @@ app.whenReady().then(async () => {
    });
 
 
+
+   /**make window draggable by manualy moving them to the pointer position (relative)
+    *
+    * and for some reason, use setInterval() directly in mainprocess
+    * is laggy when compare to using it in renderprocess to then
+    * evoke 'user-drag-window' for every frame
+    */
+   ipcMain.on('user-drag-window', () => {
+      const { x, y } = screen.getCursorScreenPoint();
+
+      /**cann't use `mainWindow.setPosition()` because on Windows
+       * divice with scalling that's not 100%
+       * `mainWindow.setPosition()` will also change the window size.
+       * https://github.com/electron/electron/issues/9477
+       */
+      mainWindow.setBounds({
+         x: x - DragWindow.mouseX,
+         y: y - DragWindow.mouseY,
+         width: DragWindow.dragStartWidth,
+         height: DragWindow.dragStartHeight,
+      }, false);
+   });
+
+   ipcMain.on('user-drag-window-start', (eEvent, mouseX, mouseY) => {
+      [
+         DragWindow.dragStartWidth,
+         DragWindow.dragStartHeight
+      ] = mainWindow.getSize();
+
+      DragWindow.mouseX = mouseX;
+      DragWindow.mouseY = mouseY;
+   });
+
+
    // Editor stuff
    ipcMain.on('editor-content-changed', async (eEvent, id, content) => {
       EditorManager.updateEditorContent(id, content);
@@ -174,12 +211,8 @@ app.whenReady().then(async () => {
       mainWindow.webContents.send('editor-update-content', id, content);
    });
 
-
-
    // When mainWindow is loaded
    mainWindow.once('ready-to-show', () => {
-      mainWindowReady = true;
-
       if(currentState)
          mainWindow.webContents.send('update-state', currentState);
    })
