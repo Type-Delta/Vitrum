@@ -506,6 +506,13 @@ export declare namespace WebKit {
      * @param {string} selector querySelector
      */
     export function hideAllElements(selector: string): void;
+    /**check is the given coordinates is inside
+     * the element Rect or not
+     * @param {DOMRect} elemRect
+     * @param {number} x
+     * @param {number} y
+     */
+    export function isPosInside(x: number, y: number, elemRect: DOMRect): boolean;
     /**predicates whether any of the selected element can be seen
      * @param {string} selector querySelector
      */

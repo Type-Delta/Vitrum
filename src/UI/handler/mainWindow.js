@@ -4,7 +4,8 @@ try{
    // for Definitions only
    const to = require('../../helper/Tools.js');
    const { EditorEffect } = require('./mainWindow.Class.js');
-   const { setZeroTimeout } = require('../../../assets/code/setZeroTimeout.js')
+   const { setZeroTimeout } = require('../../../assets/code/setZeroTimeout.js');
+   const { gsap } = require('gsap');
 }catch{};
 
 
@@ -25,7 +26,8 @@ const {
    hideOnClickOutside,
    hideOtherElements,
    handleTextarea_TabKeyPressed,
-   sortElements
+   sortElements,
+   isPosInside
 } = WebKit;
 
 
@@ -312,6 +314,20 @@ class CustomSelect {
       return null;
    }
 
+   closeDropdown(){
+      if(!this.isExpanded()) return;
+
+      this.wrapperElement.classList.remove("active");
+      if(this.showSelectedValue&&this.enable){
+         if(this.#selectedLabel)
+            this.selectedInputElement.value = this.#selectedLabel;
+         else{
+            this.selectedInputElement.placeholder = 'Not Selected';
+            this.selectedInputElement.value = '';
+         }
+      }
+   }
+
    /**
     * @param {'selectelement_click'|'value_change'} eventName
     * @param {Function} callback
@@ -395,7 +411,6 @@ class CustomSelect {
       if(!searchValue){
          // make all option visible
          queueMicrotask(() => {
-            console.log(`reset`);
             sortElements(
                this.dropdownElement.children,
                (a, b) => {
@@ -403,7 +418,7 @@ class CustomSelect {
                   if(b.hidden) b.hidden = false;
                   return a.children[1].textContent.localeCompare(b.children[1].textContent);
                }
-            )
+            );
          })
          return;
       }
@@ -415,7 +430,6 @@ class CustomSelect {
       );
       const scoreMax = Math.max(...searchRes.map(v => v.score));
       const filteredSearchRes = searchRes.filter(v => v.score > scoreMax * 0.5);
-      console.log(filteredSearchRes);
 
 
       let dropdownItems = [...this.dropdownElement.children];
@@ -439,17 +453,7 @@ class CustomSelect {
    }
 
    #handleClickOutside = () => {
-      if(!this.isExpanded()) return;
-
-      this.wrapperElement.classList.remove("active");
-      if(this.showSelectedValue&&this.enable){
-         if(this.#selectedLabel)
-            this.selectedInputElement.value = this.#selectedLabel;
-         else{
-            this.selectedInputElement.placeholder = 'Not Selected';
-            this.selectedInputElement.value = '';
-         }
-      }
+      this.closeDropdown();
    }
 
 
@@ -498,7 +502,7 @@ class Timer {
 
    #res;
    #interval;
-   #lastCheck;
+   #lastCheck = 0;
    #onceEndCallback;
    #waitCallback;
    /**how often should timer do the counting
@@ -524,11 +528,11 @@ class Timer {
 
    start(){
       if(this.isRunning||this.time <= 0) return;
+      this.isRunning = true;
+      this.#lastCheck = Date.now();
       this.#interval = setInterval(
          this.#checkTime, this.#res == 1? 4: this.#res / 100
       );
-      this.isRunning = true;
-      this.#lastCheck = Date.now();
    }
 
    stop(){
@@ -556,7 +560,7 @@ class Timer {
       this.#onceEndCallback = callback;
    }
 
-   #checkTime(){
+   #checkTime = () => {
       const delta = (Date.now() - this.#lastCheck) / this.#res;
       this.time -= delta;
       if(this.time > 0) return;
@@ -793,7 +797,6 @@ function menubarBtn_click(ev){
 
 
    const activeEditor = EditorUI.getActiveEditor();
-   console.log(activeEditor);
 
    if(activeEditor){
       window.coreAPI.askCore('editorCanUndo', activeEditor.id).then(ans => {
@@ -1059,11 +1062,8 @@ const EditorUI = {
       const id = getComponentID(ev.target.parentElement)??getComponentID(ev.target.parentElement.parentElement)??
          getComponentID(ev.target.parentElement.parentElement.parentElement);
 
-      // console.log(event.target.parentElement.parentElement);
-      if(!id) {
-         console.log(ev.target);
-         return;
-      }
+      if(!id) return;
+
       window.coreAPI.sendCloseEditorCmd(
          id
       );
@@ -1858,8 +1858,9 @@ const ActionmenuUI = {
       this.isReady = true;
 
 
-      this.expandTimer = new Timer(500, 'ms');
+      this.expandTimer = new Timer(1500, 'ms');
       ActionbarUI.onMouseEnter(this.triggerExpand);
+      ActionbarUI.onMouseLeave(this.triggerRetractWait);
    },
 
    /**handle changed of the selected value
@@ -1945,16 +1946,18 @@ const ActionmenuUI = {
    },
 
    handleMouseEnter(){
-      if(!this.isExplanded||!this.expandTimer) return;
-      this.expandTimer.stop();
-      this.expandTimer.reset();
-      this.isMouseHover = true;
+      // console.log(`menu enter`);
+      if(!ActionmenuUI.isExplanded||!ActionmenuUI.expandTimer) return;
+      ActionmenuUI.expandTimer.stop();
+      ActionmenuUI.expandTimer.reset();
+      ActionmenuUI.isMouseHover = true;
    },
 
    handleMouseLeave(){
-      if(!this.isExplanded||!this.expandTimer) return;
-      this.isMouseHover = false;
-      this.triggerRetractWait();
+      // console.log(`menu out`);
+      if(!ActionmenuUI.isExplanded||!ActionmenuUI.expandTimer) return;
+      ActionmenuUI.isMouseHover = false;
+      ActionmenuUI.triggerRetractWait();
    },
 
 
@@ -2036,24 +2039,32 @@ const ActionmenuUI = {
 
 
    triggerExpand(){
-      this.actionmenuElement.hidden = false;
-      this.isExplanded = true;
+      // console.log(`expand`);
+      ActionmenuUI.actionmenuElement.hidden = false;
+      ActionmenuUI.isExplanded = true;
    },
 
 
    triggerRetractWait(){
-      if(!this.isExplanded) return;
+      // console.log(`wait`);
+      if(!ActionmenuUI.isExplanded) return;
 
-      this.expandTimer.start();
-      this.expandTimer.onceEnd(this.triggerRetract);
+      ActionmenuUI.expandTimer.start();
+      ActionmenuUI.expandTimer.onceEnd(ActionmenuUI.triggerRetract);
    },
 
 
    triggerRetract(){
-      this.actionmenuElement.hidden = true;
-      this.expandTimer.reset();
-      this.isExplanded = false;
-      this.isMouseHover = false;
+      // console.log(`retract`);
+      ActionmenuUI.actionmenuElement.hidden = true;
+      ActionmenuUI.expandTimer.reset();
+      ActionmenuUI.isExplanded = false;
+      ActionmenuUI.isMouseHover = false;
+
+      ActionmenuUI.Common.fontFamilySelect.closeDropdown();
+      ActionmenuUI.Common.letterSpacingSelect.closeDropdown();
+      ActionmenuUI.Common.lineSpacingSelect.closeDropdown();
+      ActionmenuUI.Common.encodingSelect.closeDropdown();
    }
 }
 
@@ -2066,11 +2077,13 @@ const ActionbarUI = {
     */
    wrapperElement: null,
    onMouseEnterCallback: null,
+   onMouseLeaveCallback: null,
+   mouseInside: false,
 
    init(){
       this.wrapperElement = document.querySelector('.menubar > .actionbar');
-      this.wrapperElement.addEventListener(
-         'mouseenter', this.handleWrapper_mouseenter
+      document.querySelector('body > .menubar').addEventListener(
+         'mousemove', this.handleMenubar_mousemove
       );
    },
 
@@ -2081,11 +2094,29 @@ const ActionbarUI = {
       this.onMouseEnterCallback = callback;
    },
 
+   onMouseLeave(callback){
+      this.onMouseLeaveCallback = callback;
+   },
+
    /**
     * @param {MouseEvent} ev
     */
-   handleWrapper_mouseenter(ev){
-      if(this.onMouseEnterCallback) this.onMouseEnterCallback();
+   handleMenubar_mousemove: (ev) => {
+      const barRect = ActionbarUI.wrapperElement.getBoundingClientRect();
+      console.log(ev.screenX, ev.screenY, isPosInside(ev.screenX, ev.screenY, barRect));
+      if(!isPosInside(ev.screenX, ev.screenY, barRect)&&ActionbarUI.mouseInside){
+         // console.log(`bar leave`);
+         ActionbarUI.mouseInside = false;
+         if(ActionbarUI.onMouseLeaveCallback)
+            ActionbarUI.onMouseLeaveCallback();
+         return;
+      }
+
+      if(ActionbarUI.mouseInside) return;
+
+      // console.log(`bar enter`);
+      if(ActionbarUI.onMouseEnterCallback) ActionbarUI.onMouseEnterCallback();
+      ActionbarUI.mouseInside = true;
    }
 }
 
@@ -2134,8 +2165,8 @@ function init(){
 
 
    FindpanelUI.setupEventListeners();
-   ActionmenuUI.init();
    ActionbarUI.init();
+   ActionmenuUI.init();
 
 
    // KeyboardEvents
@@ -2149,11 +2180,6 @@ function init(){
    GlobalKey.catch(KeyBindings.get('savefile'), btn_saveFile_click);
    GlobalKey.catch(KeyBindings.get('savefileas'), btn_saveFileAs_click);
    GlobalKey.catch(KeyBindings.get('rename'), btn_renameFile_click);
-
-   // (async () => {
-   //    const res = await PromptUI.prompt('Type Something...', 'default');
-   //    console.log(`res: `, res);
-   // })();
 }
 
 

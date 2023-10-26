@@ -33,7 +33,7 @@ contextBridge.exposeInMainWorld('coreAPI', {
    sendEditorContentUpdate: (id, content) => ipcRenderer.send('editor-content-changed', id, content),
    sendFindnReplaceUpdate: (id, option) => ipcRenderer.send('find_replace-update', id, option),
 
-   sendRespondUIState: (state) => ipcRenderer.send('find_replace-update', state),
+   sendRespondUIState: (state) => ipcRenderer.send('fetch-ui-state_respond', state),
 
    fetchAvaliableFontlist: () => ipcRenderer.send('fetch-avaliable-fontlist'),
 

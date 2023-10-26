@@ -1,6 +1,7 @@
 
-const Global = {
-   VERSION: '0.0.1',
+
+const _global = {
+   version: '0.0.1',
 
 
    /**map that use `Editor.id` as key
@@ -27,4 +28,4 @@ const Global = {
 
 
 
-module.exports = Global;
+module.exports = _global;

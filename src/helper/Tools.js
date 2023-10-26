@@ -1,8 +1,7 @@
 //////////// Tools ////////////
 /**tools for Javascript
  * @version 2.9.13
- * @changes huge search() function upgrade
- * and a new DataScienceKit
+ * @changes add isPosInside()
  */
 "use strict";
 
@@ -1476,7 +1475,7 @@ const Tools = {
       strList.forEach((e, i, arr) => arr[i] = e.trim().toLowerCase());
 
       if(TF_IDFMaps === 'builtin'){
-         TF_IDFMaps = Tools.DataScienceKit.TFIDF_of(strList.map(v => v.split(/\s/g)))
+         TF_IDFMaps = Tools.DataScienceKit.TFIDF_of(strList.map(v => v.split(/\s/g)));
       }
 
       class Match{
@@ -1874,6 +1873,18 @@ const Tools = {
       },
 
 
+      /**check is the given coordinates is inside
+       * the element Rect or not
+       * @param {DOMRect} elemRect
+       * @param {number} x
+       * @param {number} y
+       */
+      isPosInside(x, y, elemRect){
+         return (
+            x > elemRect.left&&x < elemRect.right&&
+            y > elemRect.top&&y < elemRect.bottom
+         );
+      },
 
 
 

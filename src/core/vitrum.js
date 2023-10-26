@@ -13,9 +13,7 @@ let {
    DEFAULT_ENCODING,
    WRITE_LOG_FILE
 } = require('../config.js');
-let {
-   currentState
-} = require('../Global.js');
+let { currentState } = require('../Global.js');
 
 // import { FindOption } from './helper/Definitions'; // for Definitions only
 const FR = require('./module/find.js').default;
@@ -49,7 +47,6 @@ const FileFilter = [
 let AvaliableFontsFamilies = null;
 /**@type {BrowserWindow} */
 let mainWindow;
-let mainWindowReady = false;
 
 
 
@@ -157,10 +154,6 @@ app.whenReady().then(async () => {
    });
 
 
-
-
-
-
    // Editor stuff
    ipcMain.on('editor-content-changed', async (eEvent, id, content) => {
       EditorManager.updateEditorContent(id, content);
@@ -217,11 +210,12 @@ app.on('window-all-closed', () => {
  */
 const createMainWindow = () => {
    let win = new BrowserWindow({
-      width: 800,
-      height: 540,
+      width: currentState.windowSize[0] ?? 720,
+      height: currentState.windowSize[1] ?? 420,
       frame: false,
       title: 'Vitrum',
-
+      x: currentState.windowPos?.[0],
+      y: currentState.windowPos?.[1],
       // titleBarStyle: 'hidden',
       webPreferences: {
          nodeIntegration: true,
@@ -244,12 +238,14 @@ const Vitrum = {
    async close(){
       let write_state, write_log;
       if(currentState){
-         const uiState = await this.fetchUIState();
-
-         currentState.windowSize = mainWindow.getSize();
-         currentState.openedEditors = EditorManager.getAllEditors();
-         currentState.editor = uiState.editor;
-         write_state = writeState(STATE_PATH, currentState);
+         const uiState = await Vitrum.fetchUIState();
+         if(uiState){
+            currentState.windowSize = mainWindow.getSize();
+            currentState.windowPos = mainWindow.getPosition();
+            currentState.openedEditors = EditorManager.getAllEditors();
+            currentState.editor = uiState.editor;
+            write_state = writeState(STATE_PATH, currentState);
+         }
       }
 
       if(WRITE_LOG_FILE){
@@ -523,6 +519,7 @@ const Vitrum = {
     * @param {FindOption} findOption
     */
    handleFindnReplaceUpdate(eEvent,  activeEditorID, findOption){
+      console.log(`find and replace`);
       switch(findOption.action){
          case 'findnext':
             FR.selectedIndex++;

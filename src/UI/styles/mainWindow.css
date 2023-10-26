@@ -130,7 +130,7 @@ code {
    max-height: 200px;
    overflow-y: auto;
    transition: 0.4s ease;
-
+   transform-origin: top center;
    transform: scaleY(0);
    /* height: 0px; */
    opacity: 0;
@@ -584,7 +584,7 @@ code {
 }
 .actionmenu #actionmenu-encoding-select > .custom-select-dropdown {
    background-color: var(--secondary-base-color);
-   left: calc(var(--actionmenu-side-padding) + (var(--actionmenu-grid-size) * 4));
+   left: calc(var(--actionmenu-side-padding) + (var(--actionmenu-grid-size) * 3));
    min-width: calc((var(--actionmenu-grid-size) * 6) - var(--fontselect-left-margin));
 }
 

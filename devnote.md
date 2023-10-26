@@ -34,7 +34,7 @@
 - [?] add log files
 - [ ] implement writing of config file
 - [x] implement editor state
-- [!] reorganize items in the CustomSelect's dropdown menu back to its original order
+- [x] reorganize items in the CustomSelect's dropdown menu back to its original order
       after its `selectedInputElement.value` is empty
 
 

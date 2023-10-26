@@ -11,6 +11,10 @@ const _State = {
        * @type {number[]}
        */
       windowSize;
+      /**window position
+       * @type {number[]}
+       */
+      windowPos;
       editor = {
          fontFamily: getNativeFontFamily(),
          fontSize: 16,

@@ -1,6 +1,7 @@
 /test/
 /node_modules/
 /logs/
+/dev/
 
 state.json
 user-config.conf

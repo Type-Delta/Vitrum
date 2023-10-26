@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const { ncc, redexOf, sleep } = require('./helper/Tools.js');
-const { VERSION, logs } = require('./Global.js');
+const { version, logs } = require('./Global.js');
 const {
    MIN_LOG_CONTENT,
    LOG_FOLDER_PATH,
@@ -285,8 +285,6 @@ const Utilities = {
     */
    async writeLog_file(coreLogs = logs){
       return new Promise((resolve, reject) => {
-         sleep(1000 * 10); // TEST
-
          if(coreLogs.content == null||coreLogs.content.length < MIN_LOG_CONTENT) resolve();
 
          const D = new Date();
@@ -322,7 +320,7 @@ const Utilities = {
          let headers = `___________________________________
    Session from: ${coreLogs.from}
    To: ${coreLogs.to}
-   Version: ${VERSION}
+   Version: ${version}
    ___________________________________\n\n`;
 
          currentLogFileName = currentLogFileName.concat(`_id${sameLogCount + 1}_#${D.getTime()}.log`);
