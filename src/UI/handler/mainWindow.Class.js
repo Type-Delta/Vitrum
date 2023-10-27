@@ -39,7 +39,7 @@ class EffectDendroNode {
     * @param {number} fxIndex - index of EditorEffect that this node originates from
     * @param {number|'root'} fxPiority - the nesting order of this node the smaller the number
     *    the deeper this node will be, if set to 'root' this node will stay at the most top layer
-    *    and other paramiters will be ignored.
+    *    and other parameters will be ignored.
     * @param {number[]} position
     */
    constructor(fxPiority, fxIndex, position){
@@ -91,7 +91,7 @@ class EffectDendroNode {
                return;
             }
 
-            // overlaping to the right:  [ (  ] )
+            // overlapping to the right:  [ (  ] )
             if(node.start >= travNode.start){
                if(node.fxPiority > travNode.fxPiority){
 
@@ -142,7 +142,7 @@ class EffectDendroNode {
 
 
          }else if(node.end >= travNode.end){ // node end is INSIDE the travere node: ...[ ...) ]
-            // overlaping to the left:  ( [  ) ]
+            // overlapping to the left:  ( [  ) ]
             if(node.start < travNode.start){
                if(node.fxPiority > travNode.fxPiority){
                   // split traverse node at `node.start`
@@ -223,7 +223,7 @@ class EffectDendroNode {
     */
 
    /**traverse through the **innerBranch** using **LRV** (postorder tree traversal)
-    * basiclly this function loop through nodes from the left, *visit* (calls a callback())
+    * basically this function loop through nodes from the left, *visit* (calls a callback())
     * then check if this node has any innerBranch, if not: *visit* this same node for the last time
     * and continues to the next node in the same branch layer otherwise, traverse through the innerBranch
     * back to this node, *visit* it for the last time and continues
@@ -248,17 +248,17 @@ class EffectDendroNode {
 class EditorEffect {
    /**Effect type
     * **highlight**:  highlight text with normal `highlight` color;
-    * **selected-highlight**:  highlight text with a spacial `highlight` color;
-    * **htmlfix**: fix spacing and new line charactors that wouldn't work with HTML;
+    * **selected-highlight**:  highlight text with a special `highlight` color;
+    * **htmlfix**: fix spacing and new line characters that wouldn't work with HTML;
     * @type {'highlight'|'selected-highlight'|'htmlfix'}
     */
    type;
    /**Position selections, each row represents one selection,
-    * the first and second columm in every row represent [start, end] position.
+    * the first and second column in every row represent [start, end] position.
     * @type {number[][]}
     */
    positions = [];
-   /**templace use for `String.replace()`, '$&' represents
+   /**template use for `String.replace()`, '$&' represents
     * matched value
     * @type {string}
     */
@@ -269,7 +269,7 @@ class EditorEffect {
     */
    tag;
    /**this number is used to calculate the nesting order
-    * this Effect should apply in case of overlaping (or sometimes remove lower piority effects)
+    * this Effect should apply in case of overlaยping (or sometimes remove lower priority effects)
     * **Note: This Number is automatically calculated and should not be modified.**
     * @type {number}
     */
