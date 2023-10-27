@@ -261,7 +261,7 @@ const Tools = {
 
          /**3d matrix:
           * row: representative of strA
-          * col: epresentative of strB
+          * col: representative of strB
           * depth: [value, arrawDirection]
           * arrawRotation: (1: up (row--), 2: left (col--), 3: up left (row--, col--))
           * @type {number[][][]}
@@ -852,7 +852,7 @@ const Tools = {
 
 
 
-   /**(**Node Console Color**) return the Node.js Console Text formats, use this formmat to change
+   /**(**Node Console Color**) return the Node.js Console Text formats, use this format to change
     * how Console Text looks.
     * @param {String}Color color or format of choice (if omit: 'Reset', invlid: 'white')
     * @example
@@ -1077,7 +1077,7 @@ const Tools = {
       for(let i = 0; i < args.length; i++){
          for(const pName in template){
             if(!template[pName]?.pattern)
-               throw new Error('invalid template: Object structure missmatched. every entries requires `pattern` property');
+               throw new Error('invalid template: Object structure mismatched. every entries requires `pattern` property');
 
             if (!isKeyMatched(args[i], template[pName].pattern)) continue;
             requiredList.delete(pName);
@@ -1099,17 +1099,17 @@ const Tools = {
             try {
                switch (template[pName]?.type) {
                   case 'int':
-                     if (isNaN(parsed[pName] = parseInt(args[++i]))) throw new Error('typemissmatched');
+                     if (isNaN(parsed[pName] = parseInt(args[++i]))) throw new Error('typemismatched');
                      break;
                   case 'float':
-                     if (isNaN(parsed[pName] = parseFloat(args[++i]))) throw new Error('typemissmatched');
+                     if (isNaN(parsed[pName] = parseFloat(args[++i]))) throw new Error('typemismatched');
                      break;
                   case 'bool':
-                     if ((parsed[pName] = parseBool(args[++i], true)) == null) throw new Error('typemissmatched');
+                     if ((parsed[pName] = parseBool(args[++i], true)) == null) throw new Error('typemismatched');
                      break;
                   case 'choice':
                      if (!template[pName]?.choices ?.length)
-                        throw new Error('invalid template: Object structure missmatched. entry of type \'choice\' requires `choices` property');
+                        throw new Error('invalid template: Object structure mismatched. entry of type \'choice\' requires `choices` property');
 
                      if (!isKeyMatched(args[++i], template[pName].choices) &&
                         template[pName]?.default == undefined
@@ -1124,7 +1124,7 @@ const Tools = {
                      break;
                }
             } catch (err) {
-               if (err.message == 'typemissmatched')
+               if (err.message == 'typemismatched')
                   throw new Error(`argument '${args[i - 1]}' requires a Value of type '${template[pName]?.type}'`);
                throw err;
             }
@@ -1197,7 +1197,7 @@ const Tools = {
       var rows = Tools.cleanArr(ConfigString.trim().split('\n'), ['', '\s', '\r']);
       var configObj = new Map();
       const st = new Tools.SafeTrue();
-      let indexOfSbeforQ = 0;
+      let indexOfSbeforeQ = 0;
 
       let json_str = '', jsonVar_key;
       let inJson = false;
@@ -1261,11 +1261,11 @@ const Tools = {
 
             let firstS = eachPair[1].search('#');
             if(firstS != -1){
-               //let indexOfSbeforQ;
+               //let indexOfSbeforeQ;
                while(st.True){
                   let secS = eachPair[1].indexOf('#', firstS + 1);
                   if(secS == -1&&firstS > secQ){
-                     indexOfSbeforQ = firstS;
+                     indexOfSbeforeQ = firstS;
                      break;
                   }
 
@@ -1275,7 +1275,7 @@ const Tools = {
          }
 
          if(eachPair[1].includes('#')){
-            eachPair[1] = eachPair[1].substring(0, eachPair[1].indexOf('#', indexOfSbeforQ)).trim();
+            eachPair[1] = eachPair[1].substring(0, eachPair[1].indexOf('#', indexOfSbeforeQ)).trim();
          }
          if(eachPair[1].startsWith('"')&&eachPair[1].endsWith('"')){
             eachPair[1] = eachPair[1].slice(1, -1);
@@ -1444,7 +1444,7 @@ const Tools = {
     * }}option
     * **`maxResult`**: define the max result from the Top search result,
     * **`TF_IDFMaps`**: TF_IDF Maps for every string in the `stringArr` or
-    * string "builtin" to use builtin function to automaticly determine the TF_IDF values
+    * string "builtin" to use builtin function to automatically determine the TF_IDF values
     * (**Note that:** calculating TF_IDF value can be **VERY resources INTENSIVE** it's best
     * to precalculate them outside)
     * @example
@@ -1463,7 +1463,7 @@ const Tools = {
    search(stringArr, query, option = {}){
       let maxResult = option.maxResult;
       let TF_IDFMaps = option.TF_IDFMaps;
-      if(!maxResult){ // for backward compatability with older versions
+      if(!maxResult){ // for backward compatibility with older versions
          if(typeof option == 'number') maxResult = option;
          else maxResult = Infinity;
       }
@@ -1605,7 +1605,7 @@ const Tools = {
     * @param {string} str
     * @param {number} length target string length
     * @param {string} dropLocation 'mid', 'start' or 'end' determine location in which the string would
-    * be dropped if the given str's length is smaller then `length`
+    * be dropped if the given str's length is smaller than `length`
     */
    strClamp(str, length, dropLocation = 'mid'){
       if(str.length <= length)
@@ -1798,7 +1798,7 @@ const Tools = {
 
 
 
-      /**make the element automatically hide its self when
+      /**make the element automatically hide itself when
        * user click outside this element
        * @param {HTMLElement} element
        * @param {string|HTMLElement} elemToHide
@@ -1862,7 +1862,7 @@ const Tools = {
 
 
       /**hides all element selected by the `selector`
-       * this function hide elements by set its disply type to 'none'
+       * this function hide elements by set its display type to 'none'
        * @param {string} selector querySelector
        */
       hideAllElements(selector){
@@ -1873,7 +1873,7 @@ const Tools = {
       },
 
 
-      /**check is the given coordinates is inside
+      /**check if the given coordinates is inside
        * the element Rect or not
        * @param {DOMRect} elemRect
        * @param {number} x
@@ -1911,7 +1911,7 @@ const Tools = {
 
 
       KeyBind: class KeyBind {
-         /**raw keybinding, each keys seperated by '+'
+         /**raw keybinding, each keys separated by '+'
           */
          rawBinding;
          /**normalized keybinding stored in Set
@@ -2148,7 +2148,7 @@ const Tools = {
             }
 
             // find the real median
-            if(compareFn(medElem, last) < 0);// potential median is lessthen last: potential median is median
+            if(compareFn(medElem, last) < 0);// potential median is less then last: potential median is median
             else if(compareFn(last, belowMed) < 0) medElem = belowMed;
             else medElem = last;
             return medElem;

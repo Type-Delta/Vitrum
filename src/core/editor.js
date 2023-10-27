@@ -37,8 +37,8 @@ class TextChange {
 /**Store Edit event that triggered when Editor's Textarea content change
  * and more; EditorEdits stores in Array Queue called History, when there's a changed
  * Edits will be `unshift()` from the front and old Edit will be deleled from the back
- * when **undo** or **redo** maneger will traverse back and forth if there are new Edit
- * during this moment all Edits in the front will be deleled to allow new one to slide in place;
+ * when **undo** or **redo** manager will traverse back and forth if there are new Edit
+ * during this moment all Edits in the front will be deleted to allow new one to slide in place;
  * this is similar to Branching of Timelines in time travel theory.
  *
  */
@@ -65,7 +65,7 @@ class Editor {
     */
    docName = null;
    lastDocName = null;
-   /**whether the the doc is saved to local disk
+   /**whether the doc is saved to local disk
     */
    isSaved = false;
    lastIsSaved = false;

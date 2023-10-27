@@ -41,10 +41,10 @@ const FileFilter = [
 
 // Vars
 
-/**installed and avaliable font family names
+/**installed and available font family names
  * @type {string[]}
  */
-let AvaliableFontsFamilies = null;
+let AvailableFontsFamilies = null;
 /**@type {BrowserWindow} */
 let mainWindow;
 
@@ -77,14 +77,14 @@ app.whenReady().then(async () => {
       if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
    });
 
-   Vitrum.loadAvaliableFontsList();
+   Vitrum.loadAvailableFontsList();
 
 
 
 
 
 
-   // Aplication handler
+   // Application handler
    ipcMain.on('sendConsoleOutput_send', async (eEvent, SCOArgs) => {
       mainWindow.webContents.send(
          'sendConsoleOutput_return',
@@ -145,11 +145,11 @@ app.whenReady().then(async () => {
 
    ipcMain.on('find_replace-update', Vitrum.handleFindnReplaceUpdate);
    ipcMain.on('ask', Vitrum.handleQuestionAsk);
-   ipcMain.on('fetch-avaliable-fontlist', () => {
-      if(!AvaliableFontsFamilies?.length) return;
+   ipcMain.on('fetch-available-fontlist', () => {
+      if(!AvailableFontsFamilies?.length) return;
 
       mainWindow.webContents.send(
-         'update-fontlist', AvaliableFontsFamilies
+         'update-fontlist', AvailableFontsFamilies
       );
    });
 
@@ -511,7 +511,7 @@ const Vitrum = {
       }
    },
 
-   /**this function is resposible for updating the position of effect applied by
+   /**this function is responsible for updating the position of effect applied by
     * Find and Replace, changing the options in the Findpanel as well as
     * all the replace operation
     * @param {string} activeEditorID
@@ -585,7 +585,7 @@ const Vitrum = {
 
 
    /**handle Questions from MainWorld, this system works like
-    * predicates where MainWorld ask something and the IsolatedWorld (Core)
+    * predicates where MainWorld asks something and the IsolatedWorld (Core)
     * will answer in **Yes** or **No** (true|false)
     * @param {'editorCanUndo'|'editorCanRedo'} question
     */
@@ -642,13 +642,13 @@ const Vitrum = {
    },
 
 
-   /**load installed and avaliable font families
+   /**load installed and available font families
     * and send update signal to Every components that depends on it
     */
-   loadAvaliableFontsList(){
+   loadAvailableFontsList(){
       sendConsoleOutput(`looking for installed Fonts...`, 'debug', 'Vitrum');
       FontList.getFonts().then(list => {
-         AvaliableFontsFamilies = list;
+         AvailableFontsFamilies = list;
          sendConsoleOutput(`found ${list.length} Font Families`, 'debug', 'Vitrum');
 
          mainWindow.webContents.send('update-fontlist', list);

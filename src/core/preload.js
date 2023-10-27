@@ -13,7 +13,7 @@ contextBridge.exposeInMainWorld('coreAPI', {
    handleSetEditorTabName: (callback) => {ipcRenderer.on('editor-set-tabname', callback)},
    handleUpdateEditorContent: (callback) => {ipcRenderer.on('editor-update-content', callback)},
    handleUpdateEditorEffects: (callback) => {ipcRenderer.on('update-editor-effects', callback)},
-   handleUpdateAvaliableFontlist: (callback) => {ipcRenderer.on('update-fontlist', callback)},
+   handleUpdateAvailableFontlist: (callback) => {ipcRenderer.on('update-fontlist', callback)},
    handleUpdateAppState: (callback) => {ipcRenderer.on('update-state', callback)},
 
    handleFetchUIState: (callback) => {ipcRenderer.on('fetch-ui-state_fetch', callback)},
@@ -35,7 +35,7 @@ contextBridge.exposeInMainWorld('coreAPI', {
 
    sendRespondUIState: (state) => ipcRenderer.send('fetch-ui-state_respond', state),
 
-   fetchAvaliableFontlist: () => ipcRenderer.send('fetch-avaliable-fontlist'),
+   fetchAvailableFontlist: () => ipcRenderer.send('fetch-available-fontlist'),
 
    askCore: async (question, ...args) => {
       return new Promise((resolve, reject) => {
