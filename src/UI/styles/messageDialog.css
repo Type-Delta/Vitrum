@@ -26,7 +26,7 @@ ul {
 
 
 .border {
-   background-color: color-mix(in srgb, var(--secondary-base-color) 86%, transparent);
+   background-color: color-mix(in srgb, var(--base-color2) 86%, transparent);
    width: fit-content;
    height: auto;
    padding: 30px 30px 10px 30px;
@@ -83,7 +83,7 @@ ul {
 
 button {
    border-style: none;
-   background-color: var(--control-highlight-color);
+   background-color: var(--control-hover-color);
    color: var(--normal-text-color);
    font-size: 1.8ch;
    transition-duration: 0.3s;
@@ -92,13 +92,13 @@ button {
    padding: 5px;
    align-self: center;
    border-style: solid;
-   border-color: var(--secondary-base-color);
+   border-color: var(--base-color2);
 }
 
 button:hover {
-   background-color: var(--control-highlight-color);
-   border-color: var(--primary-accent-color);
-   color: var(--primary-accent-color);
+   background-color: var(--control-hover-color);
+   border-color: var(--accent-color1);
+   color: var(--accent-color1);
 }
 
 

@@ -8,7 +8,7 @@ const CONFIG_PATH = './config.conf';
 class Config {
    /// App
    STATE_PATH = './state.json';
-
+   THEME_PATH = './assets/themes/Obsidian.json';
 
    /// Editor
    /**
@@ -55,6 +55,7 @@ class Config {
          if(CONFIG.DEFAULT_ENCODING) this.DEFAULT_ENCODING = CONFIG.DEFAULT_ENCODING;
          if(CONFIG.MAX_HISTORY_SIZE) this.MAX_HISTORY_SIZE = parseInt(CONFIG.MAX_HISTORY_SIZE);
          if(CONFIG.TRIM_TRAILING_WHITESPACE) this.TRIM_TRAILING_WHITESPACE = parseBool(CONFIG.TRIM_TRAILING_WHITESPACE);
+         if(CONFIG.THEME_PATH) this.THEME_PATH = CONFIG.THEME_PATH;
 
 
       }catch(e){

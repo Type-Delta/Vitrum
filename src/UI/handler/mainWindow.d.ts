@@ -81,10 +81,6 @@ declare interface UIStateEditor {
    letterSpacing: number
 }
 
-declare interface UIState {
-   editor: UIStateEditor
-}
-
 
 
 export interface CoreAPI {
@@ -95,8 +91,10 @@ export interface CoreAPI {
    handleSetEditorTabName: (callback: Function) => void
    handleUpdateEditorContent: (callback: Function) => void
    handleUpdateEditorEffects: (callback: Function) => void
-   handleUpdateAvaliableFontlist: (callback: Function) => void
+   handleUpdateAvilableFontlist: (callback: Function) => void
    handleUpdateEditorState: (callback: Function) => void
+   handleUpdateTheme: (callback) => void
+
 
    handleFetchUIState: (callback: Function) => void
 
@@ -115,8 +113,10 @@ export interface CoreAPI {
    sendRedoCmd: (id: string) => void
    sendEditorContentUpdate: (id: string, content: string, selection: number[]) => void
    sendFindnReplaceUpdate: (id: string, option) => void
+   sendFindnReplaceUpdate: () => void
+   sendRequestReloadTheme: () => void
 
-   sendRespondUIState: (state: UIState) => void
+   sendRespondUIState: (state: UIStateEditor) => void
 
    fetchAvaliableFontlist: () => void
 

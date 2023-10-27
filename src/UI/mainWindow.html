@@ -104,7 +104,7 @@
                   aria-haspopup="listbox"
                   aria-expanded="false"
                   aria-controls="select-dropdown">
-                  <input class="selected-value"></input>
+                  <input class="selected-value" spellcheck="false"></input>
                   <span class="custom-select-arrow"></span>
                </div>
                <ul class="custom-select-dropdown" role="listbox" id="select-dropdown">
@@ -258,7 +258,7 @@
                   aria-haspopup="listbox"
                   aria-expanded="false"
                   aria-controls="select-dropdown">
-                  <input class="selected-value"></input>
+                  <input class="selected-value" spellcheck="false"></input>
                   <span class="custom-select-arrow"></span>
                </div>
                <ul class="custom-select-dropdown" role="listbox" id="select-dropdown">
@@ -284,7 +284,8 @@
 
 
       <div id="prompt" hidden>
-         <input class="" id="prompt-input" type="text" placeholder="enter something..."/>
+         <input class="" id="prompt-input" spellcheck="false" type="text" placeholder="enter something..."/>
+         <!-- unused... please ignore this for now -->
          <ul id="prompt-panel" hidden>
             <li><input type="text"/><button></button></li>
             <li class="selected">text 2.....</li>
@@ -300,7 +301,7 @@
          </button>
          <ul>
             <li id="findpanel-find">
-               <input class="" id="findpanel-find-input" type="text" placeholder="Find"  tabindex="0"/>
+               <input class="" id="findpanel-find-input" spellcheck="false" type="text" placeholder="Find"  tabindex="0"/>
                <div class="inside">
                   <button class="" id="findpanel-matchcase-btn" title="Match Case" tabindex="-1">
                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"><path d="m159-280 150-400h72l150 400h-69l-36-102H264l-36 102h-69Zm126-160h120l-58-166h-4l-58 166Zm369 171q-49 0-77-25.5T549-364q0-42 32.5-68.5T665-459q23 0 42.5 3.5T741-444v-14q0-27-18.5-43T672-517q-21 0-39.5 9T601-482l-43-32q19-27 48-41t67-14q62 0 95 29.5t33 85.5v176h-59v-34h-3q-13 20-35 31.5T654-269Zm10-50q32 0 54.5-22.5T741-396q-14-8-32-12t-33-4q-32 0-49 12.5T610-364q0 20 15 32.5t39 12.5Z"/></svg>
@@ -327,7 +328,7 @@
                </button>
             </li>
             <li id="findpanel-replace" hidden>
-               <input class="" id="findpanel-replace-input" type="text" placeholder="Replace" tabindex="1"/>
+               <input class="" id="findpanel-replace-input" spellcheck="false" type="text" placeholder="Replace" tabindex="1"/>
                <div class="inside">
                   <button class="texthack" id="findpanel-preservecase-btn" title="Preserve Case" tabindex="-1">
                      <text>AB</text>

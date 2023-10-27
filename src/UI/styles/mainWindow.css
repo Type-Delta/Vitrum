@@ -13,11 +13,11 @@
 }
 
 html {
-   background-color: var(--primary-base-color);
+   background-color: var(--base-color1);
 }
 
 body {
-   background-color: var(--primary-base-color);
+   background-color: var(--base-color1);
    /* overflow: hidden; */
    position: relative;
 }
@@ -69,18 +69,18 @@ code {
 }
 
 ::-webkit-scrollbar-track {
-   background-color: var(--secondary-base-color);
+   background-color: var(--scrollbar-track-color);
 }
 
 ::-webkit-scrollbar-thumb {
-   background-color: color-mix(in srgb, var(--normal-text-color) 10%, transparent);
+   background-color: color-mix(in srgb, var(--scrollbar-thumb-color) 10%, transparent);
    border-radius: 8px;
 }
 ::-webkit-scrollbar-thumb:hover {
-   background-color: color-mix(in srgb, var(--normal-text-color) 20%, transparent);
+   background-color: color-mix(in srgb, var(--scrollbar-thumb-color) 20%, transparent);
 }
 ::-webkit-scrollbar-thumb:hover:active {
-   background-color: color-mix(in srgb, var(--normal-text-color) 35%, transparent);
+   background-color: color-mix(in srgb, var(--scrollbar-thumb-color) 35%, transparent);
 }
 
 
@@ -119,7 +119,7 @@ code {
 .custom-select > .custom-select-selector > .custom-select-arrow {
    border-left: 5px solid transparent;
    border-right: 5px solid transparent;
-   border-top: 6px solid var(--normal-text-color);
+   border-top: 6px solid var(--control-text-color);
    transition: transform ease-in-out 0.3s;
 }
 
@@ -232,7 +232,7 @@ code {
 
 /*///////////// Menubar ///////////////*/
 .menubar {
-   background-color: var(--secondary-base-color);
+   background-color: var(--menubar-background-color);
    display: flex;
    flex-direction: row;
    width: 100%;
@@ -249,7 +249,7 @@ code {
 /* every elements in .menubar */
 .menubar li div {
    background-color: transparent;
-   color: var(--normal-text-color);
+   color: var(--menubar-text-color);
    font-size: 0.9em;
    border: 0;
    height: 100%;
@@ -269,10 +269,10 @@ code {
    transition-duration: 0.2s;
 }
 .menubar > li > .menubar-btn:hover {
-   background-color: var(--control-highlight-color);
+   background-color: var(--menubar-control-hover-color);
 }
 .menubar > li > .menubar-btn:hover:active {
-   background-color: var(--control-mousedown-color);
+   background-color: var(--menubar-control-mousedown-color);
 }
 
 
@@ -280,12 +280,12 @@ code {
    margin: 0 4% 0 -5%;
    width: calc(var(--menubar-height) * .67);
    height: calc(var(--menubar-height) * .67);
-   fill: var(--normal-text-color);
+   fill: var(--menubar-text-color);
 }
 
 
 .menubar > li .dropdown-menu {
-   background-color: var(--secondary-base-color);
+   background-color: var(--menubar-dropdown-background-color);
    width: 190px;
    min-width: auto;
    /* vertical-align: middle; */
@@ -297,9 +297,8 @@ code {
 }
 
 
-
 .menubar > li .dropdown-menu .menuitem {
-   background-color: var(--secondary-base-color);
+   background-color: var(--menubar-dropdown-background-color);
    font-size: 0.8em;
    display: block;
    width: auto;
@@ -308,23 +307,23 @@ code {
    transition-duration: 0.3s;
 }
 .menubar > li .dropdown-menu .menuitem:hover:not(.inactive) {
-   background-color: var(--control-highlight-color);
+   background-color: var(--menubar-dropdown-hover-color);
    margin-left: 8px;
    border-radius: 0px 5px 0px 5px;
 }
 .menubar > li .dropdown-menu .menuitem:hover:active:not(.inactive) {
-   background-color: var(--control-mousedown-color);
+   background-color: var(--menubar-dropdown-mousedown-color);
 }
 /* MenuItem Shot Keys text */
 .menubar > li .dropdown-menu .menuitem span {
-   color: color-mix(in srgb, var(--normal-text-color) 50%, transparent);
+   color: color-mix(in srgb, var(--menubar-dropdown-text-color) 50%, transparent);
    font-size: 0.99em;
    /* margin-left: 5%; */
    float:  right;
 }
 
 .menubar > li .dropdown-menu .menuitem.inactive {
-   color: color-mix(in srgb, var(--normal-text-color) 50%, transparent) !important;
+   color: color-mix(in srgb, var(--menubar-dropdown-text-color) 50%, transparent) !important;
    cursor: context-menu;
 }
 
@@ -351,7 +350,7 @@ code {
 
 .menubar > .actionbar {
    /* -webkit-app-region: drag; to make this element a draggble part of window */
-   background-color: var(--control-highlight-color);
+   background-color: var(--control-hover-color);
    margin: 0px 8px 8px 8px;
    border-radius: 0px 0px 6px 6px;
    width: 100%;
@@ -366,23 +365,23 @@ code {
 }
 
 .menubar > .window-controlbar > button {
-   background-color: var(--secondary-base-color);
+   background-color: var(--menubar-background-color);
    width: calc(var(--menubar-height) * 1.47);
    padding: 5px;
    border: none;
    transition-duration: 0.2s;
 }
 .menubar > .window-controlbar > button:hover {
-   background-color: var(--control-highlight-color);
+   background-color: var(--menubar-control-hover-color);
 }
 .menubar > .window-controlbar > button:hover:active {
-   background-color: var(--control-mousedown-color);
+   background-color: var(--menubar-control-mousedown-color);
 }
 
 .menubar > .window-controlbar > button > svg {
    width: calc(var(--menubar-height) * .67);
    height: calc(var(--menubar-height) * .67);
-   fill: var(--normal-text-color);
+   fill: var(--menubar-text-color);
 }
 
 
@@ -438,7 +437,7 @@ code {
    padding-top: 10%;
    width: 25px;
    height: 25px;
-   fill: var(--normal-text-color);
+   fill: var(--actionmenu-text-color);
 }
 
 .actionmenu .custom-select > .custom-select-selector {
@@ -452,28 +451,31 @@ code {
    cursor: pointer;
 }
 .actionmenu .custom-select > .custom-select-dropdown label {
-   color: var(--normal-text-color);
+   color: var(--actionmenu-dropdown-text-color);
    font-size: var(--actionmenu-control-fontsize);
 }
-.actionmenu .custom-select > .custom-select-dropdown li:hover,
+.actionmenu .custom-select > .custom-select-dropdown li:hover {
+   background-color: var(--actionmenu-dropdown-hover-background-color);
+}
 .actionmenu .custom-select > .custom-select-dropdown input:checked~label {
-   background-color: color-mix(in srgb, var(--base-color3) 80%, transparent);
+   background-color: var(--actionmenu-dropdown-selected-background-color);
+   color: var(--actionmenu-dropdown-selected-text-color);
 }
-.actionmenu .custom-select > .custom-select-dropdown input:focus~label {
-   background-color: var(--base-color3) 80%;
-}
+/* .actionmenu .custom-select > .custom-select-dropdown input:focus~label {
+   background-color: red;
+} */
 
 
 
 /* Font preview */
 .actionmenu #actionmenu-font-preview {
    font-size: 37px;
-   color: var(--normal-text-color);
+   color: var(--actionmenu-text-color);
    width: max-content;
    justify-self: right;
    border-style: solid;
    border-width: 0px 5px 0px 0px;
-   border-color: color-mix(in srgb, var(--secondary-accent-color) 80%, transparent);
+   border-color: var(--actionmenu-accent-color);
    padding: 4px 4px 5px 5px;
    margin: 4px 0px 4px 8px;
    grid-row: 1 / span 2;
@@ -482,7 +484,7 @@ code {
 
 .actionmenu #actionmenu-font-preview > text {
    font-variant-numeric: tabular-nums lining-nums;
-   color: var(--normal-text-color);
+   color: var(--actionmenu-text-color);
 }
 .actionmenu #actionmenu-font-preview > sup {
    font-family: 'Segoe UI', sans-serif;
@@ -493,19 +495,19 @@ code {
 
 .actionmenu #actionmenu-font-preview > sup > #fontsize-display {
    font-size: small;
-   color: color-mix(in srgb, var(--normal-text-color) 70%, transparent);
+   color: color-mix(in srgb, var(--actionmenu-text-color) 70%, transparent);
    transition-duration: 0.3s;
 }
 .actionmenu #actionmenu-font-preview > sup > #letter-spacing-display,
 .actionmenu #actionmenu-font-preview > sup > #line-spacing-display {
    font-size: x-small;
-   color: color-mix(in srgb, var(--normal-text-color) 70%, transparent);
+   color: color-mix(in srgb, var(--actionmenu-text-color) 70%, transparent);
    transition-duration: 0.3s;
 }
 .actionmenu #actionmenu-font-preview > sup > #fontsize-display:hover,
 .actionmenu #actionmenu-font-preview > sup > #letter-spacing-display:hover,
 .actionmenu #actionmenu-font-preview > sup > #line-spacing-display:hover {
-   color: var(--normal-text-color);
+   color: var(--actionmenu-text-color);
 }
 
 
@@ -548,14 +550,14 @@ code {
    margin: 3px 0px 3px var(--fontselect-left-margin);
    outline-style: none;
    border-style: solid;
-   border-color: var(--normal-text-color);
+   border-color: var(--actionmenu-fontselect-line-color);
    border-width: 0px 0px 2px 0px;
    grid-column: 1 / span 6;
    grid-row: 3;
    cursor: pointer;
 }
 .actionmenu #actionmenu-font-select > .custom-select-dropdown {
-   background-color: var(--secondary-base-color);
+   background-color: var(--actionmenu-dropdown-background-color);
    left: calc(var(--actionmenu-side-padding) + var(--fontselect-left-margin));
    min-width: calc((var(--actionmenu-grid-size) * 6) - var(--fontselect-left-margin));
 }
@@ -568,7 +570,7 @@ code {
    border-radius: 6px;
 }
 .actionmenu #actionmenu-toggle-wrap-btn.selected > svg {
-   fill: color-mix(in srgb, var(--secondary-accent-color) 80%, transparent);
+   fill: var(--actionmenu-accent-color);
 }
 .actionmenu #actionmenu-toggle-wrap-btn:hover {
    background-color: var(--actionmenu-control-hover-color);
@@ -586,11 +588,11 @@ code {
    margin: 2px 0px;
    border-style: solid;
    border-width: 3px 0px 0px 0px;
-   border-color: color-mix(in srgb, var(--secondary-accent-color) 80%, transparent);
+   border-color: var(--actionmenu-accent-color);
    cursor: pointer;
 }
 .actionmenu #actionmenu-encoding-select > .custom-select-dropdown {
-   background-color: var(--secondary-base-color);
+   background-color: var(--actionmenu-dropdown-background-color);
    left: calc(var(--actionmenu-side-padding) + (var(--actionmenu-grid-size) * 3));
    min-width: calc((var(--actionmenu-grid-size) * 6) - var(--fontselect-left-margin));
 }
@@ -614,12 +616,12 @@ code {
 }
 
 .actionmenu #actionmenu-letter-spacing-select .selected-value svg {
-   fill: var(--normal-text-color);
+   fill: var(--actionmenu-text-color);
    width: 100%;
    padding: 7px 3px 2px 6px;
 }
 .actionmenu #actionmenu-letter-spacing-select > .custom-select-dropdown {
-   background-color: var(--secondary-base-color);
+   background-color: var(--actionmenu-dropdown-background-color);
    left: calc(var(--actionmenu-side-padding) + (var(--actionmenu-grid-size) * 4));
    min-width: calc((var(--actionmenu-grid-size) * 6) - var(--fontselect-left-margin));
 }
@@ -674,12 +676,12 @@ code {
 }
 
 .actionmenu #actionmenu-line-spacing-select .selected-value svg {
-   fill: var(--normal-text-color);
+   fill: var(--actionmenu-text-color);
    width: 100%;
    padding: 4px 2px 0px 2px;
 }
 .actionmenu #actionmenu-line-spacing-select > .custom-select-dropdown {
-   background-color: var(--secondary-base-color);
+   background-color: var(--actionmenu-dropdown-background-color);
    left: calc(var(--actionmenu-side-padding) + (var(--actionmenu-grid-size) * 5));
    min-width: calc((var(--actionmenu-grid-size) * 6) - var(--fontselect-left-margin));
 }
@@ -736,20 +738,20 @@ code {
    margin-top: 6px;
    top: 0;
    background-color: color-mix(in srgb, var(--base-color3) 15%, transparent);
-   backdrop-filter: blur(4px);
+   backdrop-filter: var(--prompt-backdrop-filter);
    border-radius: 5px;
    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
 }
 
 #prompt > #prompt-input {
    width: 100%;
-   background-color: var(--secondary-base-color);
-   color: var(--normal-text-color);
+   background-color: var(--prompt-input-background-color);
+   color: var(--prompt-input-text-color);
    caret-color: var(--editor-caret-color);
    border-style: solid;
    border-width: 3.5px;
    border-radius: 5px;
-   border-color: var(--base-color3);
+   border-color: var(--prompt-input-border-color);
    outline: none;
    padding: 3px 5px;
 }
@@ -768,22 +770,22 @@ code {
    flex-direction: row;
 }
 #prompt > #prompt-panel > li:hover:not(.selected) {
-   background-color: color-mix(in srgb, var(--base-color3) 50%, transparent);
+   background-color: var(--prompt-dropdownpanel-item-hover-color);
 }
 
 #prompt > #prompt-panel > li.selected {
-   background-color: var(--secondary-accent-color);
+   background-color: var(--prompt-dropdownpanel-item-selected-color);
 }
 
 
 #prompt > #prompt-panel > li > input {
    width: 90%;
-   background-color: var(--secondary-base-color);
-   color: var(--normal-text-color);
+   background-color: var(--prompt-dropdownpanel-item-input-background-color);
+   color: var(--prompt-input-text-color);
    caret-color: var(--editor-caret-color);
    border-style: solid;
    border-width: 0px 0px 0px 3.5px;
-   border-color: var(--base-color3);
+   border-color: var(--prompt-dropdownpanel-item-input-border-color);
    margin: 0px 0px 0px -5px;
    outline: none;
    padding: 3px 4px;
@@ -809,7 +811,7 @@ code {
    top: var(--menubar-height);
    display: flex;
    flex-direction: row;
-   background-color: color-mix(in srgb, var(--base-color3) 15%, transparent);
+   background-color: var(--findreplace-background-color);
    backdrop-filter: blur(4px);
    border-radius: 0px 0px 5px 5px;
    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
@@ -823,14 +825,14 @@ code {
    border-radius: 2px;
 }
 #findpanel > #findpanel-expand-btn:hover {
-   background-color: color-mix(in srgb, var(--base-color3) 50%, transparent);
+   background-color: var(--findreplace-control-hover-color);
 }
 
 #findpanel > #findpanel-expand-btn > svg {
    margin: 0px -3px;
    width: 17px;
    height: 17px;
-   fill: var(--normal-text-color);
+   fill: var(--findreplace-text-color);
    transform: translate(-1px, 2px) rotate(-90deg);
    transition-duration: .3s;
 }
@@ -838,7 +840,6 @@ code {
 #findpanel > #findpanel-expand-btn.expanded > svg {
    transform: translate(-1px, 2px) rotate(0deg);
 }
-
 
 
 #findpanel > ul > li {
@@ -851,8 +852,8 @@ code {
 
 #findpanel > ul > li > input {
    width: calc(var(--findpanel-width) * .516);
-   background-color: var(--secondary-base-color);
-   color: var(--normal-text-color);
+   background-color: var(--findreplace-input-background-color);
+   color: var(--findreplace-text-color);
    font-size: small;
    caret-color: var(--editor-caret-color);
    border: none;
@@ -866,7 +867,7 @@ code {
 }
 
 #findpanel > ul > li > input.selected {
-   outline-color: var(--base-color3);
+   outline-color: var(--findreplace-active-input-border-color);
    outline-style: solid;
 }
 
@@ -886,11 +887,11 @@ code {
    border-radius: 3px;
 }
 #findpanel > ul > li button:hover {
-   background-color: color-mix(in srgb, var(--base-color3) 50%, transparent);
+   background-color: var(--findreplace-control-hover-color);
 }
 
 #findpanel > ul > li button.selected {
-   background-color: color-mix(in srgb, var(--secondary-accent-color) 70%, transparent);
+   background-color: var(--findreplace-control-selected-color);
 }
 
 
@@ -931,7 +932,7 @@ code {
    margin: 0px -2px -2px -2px;
    width: 18px;
    height: 18px;
-   fill: var(--normal-text-color);
+   fill: var(--findreplace-text-color);
 }
 
 
@@ -950,7 +951,7 @@ code {
    height: calc(100vh - var(--menubar-height));
    display: grid;
    grid-auto-flow: column;
-   grid-template-columns: var(--sidebar-width) calc(100vw - var(--sidebar-width));
+   grid-template-columns: var(--editor-sidebar-width) calc(100vw - var(--editor-sidebar-width));
    grid-template-areas: 'sidebar editor';
    z-index: 20;
    /* overflow: hidden; */
@@ -964,7 +965,7 @@ code {
 .editor-container > .editor > .backdrop {
    position: absolute;
    z-index: 1;
-   width: calc(100vw - var(--sidebar-width));
+   width: calc(100vw - var(--editor-sidebar-width));
    height: calc(100vh - var(--menubar-height));
    overflow: auto;
 }
@@ -982,7 +983,7 @@ code {
    letter-spacing: 0px;
    border: none;
    outline: none;
-   width: calc(100vw - var(--sidebar-width));
+   width: calc(100vw - var(--editor-sidebar-width));
    height: calc(100vh - var(--menubar-height));
    padding: var(--editor-top-padding) 10px 10px 7px;
    -webkit-box-shadow: none;
@@ -999,15 +1000,15 @@ code {
 }
 
 .editor-container > .editor > .backdrop > .display-area {
-   background-color: var(--primary-base-color);
-   color: var(--normal-text-color);
+   background-color: var(--editor-background-color);
+   color: var(--editor-text-color);
 }
 
 .editor-container > .editor > .interactive-area {
    z-index: 4;
    background-color: transparent;
    color: transparent;
-   /* color: color-mix(in srgb, var(--secondary-accent-color) 70%, transparent); <- for testing*/
+   /* color: color-mix(in srgb, var(--accent-color2) 70%, transparent); <- for testing*/
 }
 
 .sidebar {
@@ -1017,8 +1018,8 @@ code {
    /* grid-row: 0; */
    grid-area: sidebar;
    height: 100%;
-   width: var(--sidebar-width);
-   background-color: var(--secondary-base-color);
+   width: var(--editor-sidebar-width);
+   background-color: var(--editor-sidebar-background-color);
    overflow: auto;
    overflow-x: hidden;
 }
@@ -1027,42 +1028,42 @@ code {
    writing-mode: vertical-lr;
    display: inline-block;
    border: none;
-   width: calc(var(--sidebar-width) * 0.8);
+   width: calc(var(--editor-sidebar-width) * 0.8);
    padding: 10px 5px 11px 1px;
    font-size: 1.8ch;
    text-align: center;
-   margin-left: calc(var(--sidebar-width) * 0.2099);
+   margin-left: calc(var(--editor-sidebar-width) * 0.2099);
    margin-bottom: 1px; /*default value need JS to update*/
    border-radius: 0px 11px 3px 0px;
    text-orientation: mixed;
    transform: rotate(180deg);
 }
 .sidebar > li.selected {
-   background-color: var(--primary-base-color);
-   color: color-mix(in srgb, var(--secondary-accent-color) 50%, transparent);
+   background-color: var(--editor-sidebar-tab-selected-color);
+   color: var(--editor-sidebar-tab-selected-text-color);
    z-index: 28;
 }
 .sidebar > li.deselected {
-   background-color: var(--base-color3);
-   color: color-mix(in srgb, var(--normal-text-color) 50%, transparent);
+   background-color: var(--editor-sidebar-tab-color);
+   color: var(--editor-sidebar-tab-text-color);
 }
 
 .sidebar > li.selected:hover {
    /*place `transition-duration` here to prevent `transform` from effecting*/
    transition-duration: 0.2s;
-   color: var(--secondary-accent-color);
+   color: var(--editor-sidebar-tab-selected-hover-text-color);
 }
 .sidebar > li.deselected:hover {
    transition-duration: 0.2s;
-   color: var(--normal-text-color);
-   background-color: var(--control-highlight-color);
+   color: var(--editor-sidebar-tab-hover-text-colo);
+   background-color: var(--editor-sidebar-tab-hover-color);
 }
 
 
 .sidebar > li > button {
    border: none;
-   width: calc(var(--sidebar-width) * 0.5299);
-   height: calc(var(--sidebar-width) * 0.5299);
+   width: calc(var(--editor-sidebar-width) * 0.5299);
+   height: calc(var(--editor-sidebar-width) * 0.5299);
    margin: 4px 3px -4px 0px;
    border-radius: 50%; /*make button a perfect circle*/
    background-color: transparent;
@@ -1072,11 +1073,11 @@ code {
 
 .sidebar > li.selected > button {
    display: unset;
-   fill: var(--secondary-accent-color);
+   fill: var(--editor-sidebar-button-selected-color);
 }
 .sidebar > li.deselected.saved > button {
    display: none;
-   fill: var(--normal-text-color);
+   fill: var(--editor-sidebar-button-color);
 }
 
 .sidebar > li.deselected:hover.saved > button {
@@ -1084,7 +1085,7 @@ code {
 }
 .sidebar > li > button:hover {
    background-color: color-mix(in srgb, var(--color-red) 80%, transparent);
-   fill: var(--primary-base-color)
+   fill: var(--editor-sidebar-button-hover-colo);
 }
 
 
@@ -1113,7 +1114,7 @@ code {
    transform: rotate(90deg);
 }
 .sidebar > li.deselected > button > svg {
-   fill: color-mix(in srgb, var(--normal-text-color) 50%, transparent);
+   fill: color-mix(in srgb, var(--editor-sidebar-button-color) 50%, transparent);
 }
 
 
@@ -1140,7 +1141,7 @@ code {
    letter-spacing: 0.02ch;
 }
 #no-editor-text > text > span {
-   color: var(--secondary-accent-color);
+   color: var(--accent-color2);
    text-decoration: none;
    cursor: pointer;
 }

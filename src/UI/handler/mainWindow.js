@@ -510,6 +510,7 @@ const KeyBindings = new Map([
    ['closeapp', new KeyBind('Alt+F4')],
    ['editorzoomin', new KeyBind('Ctrl+=')],
    ['editorzoomout', new KeyBind('Ctrl+-')],
+   ['reloadtheme', new KeyBind('Ctrl+Shift+t')],
 ]);
 
 const HTMLFix = new EditorEffect("htmlfix");
@@ -877,6 +878,19 @@ function isElementInactive(element){
 }
 
 
+function applyTheme(theme){
+   console.log(`app`);
+   /**
+    * @type {HTMLElement}
+    */
+   const root = document.querySelector(':root');
+
+   for(const key in theme.vars){
+      root.style.setProperty(key, theme.vars[key]);
+   }
+}
+
+
 
 
 
@@ -1019,7 +1033,6 @@ const EditorUI = {
     */
    zoomIn(amu = 5){
       EditorUI.zoomSizeModifier += amu;
-      console.log(EditorUI.zoomSizeModifier);
       // max zoom in reached
       if(EditorUI.global.fontSize + EditorUI.zoomSizeModifier > ALLOWED_FONT_SIZES[1]) return;
 
@@ -1036,7 +1049,6 @@ const EditorUI = {
     */
    zoomOut(amu = 5){
       EditorUI.zoomSizeModifier -= amu;
-      console.log(EditorUI.zoomSizeModifier);
       // max zoom out reached
       if(EditorUI.global.fontSize + EditorUI.zoomSizeModifier < ALLOWED_FONT_SIZES[0]) return;
 
@@ -1270,6 +1282,7 @@ const EditorUI = {
          textarea.classList.add('interactive-area');
          if(content) textarea.value = content;
          textarea.readOnly = readonly;
+         textarea.spellcheck = false;
 
          display.setAttribute('id', `EDA-${id}`);
          if(content) display.innerHTML = HTMLFix.applyTo(content);
@@ -2268,6 +2281,7 @@ function init(){
    KeyboardManager.catch(KeyBindings.get('rename'), btn_renameFile_click);
    KeyboardManager.catch(KeyBindings.get('editorzoomin'), btn_editorZoomIn_click);
    KeyboardManager.catch(KeyBindings.get('editorzoomout'), btn_editorZoomOut_click);
+   KeyboardManager.catch(KeyBindings.get('reloadtheme'), window.coreAPI.sendRequestReloadTheme);
 }
 
 
@@ -2315,7 +2329,7 @@ window.coreAPI.handleUpdateEditorEffects((eEvent, id, newEffects) => {
    FindpanelUI.updateResultCount();
 });
 
-window.coreAPI.handleUpdateAvaliableFontlist((eEvent, fontList) => {
+window.coreAPI.handleUpdateAvilableFontlist((eEvent, fontList) => {
    setZeroTimeout(
       () => ActionmenuUI.updateFontlist(fontList), 0
    );
@@ -2349,6 +2363,12 @@ window.coreAPI.handleUpdateEditorState((eEvent, state) => {
          actionmenuUIWaitInterval = null;
       }, 10);
    }
+});
+
+
+window.coreAPI.handleUpdateTheme((eEvent, theme) => {
+   console.log(`handle up`);
+   applyTheme(theme);
 });
 
 

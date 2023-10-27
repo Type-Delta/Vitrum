@@ -13,9 +13,9 @@ contextBridge.exposeInMainWorld('coreAPI', {
    handleSetEditorTabName: (callback) => {ipcRenderer.on('editor-set-tabname', callback)},
    handleUpdateEditorContent: (callback) => {ipcRenderer.on('editor-update-content', callback)},
    handleUpdateEditorEffects: (callback) => {ipcRenderer.on('update-editor-effects', callback)},
-
    handleUpdateAvilableFontlist: (callback) => {ipcRenderer.on('update-fontlist', callback)},
    handleUpdateEditorState: (callback) => {ipcRenderer.on('update-editor-state', callback)},
+   handleUpdateTheme: (callback) => {ipcRenderer.on('update-theme', callback)},
 
 
    handleFetchUIState: (callback) => {ipcRenderer.on('fetch-ui-state_fetch', callback)},
@@ -35,10 +35,11 @@ contextBridge.exposeInMainWorld('coreAPI', {
    sendEditorContentUpdate: (id, content, selection) =>
       ipcRenderer.send('editor-content-changed', id, content, selection),
    sendFindnReplaceUpdate: (id, option) => ipcRenderer.send('find_replace-update', id, option),
+   sendRequestReloadTheme: () => ipcRenderer.send('reques-reload-theme'),
 
    sendRespondUIState: (state) => ipcRenderer.send('fetch-ui-state_respond', state),
 
-   fetchAvailableFontlist: () => ipcRenderer.send('fetch-available-fontlist'),
+   fetchAvaliableFontlist: () => ipcRenderer.send('fetch-available-fontlist'),
 
 
    sendUserDragWindow: (mouseX, mouseY) => ipcRenderer.send('user-drag-window', mouseX, mouseY),

@@ -2,17 +2,19 @@ const { app, BrowserWindow, ipcMain, dialog, screen } = require('electron');
 const { readFileSync, renameSync } = require('fs');
 const path = require('node:path');
 const FontList = require('font-list');
-const { pass } = require('../helper/Tools.js');
+const { pass, propertiesCount } = require('../helper/Tools.js');
 
 
 const { writeLog_file, sendConsoleOutput } = require('../utilities.js');
 const { EditorManager, mergeEdits } = require('./editor.js');
 const { writeState, State, loadState } = require('./state.js');
+const { loadTheme } = require('./module/themeLoader.js');
 let {
    STATE_PATH,
    LAST_OPENFILE_PATH,
    DEFAULT_ENCODING,
-   WRITE_LOG_FILE
+   WRITE_LOG_FILE,
+   THEME_PATH
 } = require('../config.js');
 let { currentState } = require('../Global.js');
 
@@ -54,6 +56,7 @@ const DragWindow = {
    mouseX: null,
    mouseY: null,
 }
+let theme;
 
 
 
@@ -75,6 +78,9 @@ app.whenReady().then(async () => {
       );
       currentState = new State();
    }
+
+   // temporary, trust me
+   theme = await loadTheme(THEME_PATH);
 
    mainWindow = createMainWindow();
    app.on('activate', () => {
@@ -147,6 +153,10 @@ app.whenReady().then(async () => {
 
 
    ipcMain.on('find_replace-update', Vitrum.handleFindnReplaceUpdate);
+   ipcMain.on('reques-reload-theme', async () => {
+      theme = await loadTheme(THEME_PATH);
+      Vitrum.sendLoadedTheme();
+   });
    ipcMain.on('ask', Vitrum.handleQuestionAsk);
    ipcMain.on('fetch-available-fontlist', () => {
       if(!AvailableFontsFamilies?.length) return;
@@ -218,7 +228,10 @@ app.whenReady().then(async () => {
          EditorManager.restoreEditors(currentState);
       }
 
-   })
+      if(theme){
+         Vitrum.sendLoadedTheme();
+      }
+   });
 });
 
 
@@ -689,6 +702,15 @@ const Vitrum = {
 
          mainWindow.webContents.send('update-fontlist', list);
       });
+   },
+
+
+   sendLoadedTheme(){
+      sendConsoleOutput(
+         `loading Theme "${theme.name}" from '${THEME_PATH}' with ${propertiesCount(theme) - 2} modifiers.`,
+         'normal', 'Vitrum'
+      );
+      mainWindow.webContents.send('update-theme', theme);
    }
 }
 
