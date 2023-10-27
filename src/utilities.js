@@ -11,7 +11,7 @@ const {
 
 class SCOOption {
    /**color of this Message (only visible on TREMINAL)
-    * @example color and fommats available:
+    * @example color and formats available:
     * `Reset, Bright, Dim, Underscore, Blink, Reverse, Hidden`
     * fontcolor:
     * `Black, Red, Green, Yellow, Blue, Magenta, Cyan, White`
@@ -20,7 +20,7 @@ class SCOOption {
     * @type {string}
     */
    color;
-   /**Int defind importance level of the Message,
+   /**Int define importance level of the Message,
     * ranging from 1 to 4;
     * **debug: 4, normal: 3, error: 2, critical: 1**
     * @type {number}
@@ -63,7 +63,7 @@ class MCJsonText {
     * @type {boolean}
     */
    italic = false;
-   /****Animated Text:** swich bettween Dim and Bright overtimes
+   /****Animated Text:** switch between Dim and Bright overtimes
     * @type {boolean}
     */
    blink = false;
@@ -71,7 +71,7 @@ class MCJsonText {
     * @type {boolean}
     */
    invert = false;
-   /**make Text unreadable, to view it copy and paste else where
+   /**make Text unreadable, to view it copy and paste elsewhere
     * @type {boolean}
     */
    hidden = false;
@@ -108,9 +108,9 @@ const Utilities = {
     * @param {String|MCJsonText|MCJsonText[]}Text Text to send or Json Text in the same format Minecraft used
     * @param {SCOOption|'debug'|'normal'|'warn'|'error'|'critical'} options [`options.color`] replace of `color: string`, [`options.debugLevel`] defind importance level of the Message; **Alternatively**, `options` can also be used as *Presets*: `"debug", "normal", "warn", "error", "critical"`
     * @param {string}prefix the header for this message
-    * @param {string}color color or fommat of the Terminal(Node Console) Text.
+    * @param {string}color color or format of the Terminal(Node Console) Text.
     * @example
-    * fommat available: `Reset, Bright, Dim, Italic, Blink, Invert, Hidden`
+    * format available: `Reset, Bright, Dim, Italic, Blink, Invert, Hidden`
     * fontcolor: `Black, Red, Green, Yellow, Blue, Magenta, Cyan, White`
     * background color: `BgBlack, BgRed, BgGreen, BgYellow, BgBlue, BgMagenta, BgCyan, BgWhite`
     * @example // Usage
@@ -179,7 +179,7 @@ const Utilities = {
                break;
          }
 
-         // if preset is omited and/or options is not an Object
+         // if preset is omitted and/or options is not an Object
          if(!dbLevel){
             options = {
                important: (typeof prefix == 'string'?false:prefix)??false,
@@ -255,7 +255,7 @@ const Utilities = {
          return plain;
       }
 
-      /**similar to parseStr() but ignores all formating
+      /**similar to parseStr() but ignores all formatting
        * @param {string|MCJsonText|MCJsonText[]}cText
        */
       function parsePlain(cText){
@@ -270,7 +270,7 @@ const Utilities = {
          }else if(cText instanceof Object)
             plain.concat(cText.text);
          else if(typeof(cText) == 'string') plain = cText;
-         else throw new Error('@mu35a2 | Object not a valid format');
+         else throw new Error('@mu35a2 | Object is not a valid format');
 
          return plain;
       }
