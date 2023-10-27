@@ -155,7 +155,7 @@ class CustomSelect {
     */
    selectedValue;
    /**enable user to search all options
-    * usefull when there are a lot of option avaliable,
+    * useful when there are a lot of option available,
     * default to `false`
     */
    enableOptionSearch = false;
@@ -164,7 +164,7 @@ class CustomSelect {
     */
    showSelectedValue = true;
    enable = true;
-   /**unique name for this intance of CustomSelect
+   /**unique name for this instance of CustomSelect
     */
    name;
 
@@ -384,10 +384,10 @@ class CustomSelect {
 
       // add/remove active class on the container element
       const nowActive = this.wrapperElement.classList.toggle("active");
-      // update the aria-expanded attribute based on the current state
+      // update the area-expanded attribute based on the current state
       this.selectElement.setAttribute(
-         "aria-expanded",
-         this.selectElement.getAttribute("aria-expanded") === "true" ? "false" : "true"
+         "area-expanded",
+         this.selectElement.getAttribute("area-expanded") === "true" ? "false" : "true"
       );
 
       this.#emits('selectelement_click', ev);
@@ -523,7 +523,7 @@ const ALLOWED_FONT_SIZES = [2, 80];
 
 
 // Vars
-/**interval controler that's used to defer
+/**interval controller that's used to defer
  * interactions with Actionmenu when it wasn't ready
  * @type {NodeJS.Timer}
  */
@@ -1008,7 +1008,7 @@ const EditorUI = {
     */
    onEditorTab_click(ev){
       if(!(ev.target.classList.contains('editor-tab'))) return;
-      // tab and textarea's id has `Editor.index` inside seperated by '-'
+      // tab and textarea's id has `Editor.index` inside separated by '-'
       EditorUI.setActiveEditor(ev.target.id.split('-')[1]);
    },
 
@@ -1088,7 +1088,7 @@ const EditorUI = {
 
    /**handle scrolling of the editor
     * this function made sure the scrolling of **display**
-    * and **interactive area** (textarea) are pined together
+    * and **interactive area** (textarea) are pinned together
     * @param {Event} ev
     */
    handleTextarea_scroll(ev){
@@ -1110,7 +1110,7 @@ const EditorUI = {
       if(!KeyboardManager.test(KeyBind.key('ctrl'))) return;
 
       ev.preventDefault();
-      if(ev.deltaY > 0) // sroll dow == zoom out
+      if(ev.deltaY > 0) // scroll down == zoom out
          EditorUI.zoomOut();
       else EditorUI.zoomIn();
    },
@@ -1246,12 +1246,12 @@ const EditorUI = {
       }
 
       /**create all elements to made up an editor area;
-       * editor area is seperated to two main parts
+       * editor area is separated to two main parts
        * **1. display area**: this is a normal `div` element hence user can't
        * directly interact with it, this element is also the only visible part
        * of the editor area
-       * **2. interative area (textarea)**: this element user can directly interact with,
-       * but it's **invisible** to the user and need JS to manualy copy content here to the
+       * **2. interactive area (textarea)**: this element user can directly interact with,
+       * but it's **invisible** to the user and need JS to manually copy content here to the
        * *display area* so user can actually see what they're doing
        * @example
        * // editor (area) structure
@@ -1487,7 +1487,7 @@ const PromptUI = {
                value = input.value;
             else {
                // ev.preventDefault();
-               // setTimeout is necessarily otherwise keybord input would override `defaultValue`
+               // setTimeout is necessarily otherwise keyboard input would override `defaultValue`
                if(PromptUI.defaultValue)
                   setTimeout(PromptUI.insertDefault, 0);
 
@@ -1666,10 +1666,10 @@ const FindpanelUI = {
       FindpanelUI.findOption.replaceStr = FindpanelUI.replaceInput.value;
    },
 
-   /**send Find n Replace infomation
+   /**send Find n Replace information
     * along with currently active Editor ID
-    * for Core to process as well as handle some update opration
-    * that doesn't need much work by it self
+    * for Core to process as well as handle some update operation
+    * that doesn't need much work by itself
     * @param {'close'|'update'|'textupdate'|'findnext'|'findprevious'|'replace'|'replaceall'} actionType
     */
    updateFindnReplace(actionType = null){
@@ -1686,7 +1686,7 @@ const FindpanelUI = {
          return;
       }
 
-      // if the `lenght` is 0 means use just clear the find input element
+      // if the `length` is 0 means user just clear the find input element
       if(!this.findOption.findStr.length){
          EditorUI.EffectBase.set(id,
             EditorUI.EffectBase.get(id).filter(e => e.tag != 'find')
@@ -1706,7 +1706,7 @@ const FindpanelUI = {
    updateResultCount(){
       const id = EditorUI.getActiveEditorID();
       if(!id){
-         console.warn('cant find editor with id ' + id);
+         console.warn('can\'t find editor with id ' + id);
          return;
       }
 
