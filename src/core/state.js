@@ -37,11 +37,11 @@ const _State = {
          const state = new State();
 
          if(stateObj.windowSize instanceof Array) state.windowSize = stateObj.windowSize;
-         if(stateObj.openedEditors?.length){
-            state.openedEditors = [];
-            for(const eObj of stateObj.openedEditors){
-               state.openedEditors.push(
-                  Editor.reconstructor(eObj)
+         if(stateObj.openedEditors?.size){
+            state.openedEditors = new Map;
+            for(const [id, eObj] of stateObj.openedEditors){
+               state.openedEditors.set(
+                  id, Editor.reconstructor(eObj)
                );
             }
          }
@@ -77,7 +77,7 @@ const _State = {
             try{
                resolve(
                   _State.State.reconstructor(
-                     JSON.parse(data)
+                     JSON.parse(data, JSONReviver)
                   )
                );
             }catch(err){
@@ -99,7 +99,7 @@ const _State = {
       return new Promise((resolve, reject) => {
          writeFile(
             path,
-            JSON.stringify(state, undefined, 3),
+            JSON.stringify(pass(state), JSONReplacer, 3),
             { encoding: 'utf-8' },
             (err) => {
                if(err){
@@ -116,3 +116,25 @@ const _State = {
 }
 
 module.exports = _State;
+
+
+
+function JSONReplacer(key, value) {
+   if (value instanceof Map) {
+      return {
+         dataType: 'Map',
+         value: Array.from(value.entries()),
+      };
+   } else {
+      return value;
+   }
+}
+
+function JSONReviver(key, value) {
+   if (typeof value === 'object' && value !== null) {
+      if (value.dataType === 'Map') {
+         return new Map(value.value);
+      }
+   }
+   return value;
+}

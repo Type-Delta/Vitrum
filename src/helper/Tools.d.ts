@@ -262,6 +262,24 @@ declare class KeyBind {
     /**
      * @param {string} strKeyBind raw keybinding, each keys seperated by '+'
      */
+    static key(strKeyBind: string): {
+        /**raw keybinding, each keys seperated by '+'
+         */
+        rawBinding: string;
+        /**normalized keybinding stored in Set
+         * each keys are normalize so that it can be compared directly
+         * with `KeyboardEvent.Key`
+         */
+        keys: Set<string>;
+        /**
+         * @param {string} strKeyBind
+         * @returns {Set<string>} normalized keybind
+         */
+        "__#3@#normalize"(strKeyBind: string): Set<string>;
+    };
+    /**
+     * @param {string} strKeyBind raw keybinding, each keys seperated by '+'
+     */
     constructor(strKeyBind: string);
     /**raw keybinding, each keys seperated by '+'
      */
@@ -348,7 +366,7 @@ export declare namespace DataScienceKit {
      * row: each document
      * col: each word;
      * @returns {Map<string, TFIDFValues>[]}
-     * array contains TFIDFValues for every words in every Document
+     * array contain TFIDFValues for every words in every Document
      */
     function TFIDF_of(documents: string[][]): Map<string, TFIDFValues>[];
 }

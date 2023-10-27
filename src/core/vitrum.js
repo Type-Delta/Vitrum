@@ -121,7 +121,7 @@ app.whenReady().then(async () => {
       Vitrum.renameEditorFile(id, newName);
    });
 
-   ipcMain.on('cmd-undo', (eEvent, id) => {
+   ipcMain.on('cmd-undo', (eEvent, id, selection) => {
       const editor = EditorManager.getEditorWithID(id);
       if(!editor){
          sendConsoleOutput(
@@ -130,10 +130,10 @@ app.whenReady().then(async () => {
          );
          return;
       }
-      editor.undo();
+      editor.undo(selection);
    });
 
-   ipcMain.on('cmd-redo', (eEvent, id) => {
+   ipcMain.on('cmd-redo', (eEvent, id, selection) => {
       const editor = EditorManager.getEditorWithID(id);
       if(!editor){
          sendConsoleOutput(
@@ -142,7 +142,7 @@ app.whenReady().then(async () => {
          );
          return;
       }
-      editor.redo();
+      editor.redo(selection);
    });
 
 
@@ -192,8 +192,8 @@ app.whenReady().then(async () => {
 
 
    // Editor stuff
-   ipcMain.on('editor-content-changed', async (eEvent, id, content) => {
-      EditorManager.updateEditorContent(id, content);
+   ipcMain.on('editor-content-changed', async (eEvent, id, content, selection) => {
+      EditorManager.updateEditorContent(id, content, selection);
    });
 
    EditorManager.on('request_createEditorUI', (docName, id, content, readonly) => {
@@ -207,14 +207,17 @@ app.whenReady().then(async () => {
       mainWindow.webContents.send('update-editor-save-status', id, isSaved));
    EditorManager.on('request_update-doc-title', (id, title) =>
       mainWindow.webContents.send('editor-set-tabname', id, title));
-   EditorManager.on('request_update-content', (id, content) =>{
-      mainWindow.webContents.send('editor-update-content', id, content);
+   EditorManager.on('request_update-content', (id, content, selection) => {
+      mainWindow.webContents.send('editor-update-content', id, content, selection);
    });
 
    // When mainWindow is loaded
    mainWindow.once('ready-to-show', () => {
-      if(currentState)
-         mainWindow.webContents.send('update-state', currentState);
+      if(currentState){
+         mainWindow.webContents.send('update-editor-state', currentState.editor);
+         EditorManager.restoreEditors(currentState);
+      }
+
    })
 });
 

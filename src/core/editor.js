@@ -47,6 +47,10 @@ class EditorEdits {
     * @type {TextChange[]}
     */
    textChanges = [];
+   /**selection on the editor at this time position
+    * @type {number[]}
+    */
+   selection;
 
 
    constructor(){
@@ -81,6 +85,10 @@ class Editor {
     */
    content = '';
    lastContent = '';
+   /**current selection on the editor
+    * @type {number[]}
+    */
+   currentSelection;
    /**encoding use when write content to disk
     * @type {string}
     */
@@ -121,15 +129,19 @@ class Editor {
     * @returns {Editor}
     */
    static reconstructor(obj){
-      if(!obj.filePath||!fs.existsSync(obj.filePath)){
-         return null;
+      const editor = new Editor(obj.docName??'Unknown');
+      if(obj.filePath&&fs.existsSync(obj.filePath)){
+         editor.filePath = obj.filePath;
       }
 
-      const editor = new Editor(obj.docName??'Unknown');
       if(obj.isSaved) editor.isSaved = obj.isSaved;
-      if(obj.filePath) editor.filePath = obj.filePath;
+      if(obj.content) editor.content = obj.content;
       if(obj.readonly) editor.readonly = obj.readonly;
       if(obj.encoding) editor.encoding = obj.encoding;
+      if(obj.id){
+         editor.id = obj.id;
+         HTMLElementIDs.add(obj.id);
+      }
       return editor;
    }
 
@@ -185,6 +197,8 @@ class Editor {
 
       let diff;
       let edits = new EditorEdits();
+      edits.selection = this.currentSelection;
+
       if(OPTIMIZATION_MODE === 'lessmemory'){
          diff = Diff.diffChars(
             this.lastContent,
@@ -222,7 +236,7 @@ class Editor {
 
 
    updateContent(){
-      editorEmitter.emit('request_update-content', this.id, this.content);
+      editorEmitter.emit('request_update-content', this.id, this.content, this.currentSelection);
    }
 
 
@@ -253,32 +267,34 @@ class Editor {
 
    redo(){
       if(!this.canRedo()) return;
-
       this.updateHistory();
-      // console.log(this.history[--this.timelineCurrentPos].textChanges);
+
       this.content = '';
+      const futureSelection = this.history[this.timelineCurrentPos - 1].selection;
       for(const c of this.history[--this.timelineCurrentPos].textChanges){
          if(c.removed) continue;
          this.content += c.value;
       }
-      // console.log(`tl pos: `, this.timelineCurrentPos, this.history.length);
+
       this.lastContent = this.content;
+      this.currentSelection = futureSelection;
       this.updateContent();
    }
 
 
    undo(){
       if(!this.canUndo()) return;
-
       this.updateHistory();
-      // console.log(this.history[this.timelineCurrentPos].textChanges);
+
       this.content = '';
+      const pastSelection = this.history[this.timelineCurrentPos + 1].selection;
       for(const c of this.history[this.timelineCurrentPos++].textChanges){
          if(c.added) continue;
          this.content += c.value;
       }
-      // console.log(`tl pos: `, this.timelineCurrentPos, this.history.length);
+
       this.lastContent = this.content;
+      this.currentSelection = pastSelection;
       this.updateContent();
    }
 
@@ -434,15 +450,27 @@ const EditorManager = {
    /**update editor content and `isSaved` status
     * @param {string} id editor id
     * @param {string} newContent
+    * @param {number[]} selection current selection on the editor
     */
-   updateEditorContent(id, newContent){
+   updateEditorContent(id, newContent, selection){
       const editor = editors.get(id);
       if(!editor) process?.emitWarning('#dadw5 | can\'t find Editor with id \'' + id + "'");
 
       editor.content = newContent;
-      editor.lastContent = newContent + '';
+      editor.currentSelection = selection;
+      editor.isSaved = false;
       if(editor.isSaved) editor.isSaved = false;
       editor.update();
+   },
+
+
+   restoreEditors(state){
+      if(!state.openedEditors?.size||!(state.openedEditors instanceof Map)) return;
+
+      for(const [id, editor] of state.openedEditors){
+         editors.set(id, editor);
+         editor.createUI();
+      }
    }
 }
 

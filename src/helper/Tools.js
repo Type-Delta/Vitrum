@@ -336,7 +336,7 @@ const Tools = {
        * row: each document
        * col: each word;
        * @returns {Map<string, TFIDFValues>[]}
-       * array contains TFIDFValues for every words in every Document
+       * array contain TFIDFValues for every words in every Document
        */
       TFIDF_of(documents){
          const docCount = documents.length;
@@ -2049,6 +2049,13 @@ const Tools = {
          constructor(strKeyBind){
             this.rawBinding = strKeyBind;
             this.keys = this.#normalize(strKeyBind);
+         }
+
+         /**
+          * @param {string} strKeyBind raw keybinding, each keys seperated by '+'
+          */
+         static key(strKeyBind){
+            return new KeyBind(strKeyBind);
          }
 
          /**

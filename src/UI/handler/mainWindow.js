@@ -498,8 +498,7 @@ class CustomSelect {
 const NAMESPACES = {
    svg: "http://www.w3.org/2000/svg"
 };
-const GlobalKey = new Keyboard();
-
+const KeyboardManager = new Keyboard();
 const KeyBindings = new Map([
    ['undo', new KeyBind('Ctrl+Z')],
    ['redo', new KeyBind('Ctrl+Shift+Z')],
@@ -508,11 +507,16 @@ const KeyBindings = new Map([
    ['openfile', new KeyBind('Ctrl+O')],
    ['savefile', new KeyBind('Ctrl+S')],
    ['savefileas', new KeyBind('Ctrl+Shift+S')],
-   ['closeapp', new KeyBind('Alt+F4')]
+   ['closeapp', new KeyBind('Alt+F4')],
+   ['editorzoomin', new KeyBind('Ctrl+=')],
+   ['editorzoomout', new KeyBind('Ctrl+-')],
 ]);
 
 const HTMLFix = new EditorEffect("htmlfix");
-
+/**the maximum, minimum font size allowed in px
+ * @type {number[]} - [minSize, maxSize]
+ */
+const ALLOWED_FONT_SIZES = [2, 80];
 
 
 
@@ -535,7 +539,7 @@ let actionmenuUIWaitInterval;
 
 
 /////////////////////   Events   /////////////////////
-///  `click`  ///
+///  `click` for both actual btn and the virtual ones ///
 /**
  * @param {MouseEvent} ev
  */
@@ -696,6 +700,20 @@ function btn_insert_click(ev){
  */
 function btn_editPreferences_click(ev){
    console.log(`Preferences`);
+}
+/**
+ * @param {MouseEvent} ev
+ */
+function btn_editorZoomIn_click(ev){
+   console.log(`zoom in`);
+   EditorUI.zoomIn();
+}
+/**
+ * @param {MouseEvent} ev
+ */
+function btn_editorZoomOut_click(ev){
+   console.log(`zoom out`);
+   EditorUI.zoomOut();
 }
 /**
  * @param {MouseEvent} ev
@@ -876,23 +894,37 @@ const EditorUI = {
     */
    EffectBase: new Map(),
    global: {
+      /**font size in px
+       * @type {number}
+       */
       fontSize: null,
+      /**line spacing (aka. line height) in ch
+       * @type {number}
+       */
       lineSpacing: null,
+      /**letter spacing in ch
+       * @type {number}
+       */
       letterSpacing: null,
+      /**whether to use line wrap or not
+       * @type {boolean}
+       */
       useLineWrap: null,
+      /**encoding type
+       * @type {string}
+       */
       encoding: null,
+      /**font family name
+       * @type {string}
+       */
       fontFamily: null
    },
-   // global: {
-   //    fontSize: '16px',
-   //    lineSpacing: '2ch',
-   //    letterSpacing: '0ch',
-   //    useLineWrap: 'pre-line',
-   //    /**@type {string} */
-   //    encoding: null,
-   //    /**@type {string} */
-   //    fontFamily: null
-   // },
+   /**modifier for the fontsize in px
+    * this number will get added to the fontsize
+    * when setting `style`
+    * @type {number}
+    */
+   zoomSizeModifier: 0,
 
 
 
@@ -906,19 +938,24 @@ const EditorUI = {
 
       const whiteSpaceStyle = (this.global.useLineWrap?'pre-line':'nowrap');
       for(const [ /*id*/, editor ] of this.editors){
-         if(editor.displayElement.style.fontSize != this.global.fontSize){
+         if(
+            parseFloat(
+               editor.displayElement.style.fontSize.slice(0, -2)
+            ) - this.zoomSizeModifier != this.global.fontSize
+         ){
             editor.displayElement.style.fontSize =
-               editor.textAreaElement.style.fontSize = this.global.fontSize;
+               editor.textAreaElement.style.fontSize =
+               (this.global.fontSize + this.zoomSizeModifier) + 'px';
          }
 
-         if(editor.displayElement.style.lineHeight != this.global.lineSpacing){
+         if(editor.displayElement.style.lineHeight.slice(0, -2) != this.global.lineSpacing){
             editor.displayElement.style.lineHeight =
-               editor.textAreaElement.style.lineHeight = this.global.lineSpacing;
+               editor.textAreaElement.style.lineHeight = this.global.lineSpacing + 'ch';
          }
 
-         if(editor.displayElement.style.letterSpacing != this.global.letterSpacing){
+         if(editor.displayElement.style.letterSpacing.slice(0, -2) != this.global.letterSpacing){
             editor.displayElement.style.letterSpacing =
-               editor.textAreaElement.style.letterSpacing = this.global.letterSpacing;
+               editor.textAreaElement.style.letterSpacing = this.global.letterSpacing + 'ch';
          }
 
          if(editor.textAreaElement.style.whiteSpace != whiteSpaceStyle){
@@ -944,17 +981,11 @@ const EditorUI = {
 
       let content = editor.textAreaElement.value + '';
 
-
-      if(effects?.length){
+      if(effects?.length)
          content = EditorEffect.applyAll(effects, content, true);
-      }else{
-         const { text } = HTMLFix.applyTo(content);
-         content = text;
-      }
-
+      else content = HTMLFix.applyTo(content);
 
       editor.displayElement.innerHTML = content;
-      console.timeEnd(`input delay`);
    },
 
 
@@ -982,22 +1013,59 @@ const EditorUI = {
       );
    },
 
+   /**zoom in by changing the actual fontsize of the editor element
+    * this will not modify `EditorUI.global.fontSize` value
+    * @param {number} amu how much the actual font size would change in px
+    */
+   zoomIn(amu = 5){
+      EditorUI.zoomSizeModifier += amu;
+      console.log(EditorUI.zoomSizeModifier);
+      // max zoom in reached
+      if(EditorUI.global.fontSize + EditorUI.zoomSizeModifier > ALLOWED_FONT_SIZES[1]) return;
+
+      for(const [/*id*/, editor] of EditorUI.editors){
+         editor.displayElement.style.fontSize =
+               editor.textAreaElement.style.fontSize =
+               (this.global.fontSize + this.zoomSizeModifier) + 'px';
+      }
+   },
+
+   /**zoom out by changing the actual fontsize of the editor element
+    * this will not modify `EditorUI.global.fontSize` value
+    * @param {number} amu how much the actual font size would change in px
+    */
+   zoomOut(amu = 5){
+      EditorUI.zoomSizeModifier -= amu;
+      console.log(EditorUI.zoomSizeModifier);
+      // max zoom out reached
+      if(EditorUI.global.fontSize + EditorUI.zoomSizeModifier < ALLOWED_FONT_SIZES[0]) return;
+
+      for(const [/*id*/, editor] of EditorUI.editors){
+         editor.displayElement.style.fontSize =
+               editor.textAreaElement.style.fontSize =
+               (this.global.fontSize + this.zoomSizeModifier) + 'px';
+      }
+   },
+
    /****handler function** this function should be called
     * every time there's any change on the Textarea content
     * that's not from the Core program
     * @param {InputEvent|EditorPackage} ev InputEvent or EditorPackage
     */
    handleTextarea_change(ev){
-      console.time(`input delay`);
       const textarea = ev?.target??ev.textAreaElement;
 
       EditorUI.updateEditorDisplay(
          getComponentID(textarea)
       );
 
+
       window.coreAPI.sendEditorContentUpdate(
          getComponentID(textarea),
-         textarea.value
+         textarea.value,
+         [
+            textarea.selectionStart, textarea.selectionEnd
+         ]
       );
 
 
@@ -1021,6 +1089,18 @@ const EditorUI = {
       // Have no f clue why `editor.backdropElement` won't work here...
       bd.scrollTop = editor.textAreaElement.scrollTop;
       bd.scrollLeft = editor.textAreaElement.scrollLeft;
+   },
+
+   /**
+    * @param {WheelEvent} ev
+    */
+   handleTextarea_wheelTick(ev){
+      if(!KeyboardManager.test(KeyBind.key('ctrl'))) return;
+
+      ev.preventDefault();
+      if(ev.deltaY > 0) // sroll dow == zoom out
+         EditorUI.zoomOut();
+      else EditorUI.zoomIn();
    },
 
 
@@ -1071,7 +1151,7 @@ const EditorUI = {
    },
 
 
-   setEditorContent(id, content){
+   setEditorContent(id, content, selection){
       const editor = EditorUI.getEditorWithID(id);
       if(!editor){
          console.warn(`can't find editor with id: `, id);
@@ -1079,6 +1159,10 @@ const EditorUI = {
       }
 
       editor.textAreaElement.value = content;
+      if(selection?.[0]??true){
+         editor.textAreaElement.selectionStart = selection[0];
+         editor.textAreaElement.selectionEnd = selection[1];
+      }
       if(FindpanelUI.isActive)
          FindpanelUI.updateFindnReplace('textupdate');
 
@@ -1174,6 +1258,7 @@ const EditorUI = {
 
          textarea.addEventListener('input', EditorUI.handleTextarea_change);
          textarea.addEventListener('scroll', EditorUI.handleTextarea_scroll);
+         textarea.addEventListener('wheel', EditorUI.handleTextarea_wheelTick);
          textarea.addEventListener('keydown', function (ev){
             if(ev.key == 'Tab'){
                handleTextarea_TabKeyPressed(ev, this);
@@ -1183,10 +1268,11 @@ const EditorUI = {
 
          textarea.setAttribute('id', `EIA-${id}`); // editor interactive area
          textarea.classList.add('interactive-area');
-         if(content) textarea.textContent = content;
+         if(content) textarea.value = content;
          textarea.readOnly = readonly;
 
          display.setAttribute('id', `EDA-${id}`);
+         if(content) display.innerHTML = HTMLFix.applyTo(content);
          display.classList.add('display-area');
 
          backdrop.setAttribute('id', `EBD-${id}`);
@@ -1652,6 +1738,10 @@ const ActionmenuUI = {
        * @type {HTMLDivElement}
        */
       fontPreview: null,
+      /**
+       * @type {HTMLDivElement}
+       */
+      lineWrapToggle: null
    },
 
    /**the Actionmenu element
@@ -1764,17 +1854,40 @@ const ActionmenuUI = {
          '.actionmenu .actionmenu-wrapper > #actionmenu-font-decrease-btn'
       ).addEventListener('click', this.handleDecreaseFontSize_click);
 
-      this.actionmenuElement = document.querySelector('body > .actionmenu');
-      this.actionmenuElement.addEventListener('mouseenter', this.handleMouseEnter);
-      this.actionmenuElement.addEventListener('mouseleave', this.handleMouseLeave);
-      this.actionmenuElement.hidden = false;
-      this.isReady = true;
+      this.Common.lineWrapToggle = document.querySelector(
+         '.actionmenu > .actionmenu-wrapper > #actionmenu-toggle-wrap-btn'
+      );
+      this.Common.lineWrapToggle.addEventListener('click', this.handleLineWrapToggle_click);
 
+      {
+         this.actionmenuElement = document.querySelector('body > .actionmenu');
+         this.actionmenuElement.addEventListener('mouseenter', this.handleMouseEnter);
+         this.actionmenuElement.addEventListener('mouseleave', this.handleMouseLeave);
+
+         const { height } = this.actionmenuElement.getBoundingClientRect();
+         this.actionmenuElement.style.transform = `translateY(-${height})`;
+         this.isReady = true;
+      }
 
       this.expandTimer = new Timer(500, 'ms');
       ActionbarUI.onMouseEnter(this.triggerExpand);
       ActionbarUI.onMouseLeave(this.triggerRetractWait);
    },
+
+
+   setLineSpacingDisplay(string){
+      document.querySelector(
+         '.actionmenu #actionmenu-font-preview sup #line-spacing-display'
+      ).innerText = string;
+   },
+
+   setLetterSpacingDisplay(string){
+      document.querySelector(
+         '.actionmenu #actionmenu-font-preview sup #letter-spacing-display'
+      ).innerText = string;
+   },
+
+
 
    /**handle changed of the selected value
     * @param {string} newValueID
@@ -1793,28 +1906,34 @@ const ActionmenuUI = {
 
 
    handleIncreaseFontSize_click(){
-      const size = parseInt(EditorUI.global.fontSize.replace('px', '')) + 1;
-      if(size > 80) return;
+      const size = EditorUI.global.fontSize + 1;
+      if(size > ALLOWED_FONT_SIZES[1]) return;
 
       const display = document.querySelector(
          '.actionmenu #actionmenu-font-preview sup #fontsize-display'
       );
       display.innerText = size.toString();
 
-      EditorUI.global.fontSize = size + 'px';
+      EditorUI.global.fontSize = size;
       EditorUI.update();
    },
 
    handleDecreaseFontSize_click(){
-      const size = parseInt(EditorUI.global.fontSize.replace('px', '')) - 1;
-      if(size < 2) return;
+      const size = EditorUI.global.fontSize - 1;
+      if(size < ALLOWED_FONT_SIZES[0]) return;
 
       const display = document.querySelector(
          '.actionmenu #actionmenu-font-preview sup #fontsize-display'
       );
       display.innerText = size.toString();
 
-      EditorUI.global.fontSize = size + 'px';
+      EditorUI.global.fontSize = size;
+      EditorUI.update();
+   },
+
+   handleLineWrapToggle_click(){
+      const nowActive = ActionmenuUI.Common.lineWrapToggle.classList.toggle('active');
+      EditorUI.global.useLineWrap = nowActive;
       EditorUI.update();
    },
 
@@ -1830,9 +1949,11 @@ const ActionmenuUI = {
       const [, value] = ActionmenuUI.valueMap.getRecordFromValueID(
          newValueID,
          ActionmenuUI.valueMap.lineSpacingSelect
-      );
+      )??[];
+
+      if(!value) return;
       display.innerText = value.toString();
-      EditorUI.global.lineSpacing = value + 'ch';
+      EditorUI.global.lineSpacing = value;
       if(independentChange) EditorUI.update();
    },
 
@@ -1848,14 +1969,16 @@ const ActionmenuUI = {
       const [, value, alias] = ActionmenuUI.valueMap.getRecordFromValueID(
          newValueID,
          ActionmenuUI.valueMap.letterSpacingSelect
-      );
+      )??[];
+
+      if(!value) return;
       display.innerText = alias?alias: value.toString();
-      EditorUI.global.letterSpacing = value + 'ch';
+      EditorUI.global.letterSpacing = value;
       if(independentChange) EditorUI.update();
    },
 
    handleEncodingSelect_change(newValueID){
-      EditorUI.global.encoding = newValueID.replace('EC-', '');
+      EditorUI.global.encoding = newValueID.slice(3);
    },
 
    handleMouseEnter(){
@@ -1874,11 +1997,11 @@ const ActionmenuUI = {
    update(){
       const fontID = fontToValueID(EditorUI.global.fontFamily);
       const letterSpcID = this.valueMap.getValueIDFromValue(
-         EditorUI.global.letterSpacing.slice(0, -2),
+         EditorUI.global.letterSpacing,
          this.valueMap.letterSpacingSelect
       );
       const lineSpcID = this.valueMap.getValueIDFromValue(
-         EditorUI.global.lineSpacing.slice(0, -2),
+         EditorUI.global.lineSpacing,
          this.valueMap.lineSpacingSelect
       );
       const encID = 'EC-' + EditorUI.global.encoding;
@@ -1889,16 +2012,24 @@ const ActionmenuUI = {
          this.handleFontSelect_change(fontID, false);
       }
 
-      if(letterSpcID&&letterSpcID != this.Common.letterSpacingSelect.selectedValue){
-         console.log(`letter update`);
-         this.Common.letterSpacingSelect.setSelectedValue(letterSpcID);
-         this.handleLetterSpacing_chnge(letterSpcID, false);
+      if(
+         EditorUI.global.letterSpacing != null&&
+         letterSpcID != this.Common.letterSpacingSelect.selectedValue
+      ){
+         if(letterSpcID){
+            this.Common.letterSpacingSelect.setSelectedValue(letterSpcID);
+            this.handleLetterSpacing_chnge(letterSpcID, false);
+         }else this.setLetterSpacingDisplay(EditorUI.global.letterSpacing.toString());
       }
 
-      if(lineSpcID&&lineSpcID != this.Common.lineSpacingSelect.selectedValue){
-         console.log(`letter update`);
-         this.Common.lineSpacingSelect.setSelectedValue(lineSpcID);
-         this.handleLineSpacing_change(lineSpcID, false);
+      if(
+         EditorUI.global.lineSpacing != null&&
+         lineSpcID != this.Common.lineSpacingSelect.selectedValue
+      ){
+         if(lineSpcID){
+            this.Common.lineSpacingSelect.setSelectedValue(lineSpcID);
+            this.handleLineSpacing_change(lineSpcID, false);
+         }else this.setLineSpacingDisplay(EditorUI.global.lineSpacing.toString());
       }
 
       if(EditorUI.global.encoding&&encID != this.Common.encodingSelect.selectedValue){
@@ -1907,21 +2038,28 @@ const ActionmenuUI = {
       }
 
 
+      if(EditorUI.global.useLineWrap)
+         this.Common.lineWrapToggle.classList.add('active');
+      else this.Common.lineWrapToggle.classList.remove('active');
+
+
       {// update displayed fontsize
-         const size = parseInt(EditorUI.global.fontSize.replace('px', ''));
          const display = document.querySelector(
             '.actionmenu #actionmenu-font-preview sup #fontsize-display'
          );
-         display.innerText = size.toString();
+         display.innerText = EditorUI.global.fontSize.toString();
       }
       EditorUI.update();
    },
 
 
    updateFontlist(fontList){
-      this.fonts_TFIDFMap = to.DataScienceKit.TFIDF_of(
-         fontList.map(fontName => fontName.replace(/"/g, '').split(/\s/g))
-      );
+      queueMicrotask(() => {
+         // calculating TF-IDF is quite resources hungry
+         this.fonts_TFIDFMap = to.DataScienceKit.TFIDF_of(
+            fontList.map(fontName => fontName.replace(/"/g, '').split(/\s/g))
+         );
+      });
 
       const select = this.Common.fontFamilySelect;
       if(this.fetchFontlistInterval){
@@ -1951,10 +2089,9 @@ const ActionmenuUI = {
 
 
    triggerExpand(){
-      // console.log(`expand`);
       ActionmenuUI.actionmenuElement.hidden = false;
       gsap.to('body > .actionmenu', {
-         y: 0, duration: .22
+         translateY: 0, duration: .22
       });
       ActionmenuUI.isExplanded = true;
       if(ActionmenuUI.expandTimer.isRunning){
@@ -1964,7 +2101,6 @@ const ActionmenuUI = {
 
 
    triggerRetractWait(){
-      // console.log(`wait`);
       if(!ActionmenuUI.isExplanded) return;
 
       ActionmenuUI.expandTimer.start()
@@ -1973,10 +2109,9 @@ const ActionmenuUI = {
 
 
    triggerRetract(){
-      // console.log(`retract`);
       const { height } = ActionmenuUI.actionmenuElement.getBoundingClientRect();
       gsap.to('body > .actionmenu', {
-         y: -height, duration: .2,
+         translateY: -height, duration: .2,
          onComplete() {
             ActionmenuUI.actionmenuElement.hidden = true;
          }
@@ -2121,16 +2256,18 @@ function init(){
 
 
    // KeyboardEvents
-   onkeydown = onkeyup = GlobalKey.handleKeyPress;
+   onkeydown = onkeyup = KeyboardManager.handleKeyPress;
 
-   GlobalKey.catch(KeyBindings.get('undo'), btn_undo_click);
-   GlobalKey.catch(KeyBindings.get('redo'), btn_redo_click);
-   GlobalKey.catch(KeyBindings.get('find'), btn_findReplace_click);
-   GlobalKey.catch(KeyBindings.get('openfile'), btn_openFile_click);
-   GlobalKey.catch(KeyBindings.get('closeapp'), btn_closeApp_click);
-   GlobalKey.catch(KeyBindings.get('savefile'), btn_saveFile_click);
-   GlobalKey.catch(KeyBindings.get('savefileas'), btn_saveFileAs_click);
-   GlobalKey.catch(KeyBindings.get('rename'), btn_renameFile_click);
+   KeyboardManager.catch(KeyBindings.get('undo'), btn_undo_click);
+   KeyboardManager.catch(KeyBindings.get('redo'), btn_redo_click);
+   KeyboardManager.catch(KeyBindings.get('find'), btn_findReplace_click);
+   KeyboardManager.catch(KeyBindings.get('openfile'), btn_openFile_click);
+   KeyboardManager.catch(KeyBindings.get('closeapp'), btn_closeApp_click);
+   KeyboardManager.catch(KeyBindings.get('savefile'), btn_saveFile_click);
+   KeyboardManager.catch(KeyBindings.get('savefileas'), btn_saveFileAs_click);
+   KeyboardManager.catch(KeyBindings.get('rename'), btn_renameFile_click);
+   KeyboardManager.catch(KeyBindings.get('editorzoomin'), btn_editorZoomIn_click);
+   KeyboardManager.catch(KeyBindings.get('editorzoomout'), btn_editorZoomOut_click);
 }
 
 
@@ -2156,8 +2293,8 @@ window.coreAPI.handleUpdateEditorSaveStatus((eEvent, id, isSaved) => {
    EditorUI.setEditorSaveStatus(id, isSaved);
 });
 
-window.coreAPI.handleUpdateEditorContent((eEvent, id, content) => {
-   EditorUI.setEditorContent(id, content);
+window.coreAPI.handleUpdateEditorContent((eEvent, id, content, selection) => {
+   EditorUI.setEditorContent(id, content, selection);
 });
 
 window.coreAPI.handleUpdateEditorEffects((eEvent, id, newEffects) => {
@@ -2184,12 +2321,13 @@ window.coreAPI.handleUpdateAvaliableFontlist((eEvent, fontList) => {
    );
 });
 
-window.coreAPI.handleUpdateAppState((eEvent, state) => {
-   EditorUI.global.fontFamily = state.editor.fontFamily;
-   EditorUI.global.fontSize = state.editor.fontSize + 'px';
-   EditorUI.global.encoding = state.editor.encoding;
-   EditorUI.global.lineSpacing = state.editor.lineSpacing + 'ch';
-   EditorUI.global.letterSpacing = state.editor.letterSpacing + 'ch';
+window.coreAPI.handleUpdateEditorState((eEvent, state) => {
+   EditorUI.global.fontFamily = state.fontFamily;
+   EditorUI.global.fontSize = state.fontSize;
+   EditorUI.global.encoding = state.encoding;
+   EditorUI.global.lineSpacing = state.lineSpacing;
+   EditorUI.global.letterSpacing = state.letterSpacing;
+   EditorUI.global.useLineWrap = state.useLineWrap;
 
    if(ActionmenuUI.isReady)
       ActionmenuUI.update();
@@ -2203,6 +2341,7 @@ window.coreAPI.handleUpdateAppState((eEvent, state) => {
       }
 
       actionmenuUIWaitInterval = setInterval(() => {
+         console.log(`wait update state`);
          if(!ActionmenuUI.isReady) return;
          ActionmenuUI.update();
 
@@ -2214,26 +2353,14 @@ window.coreAPI.handleUpdateAppState((eEvent, state) => {
 
 
 window.coreAPI.handleFetchUIState(() => {
-   const fontSize = EditorUI.global.fontSize? parseInt(
-      EditorUI.global.fontSize.slice(0, EditorUI.global.fontSize.length - 2)
-   ): null;
-
-   const letterSpacing = EditorUI.global.letterSpacing? parseFloat(
-      EditorUI.global.letterSpacing.slice(0, EditorUI.global.letterSpacing.length - 2)
-   ): null;
-
-   const lineSpacing = EditorUI.global.lineSpacing? parseFloat(
-      EditorUI.global.lineSpacing.slice(0, EditorUI.global.lineSpacing.length - 2)
-   ): null;
-
-
    window.coreAPI.sendRespondUIState({
       editor: {
          encoding: EditorUI.global.encoding,
          fontFamily: EditorUI.global.fontFamily,
-         fontSize,
-         letterSpacing,
-         lineSpacing
+         fontSize: EditorUI.global.fontSize,
+         letterSpacing: EditorUI.global.letterSpacing,
+         lineSpacing: EditorUI.global.lineSpacing,
+         useLineWrap: EditorUI.global.useLineWrap
       }
    });
 });

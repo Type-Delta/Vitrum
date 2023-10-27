@@ -408,6 +408,7 @@ code {
    padding: 10px var(--actionmenu-side-padding);
    position: absolute;
    transform-origin: top center;
+   z-index: 23;
    /* transform: scaleY(0); */
 
    --actionmenu-side-padding: 63px;
@@ -1005,7 +1006,8 @@ code {
 .editor-container > .editor > .interactive-area {
    z-index: 4;
    background-color: transparent;
-   color: color-mix(in srgb, var(--secondary-accent-color) 70%, transparent);
+   color: transparent;
+   /* color: color-mix(in srgb, var(--secondary-accent-color) 70%, transparent); <- for testing*/
 }
 
 .sidebar {

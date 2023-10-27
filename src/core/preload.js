@@ -14,7 +14,7 @@ contextBridge.exposeInMainWorld('coreAPI', {
    handleUpdateEditorContent: (callback) => {ipcRenderer.on('editor-update-content', callback)},
    handleUpdateEditorEffects: (callback) => {ipcRenderer.on('update-editor-effects', callback)},
    handleUpdateAvaliableFontlist: (callback) => {ipcRenderer.on('update-fontlist', callback)},
-   handleUpdateAppState: (callback) => {ipcRenderer.on('update-state', callback)},
+   handleUpdateEditorState: (callback) => {ipcRenderer.on('update-editor-state', callback)},
 
    handleFetchUIState: (callback) => {ipcRenderer.on('fetch-ui-state_fetch', callback)},
 
@@ -30,7 +30,8 @@ contextBridge.exposeInMainWorld('coreAPI', {
    sendRenameFileCmd: (id, newName) => ipcRenderer.send('cmd-renamefile', id, newName),
    sendUndoCmd: (id) => ipcRenderer.send('cmd-undo', id),
    sendRedoCmd: (id) => ipcRenderer.send('cmd-redo', id),
-   sendEditorContentUpdate: (id, content) => ipcRenderer.send('editor-content-changed', id, content),
+   sendEditorContentUpdate: (id, content, selection) =>
+      ipcRenderer.send('editor-content-changed', id, content, selection),
    sendFindnReplaceUpdate: (id, option) => ipcRenderer.send('find_replace-update', id, option),
 
    sendRespondUIState: (state) => ipcRenderer.send('fetch-ui-state_respond', state),
