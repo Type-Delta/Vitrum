@@ -316,10 +316,14 @@ class EditorEffect {
     * @param {string} text
     * @param {number} offset position offset when applying effect position
     */
-   applyTo(text, offset = 0){
+   applyTo(text, offset){
       let oldLength, _text = text + '';
       let effectTags = this.getHTMLTags();
-
+      let quickApply;
+      if(offset??true){
+         quickApply = true;
+         offset = 0;
+      }else quickApply = false;
 
       switch(this.type){
          case 'selected-highlight':
@@ -352,6 +356,7 @@ class EditorEffect {
             break;
          }
       }
+      if(quickApply) return _text;
       return { text: _text, offset };
    }
 

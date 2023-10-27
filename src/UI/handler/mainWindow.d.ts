@@ -96,7 +96,7 @@ export interface CoreAPI {
    handleUpdateEditorContent: (callback: Function) => void
    handleUpdateEditorEffects: (callback: Function) => void
    handleUpdateAvaliableFontlist: (callback: Function) => void
-   handleUpdateAppState: (callback: Function) => void
+   handleUpdateEditorState: (callback: Function) => void
 
    handleFetchUIState: (callback: Function) => void
 
@@ -113,12 +113,18 @@ export interface CoreAPI {
    sendRenameFileCmd: (id: string, newName: string) => void
    sendUndoCmd: (id: string) => void
    sendRedoCmd: (id: string) => void
-   sendEditorContentUpdate: (id: string, content: string) => void
+   sendEditorContentUpdate: (id: string, content: string, selection: number[]) => void
    sendFindnReplaceUpdate: (id: string, option) => void
 
    sendRespondUIState: (state: UIState) => void
 
    fetchAvaliableFontlist: () => void
+
+
+   sendUserDragWindow: (mouseX: number, mouseY: number) => void,
+   sendUserDragWindowStart: () => void,
+   sendUserDragWindowStop: () => void,
+
 
    /**ask Questions to Core, this system works like
     * predicates where MainWorld ask something and the IsolatedWorld (Core)
