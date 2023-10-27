@@ -1,4 +1,4 @@
-#Vitrum
+# Vitrum
 
 Means *glass* in Latin; because it is our concept. Glass is clear, right? So as **Vitrum**; it is a text editor which is minimal and user friendly yet full of features.
 
