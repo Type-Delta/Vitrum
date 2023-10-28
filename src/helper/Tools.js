@@ -194,26 +194,21 @@ const Tools = {
     * @returns new cleaned array
     */
    cleanArr(Arr, itemToClean = null){
-      let _arr;
-
       if(itemToClean && itemToClean instanceof Array){
-         itemToClean.forEach(item => {
-            _arr = Arr.filter(function (itemInArr) {
-               return itemInArr !== item;
-            });
-         })
+         return Arr.filter(function (itemInArr) {
+            return !itemToClean.includes(itemInArr);
+         });
+      }
 
-      } else if(itemToClean){
-         _arr = Arr.filter(function (itemInArr) {
+      if(itemToClean){
+         return Arr.filter(function (itemInArr) {
             return itemInArr !== itemToClean;
          });
-
-      } else{
-         _arr = Arr.filter(itemInArr =>
-            (itemInArr !== ''&&!this.isEmptyArray(itemInArr)&&!this.isEmptyObject(itemInArr))
-         );
       }
-      return _arr;
+
+      return Arr.filter(itemInArr =>
+            (itemInArr !== ''&&!this.isEmptyArray(itemInArr)&&!this.isEmptyObject(itemInArr))
+      );
    },
 
 
@@ -610,6 +605,19 @@ const Tools = {
     */
    isEmptyObject: obj =>
       !(obj instanceof Array)&&(obj instanceof Object)&&!this.propertiesCount(obj),
+
+
+   /**check if the given path contains is valid
+    * (no invali chars)
+    *
+    * **Note That**: this checking is for path only and not filename
+    * thus all type of slash is consider  valid
+    */
+   isValidFilePath(path){
+      if(!path||!path?.length) return false;
+      if(/[:?"<>|*]/g.test(path)) return false;
+      return true;
+   },
 
 
 
@@ -1197,6 +1205,7 @@ const Tools = {
       var rows = Tools.cleanArr(ConfigString.trim().split('\n'), ['', '\s', '\r']);
       var configObj = new Map();
       const st = new Tools.SafeTrue();
+      const startAndEndsWithQ_reg = /^["'].*["']$/;
       let indexOfSbeforeQ = 0;
 
       let json_str = '', jsonVar_key;
@@ -1211,6 +1220,7 @@ const Tools = {
          if(eachRow.startsWith('#')) continue;
 
          // | pair00 = pair01
+         /**@type {string[]} */
          let eachPair = Tools.cleanArr(eachRow.split('='));
          if(eachPair.length > 2)
             throw new Error(`Tools.parseConfig(): invalid syntax, '=' cannot occur more than one time.  at \`${eachRow}\``);
@@ -1219,8 +1229,9 @@ const Tools = {
                throw new Error(`Tools.parseConfig(): invalid syntax, expected expresion after '='.  at \`${eachRow}\``);
             else throw new Error(`Tools.parseConfig(): expected expresion.  at \`${eachRow}\``);
          }
-         else if(!eachPair.length)
+         else if(!eachPair.length){
             throw new Error(`Tools.parseConfig(): unknown operator. \`${eachRow}\``);
+         }
 
 
 
@@ -1255,9 +1266,10 @@ const Tools = {
          }
 
 
-         if(eachPair[1].match('"')?.length > 0){
-            let firstQ = eachPair[1].search('"');
-            const secQ = eachPair[1].indexOf('"', firstQ+1);
+         if(eachPair[1].match(/["']/g)?.length > 0){
+            let firstQ = eachPair[1].search(/["']/g);
+            // const secQ = eachPair[1].indexOf(/["']/g, firstQ+1);
+            const secQ = Tools.redexOf(eachPair[1], /["']/g, firstQ+1);
 
             let firstS = eachPair[1].search('#');
             if(firstS != -1){
@@ -1277,9 +1289,12 @@ const Tools = {
          if(eachPair[1].includes('#')){
             eachPair[1] = eachPair[1].substring(0, eachPair[1].indexOf('#', indexOfSbeforeQ)).trim();
          }
-         if(eachPair[1].startsWith('"')&&eachPair[1].endsWith('"')){
+         if(startAndEndsWithQ_reg.test(eachPair[1]))
             eachPair[1] = eachPair[1].slice(1, -1);
-         }
+         // }
+         // if(eachPair[1].startsWith('"')&&eachPair[1].endsWith('"')){
+         //    eachPair[1] = eachPair[1].slice(1, -1);
+         // }
 
          configObj.set(eachPair[0], eachPair[1]);
       }
@@ -2203,6 +2218,16 @@ const Tools = {
          _this.selectionEnd = end + addedLength;
       },
 
+      /**reload all CSS in the document
+       */
+      reloadCSS(){
+         const links = document.getElementsByTagName("link");
+         for (const cl in links){
+            const link = links[cl];
+            if (link.rel === "stylesheet") link.href += "";
+         }
+      },
+
 
       /**Function used to determine the order of the elements.
        * It is expected to return a negative value
@@ -2270,7 +2295,7 @@ const Tools = {
             let medElem, belowMed;
 
             // find the potential median: the greater value of two is the potential median
-            if(compareFn(first, mid) < 0){ // first is lessthen mid
+            if(compareFn(first, mid) < 0){ // first is lessthan mid
                medElem = mid;
                belowMed = first;
             }else{
@@ -2287,6 +2312,17 @@ const Tools = {
       }
    }
 }
+
+
+/////////////////////   exstension   ///////////////////////
+//"exstension" function of Object `Number` that returns length of digits of Number
+Number.prototype.length = function length(){
+   return (this+'').replace(/[.e]/ig, '').length;
+};
+
+
+String.prototype.redexOf = Tools.redexOf;
+
 
 
 

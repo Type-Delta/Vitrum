@@ -27,7 +27,7 @@ const {
    hideOtherElements,
    handleTextarea_TabKeyPressed,
    sortElements,
-   isPosInside
+   reloadCSS
 } = WebKit;
 
 
@@ -510,7 +510,8 @@ const KeyBindings = new Map([
    ['closeapp', new KeyBind('Alt+F4')],
    ['editorzoomin', new KeyBind('Ctrl+=')],
    ['editorzoomout', new KeyBind('Ctrl+-')],
-   ['reloadtheme', new KeyBind('Ctrl+Shift+t')],
+   ['reloadtheme', new KeyBind('Ctrl+Shift+T')],
+   ['opendevtool', new KeyBind('Ctrl+Shift+I')],
 ]);
 
 const HTMLFix = new EditorEffect("htmlfix");
@@ -806,6 +807,7 @@ function menubarBtn_mouseenter(event, ev){
 
 
 function fontToValueID(fontFamily){
+   if(typeof fontFamily != 'string') return null;
    return 'FS-' + fontFamily.replace(/"/g, '').replace(/ /g, '_');
 }
 
@@ -879,7 +881,7 @@ function isElementInactive(element){
 
 
 function applyTheme(theme){
-   console.log(`app`);
+   reloadCSS();
    /**
     * @type {HTMLElement}
     */
@@ -1147,7 +1149,7 @@ const EditorUI = {
 
       for(let [id, editor] of this.editors){
          if(id == index||index === i){
-            editor.textAreaElement.style.display = 'unset';
+            editor.editorArea.style.display = 'unset';
             editor.tabElement.classList.replace('deselected', 'selected');
             if(FindpanelUI.isActive) editor.editorArea.classList.add('findactive');
             else editor.editorArea.classList.remove('findactive');
@@ -1155,7 +1157,7 @@ const EditorUI = {
             continue;
          }
 
-         editor.textAreaElement.style.display = 'none';
+         editor.editorArea.style.display = 'none';
          editor.tabElement.classList.replace('selected', 'deselected');
          i++;
       }
@@ -2067,6 +2069,8 @@ const ActionmenuUI = {
 
 
    updateFontlist(fontList){
+      if(!fontList?.length) return;
+
       queueMicrotask(() => {
          // calculating TF-IDF is quite resources hungry
          this.fonts_TFIDFMap = to.DataScienceKit.TFIDF_of(
@@ -2282,6 +2286,7 @@ function init(){
    KeyboardManager.catch(KeyBindings.get('editorzoomin'), btn_editorZoomIn_click);
    KeyboardManager.catch(KeyBindings.get('editorzoomout'), btn_editorZoomOut_click);
    KeyboardManager.catch(KeyBindings.get('reloadtheme'), window.coreAPI.sendRequestReloadTheme);
+   KeyboardManager.catch(KeyBindings.get('opendevtool'), window.coreAPI.sendRequestLoadInspector);
 }
 
 
@@ -2367,7 +2372,6 @@ window.coreAPI.handleUpdateEditorState((eEvent, state) => {
 
 
 window.coreAPI.handleUpdateTheme((eEvent, theme) => {
-   console.log(`handle up`);
    applyTheme(theme);
 });
 

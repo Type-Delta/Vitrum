@@ -47,6 +47,7 @@ const _State = {
          }
          if(typeof stateObj.editor == 'object'&&propertiesCount(stateObj.editor)){
             for(const key in stateObj.editor){
+               if(!stateObj.editor[key]) continue;
                state.editor[key] = isNumber(stateObj.editor[key])?
                   parseFloat(stateObj.editor[key]):stateObj.editor[key];
             }

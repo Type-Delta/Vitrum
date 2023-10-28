@@ -1,9 +1,9 @@
 const fs = require('fs');
 
 const { ncc, redexOf, sleep } = require('./helper/Tools.js');
+const path = require('node:path');
 const { version, logs } = require('./Global.js');
 const {
-   MIN_LOG_CONTENT,
    LOG_FOLDER_PATH,
    MAX_LOG_FILE,
    DEBUGLEVEL
@@ -285,7 +285,7 @@ const Utilities = {
     */
    async writeLog_file(coreLogs = logs){
       return new Promise((resolve, reject) => {
-         if(coreLogs.content == null||coreLogs.content.length < MIN_LOG_CONTENT) resolve();
+         if(coreLogs.content == null) resolve();
 
          const D = new Date();
          if(
@@ -293,6 +293,9 @@ const Utilities = {
                `${D.getFullYear()}-${D.getMonth()+1}-${D.getDate()}_${D.getHours()}:${D.getMinutes()}`
             )
          ) resolve();
+
+         if(!fs.existsSync(LOG_FOLDER_PATH))
+            fs.mkdirSync(LOG_FOLDER_PATH, { recursive: true });
 
          let currentLogFileName = `${coreLogs.from.split(':')[0]}`;
          const logFileList = fs.readdirSync(LOG_FOLDER_PATH).filter(file => file.endsWith('.log'));
@@ -310,7 +313,7 @@ const Utilities = {
 
             for(const logFile of logFileList){
                if(logFile.includes(logFileMStimelist[0].toString())){
-                     fs.rmSync(LOG_FOLDER_PATH.concat(logFile));
+                     fs.rmSync(path.join(LOG_FOLDER_PATH, logFile));
                }
             }
          }
@@ -318,14 +321,14 @@ const Utilities = {
          coreLogs.to = `${D.getFullYear()}-${D.getMonth()+1}-${D.getDate()}_${D.getHours()}:${D.getMinutes()}:${D.getSeconds()}`;
 
          let headers = `___________________________________
-   Session from: ${coreLogs.from}
-   To: ${coreLogs.to}
-   Version: ${version}
-   ___________________________________\n\n`;
+Session from: ${coreLogs.from}
+To: ${coreLogs.to}
+Version: ${version}
+___________________________________\n\n`;
 
          currentLogFileName = currentLogFileName.concat(`_id${sameLogCount + 1}_#${D.getTime()}.log`);
          fs.writeFile(
-            LOG_FOLDER_PATH.concat(currentLogFileName),
+            path.join(LOG_FOLDER_PATH, currentLogFileName),
             headers.concat(coreLogs.content),
             { encoding: 'utf-8' },
             () => {

@@ -87,7 +87,7 @@
    --editor-sidebar-button-color: var(--normal-text-color);
    --editor-sidebar-button-selected-color: var(--accent-color2);
    --editor-sidebar-button-hover-color: var(--base-color1);
-   --editor-sidebar-button-hover-background-color:color-mix(in srgb, var(--color-red) 80%, transparent);
+   --editor-sidebar-button-hover-background-color: color-mix(in srgb, var(--color-red) 80%, transparent);
 
 
    /* Fallback Fonts Family and Size */

@@ -35,7 +35,8 @@ contextBridge.exposeInMainWorld('coreAPI', {
    sendEditorContentUpdate: (id, content, selection) =>
       ipcRenderer.send('editor-content-changed', id, content, selection),
    sendFindnReplaceUpdate: (id, option) => ipcRenderer.send('find_replace-update', id, option),
-   sendRequestReloadTheme: () => ipcRenderer.send('reques-reload-theme'),
+   sendRequestReloadTheme: () => ipcRenderer.send('request-reload-theme'),
+   sendRequestLoadInspector: () => ipcRenderer.send('request-load-inspector'),
 
    sendRespondUIState: (state) => ipcRenderer.send('fetch-ui-state_respond', state),
 

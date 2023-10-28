@@ -263,7 +263,7 @@ declare class KeyBind {
      * @param {string} strKeyBind raw keybinding, each keys seperated by '+'
      */
     static key(strKeyBind: string): {
-        /**raw keybinding, each keys seperated by '+'
+        /**raw keybinding, each keys separated by '+'
          */
         rawBinding: string;
         /**normalized keybinding stored in Set
@@ -281,7 +281,7 @@ declare class KeyBind {
      * @param {string} strKeyBind raw keybinding, each keys seperated by '+'
      */
     constructor(strKeyBind: string);
-    /**raw keybinding, each keys seperated by '+'
+    /**raw keybinding, each keys separated by '+'
      */
     rawBinding: string;
     /**normalized keybinding stored in Set
@@ -433,6 +433,13 @@ export declare function includesWord(word: string, targetString: string, caseSen
 export declare function isNumber(str: string): boolean;
 export declare function isEmptyArray(obj: any): boolean;
 export declare function isEmptyObject(obj: any): boolean;
+/**check if the given path contains is valid
+ * (no invali chars)
+ *
+ * **Note That**: this checking is for path only and not filename
+ * thus all type of slash is consider  valid
+ */
+export declare function isValidFilePath(path: any): boolean;
 /**clean file name by replace ALL invalid char with valid ones
  * @param rawName file name to clean
  * @param replaceChar char to replace, default to `_`
@@ -471,7 +478,7 @@ export declare namespace jsTime {
  *
  */
 export declare function lerp(Min: number, Max: number, Percentage: number): number;
-/**(**Node Console Color**) return the Node.js Console Text formats, use this formmat to change
+/**(**Node Console Color**) return the Node.js Console Text formats, use this format to change
  * how Console Text looks.
  * @param {String}Color color or format of choice (if omit: 'Reset', invlid: 'white')
  * @example
@@ -606,7 +613,7 @@ export declare function redexOf(string: string, searcher: string | RegExp, posit
  * }}option
  * **`maxResult`**: define the max result from the Top search result,
  * **`TF_IDFMaps`**: TF_IDF Maps for every string in the `stringArr` or
- * string "builtin" to use builtin function to automaticly determine the TF_IDF values
+ * string "builtin" to use builtin function to automatically determine the TF_IDF values
  * (**Note that:** calculating TF_IDF value can be **VERY resources INTENSIVE** it's best
  * to precalculate them outside)
  * @example
@@ -638,7 +645,7 @@ export declare function sleep(milliseconds: number): void;
  * @param {string} str
  * @param {number} length target string length
  * @param {string} dropLocation 'mid', 'start' or 'end' determine location in which the string would
- * be dropped if the given str's length is smaller then `length`
+ * be dropped if the given str's length is smaller than `length`
  */
 export declare function strClamp(str: string, length: number, dropLocation?: string): string;
 /**limit string lenght, similar to strClamp but doesn't pad to the target length
@@ -695,7 +702,7 @@ export declare namespace WebKit {
      * @param {Function} listener
      */
     export function clearClickOutside(listener: Function): void;
-    /**make the element automatically hide its self when
+    /**make the element automatically hide itself when
      * user click outside this element
      * @param {HTMLElement} element
      * @param {string|HTMLElement} elemToHide
@@ -714,11 +721,11 @@ export declare namespace WebKit {
         class: string;
     }, displayType?: string): void;
     /**hides all element selected by the `selector`
-     * this function hide elements by set its disply type to 'none'
+     * this function hide elements by set its display type to 'none'
      * @param {string} selector querySelector
      */
     export function hideAllElements(selector: string): void;
-    /**check is the given coordinates is inside
+    /**check if the given coordinates is inside
      * the element Rect or not
      * @param {DOMRect} elemRect
      * @param {number} x
@@ -739,6 +746,9 @@ export declare namespace WebKit {
      * @param {HTMLTextAreaElement} _this element that cause this `KeyboardEvent`
      */
     export function handleTextarea_TabKeyPressed(event: KeyboardEvent, _this: HTMLTextAreaElement): void;
+    /**reload all CSS in the document
+     */
+    export function reloadCSS(): void;
     /**Function used to determine the order of the elements.
      * It is expected to return a negative value
      * if the first argument is less than the second argument,

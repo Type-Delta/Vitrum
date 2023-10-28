@@ -1,16 +1,20 @@
 {
   "name": "vitrum",
   "version": "0.0.1",
-  "description": "A simple text editor",
+  "description": "Vitrum editor",
   "main": "src/core/vitrum.js",
   "scripts": {
     "start": "electron --trace-warnings .",
-    "dectools": "tsc src/helper/Tools.js --declaration --allowJs --emitDeclarationOnly"
+    "dectools": "tsc src/helper/Tools.js --declaration --allowJs --emitDeclarationOnly",
+    "pack": "npx electron-packager . Vitrum --win=portable --platform=win32 --arch=x64 --out ./build --usage-description \"Vitrum Text Editor\" --app-version \"0.0.1\" --no-deref-symlinks --overwrite --extra-resource \"assets/themes/\" --ignore=\"/test\" --ignore=\"/dev\" --ignore=\"/assets\" --ignore=\".*\\.(md|conf)|(LICENSE|.gitignore|state.json)\"",
+    "build": "npx electron-builder --win portable"
   },
   "author": "Type-Delta",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
-    "electron": "^26.2.1"
+    "electron": "^26.2.1",
+    "electron-builder": "^24.6.4",
+    "electron-packager": "^17.1.2"
   },
   "dependencies": {
     "@electron/remote": "^2.0.11",
@@ -19,5 +23,20 @@
     "gsap": "^3.12.2",
     "jquery": "^3.7.1",
     "lodash": "^4.17.21"
+  },
+  "build": {
+    "productName": "Vitrum",
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "/assets/icons/ViReady_256.ico"
+    },
+    "portable": {
+      "artifactName": "vitrum.exe"
+    },
+    "directories": {
+      "output": "./build/"
+    }
   }
 }

@@ -115,6 +115,7 @@ export interface CoreAPI {
    sendFindnReplaceUpdate: (id: string, option) => void
    sendFindnReplaceUpdate: () => void
    sendRequestReloadTheme: () => void
+   sendRequestLoadInspector: () => void
 
    sendRespondUIState: (state: UIStateEditor) => void
 

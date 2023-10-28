@@ -242,7 +242,7 @@ code {
    position: relative;
    list-style-type: none;
    overflow: hidden;
-   z-index: 40;
+   z-index: 60;
    box-shadow: 0px 8px 13px 0px rgba(0,0,0,0.15);
 }
 
@@ -407,7 +407,7 @@ code {
    padding: 10px var(--actionmenu-side-padding);
    position: absolute;
    transform-origin: top center;
-   z-index: 23;
+   z-index: 50;
    /* transform: scaleY(0); */
 
    --actionmenu-side-padding: 63px;
