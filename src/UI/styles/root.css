@@ -25,6 +25,7 @@
    --menubar-background-color: var(--base-color2);
    --menubar-text-color: var(--normal-text-color);
    --menubar-control-hover-color: var(--control-hover-color);
+   --menubar-control-hover-text-color: var(--normal-text-color);
    --menubar-control-mousedown-color: var(--control-mousedown-color);
    --menubar-dropdown-background-color: var(--base-color2);
    --menubar-dropdown-hover-color: var(--control-hover-color);
@@ -40,11 +41,13 @@
    --actionmenu-background-color: color-mix(in srgb, var(--base-color2) 80%, transparent);
    --actionmenu-control-background-color: color-mix(in srgb, var(--base-color2) 20%, transparent);
    --actionmenu-control-hover-color: color-mix(in srgb, var(--base-color3) 60%, transparent);
+   --actionmenu-control-hover-text-color: var(--actionmenu-text-color);
    --actionmenu-control-mousedown-color: var(--base-color3);
    --actionmenu-text-color: var(--normal-text-color);
    --actionmenu-dropdown-text-color: var(--actionmenu-text-color);
    --actionmenu-dropdown-background-color: var(--base-color2);
    --actionmenu-dropdown-hover-background-color: color-mix(in srgb, var(--base-color3) 80%, transparent);
+   --actionmenu-dropdown-hover-text-color: var(--actionmenu-text-color);
    --actionmenu-dropdown-selected-background-color: var(--actionmenu-dropdown-hover-background-color);
    --actionmenu-dropdown-selected-text-color: inherit;
    --actionmenu-accent-color: color-mix(in srgb, var(--accent-color2) 80%, transparent);
@@ -57,6 +60,7 @@
    --prompt-input-text-color: var(--normal-text-color);
    --prompt-input-border-color: var(--base-color3);
    --prompt-dropdownpanel-item-hover-color: color-mix(in srgb, var(--base-color3) 50%, transparent);
+   --prompt-dropdownpanel-item-hover-text-color: inherit;
    --prompt-dropdownpanel-item-selected-color: var(--accent-color2);
    --prompt-dropdownpanel-item-input-background-color: var(--base-color2);
    --prompt-dropdownpanel-item-input-border-color: var(--base-color3);
@@ -65,6 +69,7 @@
    /* Find & Replace panel */
    --findreplace-background-color: color-mix(in srgb, var(--base-color3) 15%, transparent);
    --findreplace-control-hover-color: color-mix(in srgb, var(--base-color3) 50%, transparent);
+   --findreplace-control-hover-text-color: inherit;
    --findreplace-control-selected-color: color-mix(in srgb, var(--accent-color2) 70%, transparent);
    --findreplace-text-color: var(--normal-text-color);
    --findreplace-input-background-color: var(--base-color2);

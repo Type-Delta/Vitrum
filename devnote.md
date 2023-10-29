@@ -19,6 +19,9 @@
 - [x] **line wrap btn not working**
 - [x] **restore editor state not working**
 - [!] **editor is saved icon not working properly**
+- [!] **the build app won't start**
+      the suspect is `deferLoadDependencies()` other then that, I have NO idea T.T
+      before [this commit](https://github.com/Type-Delta/Vitrum/commit/479fad3fb0a142393ba6136f1fed47ff3a92ab45) works
 
 
 

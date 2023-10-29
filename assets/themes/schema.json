@@ -1,0 +1,19 @@
+{
+   "$schema": "http://json-schema.org/draft-07/schema",
+   "$id": "https://github.com/Type-Delta/Vitrum/blob/main/assets/themes/schema.json",
+   "title": "Theme",
+   "description": "Vitrum Theme",
+   "type": "object",
+   "required": ["type", "version"],
+   "properties": {
+      "type": {
+         "description": "theme type, dark theme or white",
+         "type": "string",
+         "enum": ["dark", "white"]
+      },
+      "version": {
+         "description": "theme format version",
+         "type": "number"
+      }
+   }
+}

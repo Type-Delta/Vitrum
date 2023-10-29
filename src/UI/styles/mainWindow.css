@@ -350,7 +350,7 @@ code {
 
 .menubar > .actionbar {
    /* -webkit-app-region: drag; to make this element a draggble part of window */
-   background-color: var(--control-hover-color);
+   background-color: var(--actionbar-background-color);
    margin: 0px 8px 8px 8px;
    border-radius: 0px 0px 6px 6px;
    width: 100%;
@@ -373,6 +373,7 @@ code {
 }
 .menubar > .window-controlbar > button:hover {
    background-color: var(--menubar-control-hover-color);
+   color: var(--menubar-control-hover-text-color);
 }
 .menubar > .window-controlbar > button:hover:active {
    background-color: var(--menubar-control-mousedown-color);
@@ -456,6 +457,7 @@ code {
 }
 .actionmenu .custom-select > .custom-select-dropdown li:hover {
    background-color: var(--actionmenu-dropdown-hover-background-color);
+   color: var(--actionmenu-dropdown-hover-text-color);
 }
 .actionmenu .custom-select > .custom-select-dropdown input:checked~label {
    background-color: var(--actionmenu-dropdown-selected-background-color);
@@ -523,6 +525,7 @@ code {
 }
 .actionmenu #actionmenu-font-increase-btn:hover {
    background-color: var(--actionmenu-control-hover-color);
+   color: var(--actionmenu-control-hover-text-color);
 }
 .actionmenu #actionmenu-font-increase-btn:hover:active {
    background-color: var(--actionmenu-control-mousedown-color);
@@ -539,6 +542,7 @@ code {
 }
 .actionmenu #actionmenu-font-decrease-btn:hover {
    background-color: var(--actionmenu-control-hover-color);
+   color: var(--actionmenu-control-hover-text-color);
 }
 .actionmenu #actionmenu-font-decrease-btn:hover:active {
    background-color: var(--actionmenu-control-mousedown-color);
@@ -574,6 +578,7 @@ code {
 }
 .actionmenu #actionmenu-toggle-wrap-btn:hover {
    background-color: var(--actionmenu-control-hover-color);
+   color: var(--actionmenu-control-hover-text-color);
 }
 .actionmenu #actionmenu-toggle-wrap-btn:hover:active {
    background-color: var(--actionmenu-control-mousedown-color);
@@ -606,6 +611,7 @@ code {
 }
 .actionmenu #actionmenu-letter-spacing-select:hover {
    background-color: var(--actionmenu-control-hover-color);
+   color: var(--actionmenu-control-hover-text-color);
 }
 .actionmenu #actionmenu-letter-spacing-select:hover:active {
    background-color: var(--actionmenu-control-mousedown-color);
@@ -665,6 +671,7 @@ code {
 }
 .actionmenu #actionmenu-line-spacing-select:hover {
    background-color: var(--actionmenu-control-hover-color);
+   color: var(--actionmenu-control-hover-text-color);
 }
 .actionmenu #actionmenu-line-spacing-select:hover:active {
    background-color: var(--actionmenu-control-mousedown-color);
@@ -771,6 +778,7 @@ code {
 }
 #prompt > #prompt-panel > li:hover:not(.selected) {
    background-color: var(--prompt-dropdownpanel-item-hover-color);
+   color: var(--prompt-dropdownpanel-item-hover-text-color);
 }
 
 #prompt > #prompt-panel > li.selected {
@@ -826,6 +834,7 @@ code {
 }
 #findpanel > #findpanel-expand-btn:hover {
    background-color: var(--findreplace-control-hover-color);
+   color: var(--findreplace-control-hover-text-color);
 }
 
 #findpanel > #findpanel-expand-btn > svg {
@@ -888,6 +897,7 @@ code {
 }
 #findpanel > ul > li button:hover {
    background-color: var(--findreplace-control-hover-color);
+   color: var(--findreplace-control-hover-text-color);
 }
 
 #findpanel > ul > li button.selected {
@@ -1055,7 +1065,7 @@ code {
 }
 .sidebar > li.deselected:hover {
    transition-duration: 0.2s;
-   color: var(--editor-sidebar-tab-hover-text-colo);
+   color: var(--editor-sidebar-tab-hover-text-color);
    background-color: var(--editor-sidebar-tab-hover-color);
 }
 
@@ -1085,7 +1095,7 @@ code {
 }
 .sidebar > li > button:hover {
    background-color: color-mix(in srgb, var(--color-red) 80%, transparent);
-   fill: var(--editor-sidebar-button-hover-colo);
+   fill: var(--editor-sidebar-button-hover-color);
 }
 
 
