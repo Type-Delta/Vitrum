@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron --trace-warnings .",
     "dectools": "tsc src/helper/Tools.js --declaration --allowJs --emitDeclarationOnly",
-    "pack": "npx electron-packager . Vitrum --win=portable --platform=win32 --arch=x64 --out ./build --usage-description \"Vitrum Text Editor\" --app-version \"0.0.1\" --no-deref-symlinks --overwrite --extra-resource \"assets/themes/\" --ignore=\"/test\" --ignore=\"/dev\" --ignore=\"/assets\" --ignore=\".*\\.(md|conf)|(LICENSE|.gitignore|state.json)\"",
+    "pack": "npx electron-packager . Vitrum --win=portable --platform=win32 --arch=x64 --out ./build --usage-description \"Vitrum Text Editor\" --app-version \"0.0.1\" --no-deref-symlinks --overwrite --extra-resource \"assets/themes/\" --ignore=\"/test\" --ignore=\"/dev\" --ignore=\".*\\.(md|conf)|(LICENSE|.gitignore|state.json)\"",
     "build": "npx electron-builder --win portable"
   },
   "author": "Type-Delta",

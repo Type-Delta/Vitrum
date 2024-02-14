@@ -351,7 +351,8 @@ class EditorEffect {
          {
             oldLength = _text.length;
             _text = _text.replace(/\n/g, '<br>'); // newline fix
-            _text = _text.replace(/ {2,}/g, '<code>$&</code>'); // spacing fix using <code>
+            _text = _text.replace(/\t/g, '<pre>&#9;</pre>'); // tab characters fix
+            _text = _text.replace(/ {2,}/g, '<pre>$&</pre>'); // spacing fix
             offset += _text.length - oldLength;
             break;
          }
@@ -384,13 +385,11 @@ class EditorEffect {
       let offset = 0, index = 0;
       let _text = text + '';
 
-      console.log(effects);
+
       // create Dendrogram Map
       for(const e of effects){
          for(const pos of e.positions){
             const node = new EffectDendroNode(e.effectPiority, index, pos);
-
-            console.log(`insert`);
             root.insert(node);
          }
          index++;

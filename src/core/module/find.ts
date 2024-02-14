@@ -60,6 +60,7 @@ class FindnReplace {
       let useSelection = option.matchSelected&&option.selection[0] != option.selection[1];
       let offset = 0, _content: string;
       if(useSelection){
+         if(option.selection[0] == option.selection[1]) return [];
          _content = content.slice(option.selection[0], option.selection[1]);
          offset = option.selection[0];
       }else _content = content;

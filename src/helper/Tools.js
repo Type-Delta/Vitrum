@@ -2110,6 +2110,7 @@ const Tools = {
           * @type {Map<KeyBind, Function>}
           */
          catchList;
+         debugMode = false;
          constructor(){
             this.activeKeys = new Set();
             this.catchList = new Map();
@@ -2122,7 +2123,7 @@ const Tools = {
          handleKeyPress = (ev) => {
             if(ev.type == 'keydown'){
                this.activeKeys.add(ev.key);
-               // console.log(this.activeKeys);
+               if(this.debugMode) console.log(this.activeKeys);
 
                for(const [keybind, callback] of this.catchList){
                   if(this.test(keybind)){

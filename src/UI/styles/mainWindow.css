@@ -39,6 +39,8 @@ mark {
    border-radius: 3px;
    color: inherit;
    background-color: var(--text-highlight-color);
+   font-family: inherit;
+   font-size: inherit;
 }
 
 mark.selected {
@@ -46,6 +48,17 @@ mark.selected {
 }
 
 code {
+   white-space: pre-wrap;
+   font-family: inherit;
+   font-style: inherit;
+   font-weight: inherit;
+   font-size: inherit;
+   padding: none;
+   color: inherit;
+}
+
+pre {
+   display: inline;
    white-space: pre-wrap;
    font-family: inherit;
    font-style: inherit;
@@ -232,6 +245,7 @@ code {
 
 /*///////////// Menubar ///////////////*/
 .menubar {
+   -webkit-app-region: drag;
    background-color: var(--menubar-background-color);
    display: flex;
    flex-direction: row;
@@ -248,6 +262,7 @@ code {
 
 /* every elements in .menubar */
 .menubar li div {
+   -webkit-app-region: no-drag;
    background-color: transparent;
    color: var(--menubar-text-color);
    font-size: 0.9em;
@@ -262,6 +277,7 @@ code {
 }
 
 .menubar li {
+   -webkit-app-region: no-drag;
    display: inline-block;
 }
 
@@ -350,14 +366,16 @@ code {
 
 .menubar > .actionbar {
    /* -webkit-app-region: drag; to make this element a draggble part of window */
+   -webkit-app-region: no-drag;
    background-color: var(--actionbar-background-color);
-   margin: 0px 8px 8px 8px;
+   margin: 0px 8vw 8px 8vw;
    border-radius: 0px 0px 6px 6px;
    width: 100%;
 }
 
 
 .menubar > .window-controlbar {
+   -webkit-app-region: no-drag;
    display: flex;
    /* position: absolute;
    right: 0; */
@@ -462,6 +480,10 @@ code {
 .actionmenu .custom-select > .custom-select-dropdown input:checked~label {
    background-color: var(--actionmenu-dropdown-selected-background-color);
    color: var(--actionmenu-dropdown-selected-text-color);
+}
+
+.actionmenu .custom-select > .custom-select-dropdown input:checked~label > strong {
+   color: inherit;
 }
 /* .actionmenu .custom-select > .custom-select-dropdown input:focus~label {
    background-color: red;
@@ -583,7 +605,9 @@ code {
 .actionmenu #actionmenu-toggle-wrap-btn:hover:active {
    background-color: var(--actionmenu-control-mousedown-color);
 }
-
+.actionmenu #actionmenu-toggle-wrap-btn.active {
+   background-color: color-mix(in srgb, var(--actionmenu-accent-color) 70%, transparent);
+}
 
 
 /* Encoding select */
@@ -692,6 +716,7 @@ code {
    left: calc(var(--actionmenu-side-padding) + (var(--actionmenu-grid-size) * 5));
    min-width: calc((var(--actionmenu-grid-size) * 6) - var(--fontselect-left-margin));
 }
+
 
 .actionmenu #actionmenu-line-spacing-select >
 .custom-select-dropdown > li > #LS-tight ~ label {
@@ -811,7 +836,7 @@ code {
 
 /*///////////// Find & Replace panel ///////////////*/
 #findpanel {
-   z-index: 97;
+   z-index: 37;
    position: absolute;
    left: calc(100% - (var(--findpanel-width)) - 6px);
    width: var(--findpanel-width);
@@ -1012,6 +1037,10 @@ code {
 .editor-container > .editor > .backdrop > .display-area {
    background-color: var(--editor-background-color);
    color: var(--editor-text-color);
+}
+
+.editor-container > .editor > .backdrop > .display-area mark {
+   font-family: inherit;
 }
 
 .editor-container > .editor > .interactive-area {

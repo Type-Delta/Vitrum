@@ -130,7 +130,7 @@ class Editor {
     */
    static reconstructor(obj){
       const editor = new Editor(obj.docName??'Unknown');
-      if(obj.filePath&&fs.existsSync(obj.filePath)){
+      if(obj.filePath){
          editor.filePath = obj.filePath;
       }
 
@@ -234,8 +234,9 @@ class Editor {
       this.lastHistUpdate = Date.now();
    }
 
-
-   updateContent(){
+   /**flush (copy) content from the core process to the UI process
+    */
+   flushContent(){
       editorEmitter.emit('request_update-content', this.id, this.content, this.currentSelection);
    }
 
@@ -253,7 +254,7 @@ class Editor {
          return;
       }
 
-      editorEmitter.emit('request_createEditorUI', this.docName, this.id, this.content, this.readonly);
+      editorEmitter.emit('request_createEditorUI', this.docName, this.id, this.content, this.readonly, this.isSaved);
       this.hasUI = true;
    }
 
@@ -278,7 +279,7 @@ class Editor {
 
       this.lastContent = this.content;
       this.currentSelection = futureSelection;
-      this.updateContent();
+      this.flushContent();
    }
 
 
@@ -295,7 +296,7 @@ class Editor {
 
       this.lastContent = this.content;
       this.currentSelection = pastSelection;
-      this.updateContent();
+      this.flushContent();
    }
 
    /**merge two EditorEdits in history together
@@ -341,10 +342,12 @@ class Editor {
                   return;
                }
 
-               EditorManager.updateEditorContent(
-                  this.id, content.toString()
-               );
-               resolve();
+            this.lastContent = this.content = content;
+            this.currentSelection = undefined;
+            this.isSaved = true;
+            this.flushContent();
+            this.update();
+            resolve();
          });
       })
    }
@@ -458,7 +461,6 @@ const EditorManager = {
 
       editor.content = newContent;
       editor.currentSelection = selection;
-      editor.isSaved = false;
       if(editor.isSaved) editor.isSaved = false;
       editor.update();
    },
@@ -467,7 +469,9 @@ const EditorManager = {
    restoreEditors(state){
       if(!state.openedEditors?.size||!(state.openedEditors instanceof Map)) return;
 
-      for(const [id, editor] of state.openedEditors){
+      for(let [id, serializedEditor] of state.openedEditors){
+         serializedEditor.id = id;
+         const editor = Editor.reconstructor(serializedEditor);
          editors.set(id, editor);
          editor.createUI();
       }

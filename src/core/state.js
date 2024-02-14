@@ -15,7 +15,7 @@ const _State = {
        * @type {number[]}
        */
       windowPos;
-      editor = {
+      editorConfig = {
          fontFamily: getNativeFontFamily(),
          fontSize: 16,
          encoding: 'utf-8',
@@ -53,6 +53,26 @@ const _State = {
             }
          }
          return state;
+      }
+
+      /**set `openEditos` to the given editors map
+       * @param {Map<string, Editor>} editorsMap
+       */
+      setOpenEditors(editorsMap){
+         const Properties2Keep = ['docName', 'encoding', 'readonly', 'filePath', 'content'];
+
+         for(const [id, editor] of editorsMap){
+            let reduced = {};
+            for(const props of Properties2Keep){
+               if(props == 'content'){
+                  reduced[props] = editor.isSaved?null:editor[props];
+                  continue;
+               }
+               reduced[props] = editor[props];
+            }
+
+            this.openedEditors.set(id, reduced);
+         }
       }
    },
 
@@ -100,7 +120,7 @@ const _State = {
       return new Promise((resolve, reject) => {
          writeFile(
             path,
-            JSON.stringify(pass(state), JSONReplacer, 3),
+            JSON.stringify(state, JSONReplacer, 3),
             { encoding: 'utf-8' },
             (err) => {
                if(err){

@@ -1,5 +1,5 @@
 {
-   "$schema": "https://github.com/Type-Delta/Vitrum/blob/main/assets/themes/schema.json",
+   "$schema": "https://raw.githubusercontent.com/Type-Delta/Vitrum/main/assets/themes/schema.json",
    "type": "dark",
    "version": 1,
    "--base-color1": "#222222",

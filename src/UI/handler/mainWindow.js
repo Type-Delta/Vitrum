@@ -357,7 +357,7 @@ class CustomSelect {
    #refreshOptionLabel(){
       this.#optionLabelList = [];
       for(const option of this.dropdownElement.children){
-         if(!isVisible(option)) continue;
+         // if(!isVisible(option)) continue;
          this.#optionLabelList.push(option.childNodes[1].textContent);
       }
    }
@@ -506,6 +506,7 @@ const KeyBindings = new Map([
    ['rename', new KeyBind('F2')],
    ['openfile', new KeyBind('Ctrl+O')],
    ['savefile', new KeyBind('Ctrl+S')],
+   ['newfile', new KeyBind('Ctrl+N')],
    ['savefileas', new KeyBind('Ctrl+Shift+S')],
    ['closeapp', new KeyBind('Alt+F4')],
    ['editorzoomin', new KeyBind('Ctrl+=')],
@@ -707,14 +708,12 @@ function btn_editPreferences_click(ev){
  * @param {MouseEvent} ev
  */
 function btn_editorZoomIn_click(ev){
-   console.log(`zoom in`);
    EditorUI.zoomIn();
 }
 /**
  * @param {MouseEvent} ev
  */
 function btn_editorZoomOut_click(ev){
-   console.log(`zoom out`);
    EditorUI.zoomOut();
 }
 /**
@@ -1073,7 +1072,6 @@ const EditorUI = {
          getComponentID(textarea)
       );
 
-
       window.coreAPI.sendEditorContentUpdate(
          getComponentID(textarea),
          textarea.value,
@@ -1081,7 +1079,6 @@ const EditorUI = {
             textarea.selectionStart, textarea.selectionEnd
          ]
       );
-
 
       if(FindpanelUI.isActive){
          FindpanelUI.updateFindnReplace('textupdate');
@@ -1173,7 +1170,7 @@ const EditorUI = {
       }
 
       editor.textAreaElement.value = content;
-      if(selection?.[0]??true){
+      if(typeof selection?.[0] == 'number'){
          editor.textAreaElement.selectionStart = selection[0];
          editor.textAreaElement.selectionEnd = selection[1];
       }
@@ -1190,7 +1187,7 @@ const EditorUI = {
     * @param {string} id
     * @param {string} content text to load to the editor
     */
-   appendNewEditor(documentName, id, content = null, readonly = false){
+   appendNewEditor(documentName, id, content = null, readonly = false, isSaved = true){
       const tab = createTabElement();
       const { editor, backdrop, display, textarea } = createEditorElements();
 
@@ -1239,7 +1236,7 @@ const EditorUI = {
          closeBtn.appendChild(btnIcon_nosave);
 
          node.setAttribute('id', `ET-${id}`); // Editor Tab
-         node.setAttribute('class', `editor-tab deselected${content?' saved':' nosaved'}`);
+         node.setAttribute('class', `editor-tab deselected${isSaved?' saved':' nosaved'}`);
          node.appendChild(
             document.createTextNode(to.strLimit(documentName, 14))
          );
@@ -2281,6 +2278,7 @@ function init(){
    KeyboardManager.catch(KeyBindings.get('openfile'), btn_openFile_click);
    KeyboardManager.catch(KeyBindings.get('closeapp'), btn_closeApp_click);
    KeyboardManager.catch(KeyBindings.get('savefile'), btn_saveFile_click);
+   KeyboardManager.catch(KeyBindings.get('newfile'), btn_newFile_click);
    KeyboardManager.catch(KeyBindings.get('savefileas'), btn_saveFileAs_click);
    KeyboardManager.catch(KeyBindings.get('rename'), btn_renameFile_click);
    KeyboardManager.catch(KeyBindings.get('editorzoomin'), btn_editorZoomIn_click);
@@ -2292,8 +2290,8 @@ function init(){
 
 
 
-window.coreAPI.handleCreateEditorUI((eEvent, docName, id, content, readonly) => {
-   EditorUI.appendNewEditor(docName, id, content, readonly);
+window.coreAPI.handleCreateEditorUI((eEvent, docName, id, content, readonly, isSaved) => {
+   EditorUI.appendNewEditor(docName, id, content, readonly, isSaved);
 });
 
 window.coreAPI.handleSetActiveEditorUI((eEvent, id) => {
@@ -2309,6 +2307,7 @@ window.coreAPI.handleSetEditorTabName((eEvent, id, tabName) => {
 });
 
 window.coreAPI.handleUpdateEditorSaveStatus((eEvent, id, isSaved) => {
+   console.log(`up saved `, isSaved);
    EditorUI.setEditorSaveStatus(id, isSaved);
 });
 
@@ -2360,7 +2359,6 @@ window.coreAPI.handleUpdateEditorState((eEvent, state) => {
       }
 
       actionmenuUIWaitInterval = setInterval(() => {
-         console.log(`wait update state`);
          if(!ActionmenuUI.isReady) return;
          ActionmenuUI.update();
 
@@ -2378,7 +2376,7 @@ window.coreAPI.handleUpdateTheme((eEvent, theme) => {
 
 window.coreAPI.handleFetchUIState(() => {
    window.coreAPI.sendRespondUIState({
-      editor: {
+      editorConfig: {
          encoding: EditorUI.global.encoding,
          fontFamily: EditorUI.global.fontFamily,
          fontSize: EditorUI.global.fontSize,

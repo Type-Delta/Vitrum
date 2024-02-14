@@ -128,8 +128,11 @@ const Vitrum = {
    },
 
    /**close the application
+    * @param {boolean}fastExit exit without saving App state
     */
    async close(fastExit = false){
+      if(typeof fastExit != 'boolean') fastExit = false;
+
       const quitTimeout = setTimeout(() => {
          sendConsoleOutput(
             `Timeout when waiting for exit process, exit immediately.`,
@@ -144,8 +147,8 @@ const Vitrum = {
          if(uiState){
             currentState.windowSize = mainWindow.getSize();
             currentState.windowPos = mainWindow.getPosition();
-            currentState.openedEditors = EditorManager.getAllEditors();
-            currentState.editor = uiState.editor;
+            currentState.setOpenEditors(EditorManager.getAllEditors());
+            currentState.editorConfig = uiState.editorConfig;
             write_state = writeState(STATE_PATH, currentState);
          }
       }
@@ -154,6 +157,7 @@ const Vitrum = {
          write_log = writeLog_file();
       }
 
+      if(write_state) sendConsoleOutput('Saving App state...');
       await Promise.all([write_state, write_log]);
       clearTimeout(quitTimeout);
       app.quit();
@@ -328,6 +332,7 @@ const Vitrum = {
             editor.docName = pathSplit.at(-1);
          }
       }
+      editor.update();
 
       try {
          await EditorManager.writeContentToFile(editor, savePath);
@@ -339,7 +344,9 @@ const Vitrum = {
       }
    },
 
-
+   /**open files and put its content to the Editor
+    * @returns {boolean} true if operation was successfull
+    */
    async openFiles(encoding = DEFAULT_ENCODING, paths = null){
       if(!paths){
          const res = await dialog.showOpenDialog(mainWindow, {
@@ -349,7 +356,7 @@ const Vitrum = {
             defaultPath: LAST_OPENFILE_PATH
          });
 
-         if(res.canceled||!res.filePaths.length) return;
+         if(res.canceled||!res.filePaths.length) return false;
 
          {
             const pathSplit = res.filePaths[0].split('\\');
@@ -357,6 +364,7 @@ const Vitrum = {
          }
          paths = res.filePaths;
       }
+
 
       for(const filePath of paths){
          try{
@@ -366,11 +374,13 @@ const Vitrum = {
                filePath.split('\\').at(-1),
                filePath
             );
-            editor.loadContent(filePath, encoding);
-         }catch{
-
+            await editor.loadContent(filePath, encoding);
+         }catch(err){
+            sendConsoleOutput(`#dim31 | error opening files: ${err.stack}`, 'error', 'Vitrum');
+            return false;
          }
       }
+      return true;
    },
 
 
@@ -422,7 +432,6 @@ const Vitrum = {
     * @param {FindOption} findOption
     */
    handleFindnReplaceUpdate(eEvent,  activeEditorID, findOption){
-      console.log(`find and replace`);
       switch(findOption.action){
          case 'findnext':
             FR.selectedIndex++;
@@ -542,6 +551,7 @@ const Vitrum = {
       }
 
       if(!isValidFilePath(argv[0])&&(!allParamPattern.includes(argv[0])||argv.length > 1)){
+         if(argv[0] === undefined) return false;
          sendConsoleOutput(
             `'${argv[0]}' is not a file path. use 'vitrum -h' to see help message`,
             'normal', 'Vitrum'
@@ -625,7 +635,7 @@ const Vitrum = {
       console.time(`Vitrum startup`);
 
       sendConsoleOutput('starting...', 'debug', 'Vitrum');
-      if(Vitrum.handleCLI()) return;
+      if(Vitrum.handleCLI()) return app.quit();
 
       sendConsoleOutput('loading Dependencies...', 'debug', 'Vitrum');
       Vitrum.deferLoadDependencies();
@@ -664,9 +674,7 @@ const Vitrum = {
       });
 
 
-
-      queueMicrotask(Vitrum.loadAvailableFontsList);
-
+      Vitrum.onceReady(Vitrum.loadAvailableFontsList);
 
 
       // Application handler
@@ -681,8 +689,8 @@ const Vitrum = {
 
       // Handle Commands Received
       ipcMain.on('cmd-closeapp', Vitrum.close);
-      ipcMain.on("cmd-toggle-maximizeapp", Vitrum.toggleMaximize);
-      ipcMain.on("cmd-minimizeapp", Vitrum.minimize);
+      ipcMain.on('cmd-toggle-maximizeapp', Vitrum.toggleMaximize);
+      ipcMain.on('cmd-minimizeapp', Vitrum.minimize);
       ipcMain.on('cmd-newfile', () => {
          Vitrum.newEditor();
       });
@@ -756,8 +764,8 @@ const Vitrum = {
       ipcMain.on('user-drag-window', () => {
          const { x, y } = screen.getCursorScreenPoint();
 
-         /**cann't use `mainWindow.setPosition()` because on Windows
-          * divice with scalling that's not 100%
+         /**can't use `mainWindow.setPosition()` because on Windows
+          * device with scaling that's not 100%
           * `mainWindow.setPosition()` will also change the window size.
           * https://github.com/electron/electron/issues/9477
           */
@@ -785,8 +793,8 @@ const Vitrum = {
          EditorManager.updateEditorContent(id, content, selection);
       });
 
-      EditorManager.on('request_createEditorUI', (docName, id, content, readonly) => {
-         mainWindow.webContents.send('create-editor-ui', docName, id, content, readonly);
+      EditorManager.on('request_createEditorUI', (docName, id, content, readonly, isSaved) => {
+         mainWindow.webContents.send('create-editor-ui', docName, id, content, readonly, isSaved);
       });
       EditorManager.on('request_setActiveEditor', (id) =>
          mainWindow.webContents.send('setActive-editor-ui', id));
@@ -806,7 +814,7 @@ const Vitrum = {
 
          sendConsoleOutput('web content is ready', 'debug', 'Vitrum');
          if(currentState){
-            mainWindow.webContents.send('update-editor-state', currentState.editor);
+            mainWindow.webContents.send('update-editor-state', currentState.editorConfig);
             EditorManager.restoreEditors(currentState);
          }
 
@@ -816,9 +824,14 @@ const Vitrum = {
 
          mainWindow.show();
 
-         while(Vitrum.OnceReadyCallbacks.length){
-            (Vitrum.OnceReadyCallbacks.pop())();
-         }
+         const waitDepInvertval = setInterval(() => {
+            if(!(fs&&FontList&&FR)) return; // wait for dependencies to load
+
+            clearInterval(waitDepInvertval);
+            while(Vitrum.OnceReadyCallbacks.length){
+               (Vitrum.OnceReadyCallbacks.pop())();
+            }
+         }, 4);
       });
    },
 

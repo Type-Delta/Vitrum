@@ -1,0 +1,39 @@
+{
+   "$schema": "https://raw.githubusercontent.com/Type-Delta/Vitrum/main/assets/themes/schema.json",
+   "type": "white",
+   "version": 1,
+   "--color-black": "#524e4f80",
+   "--color-darkbrown": "#201807",
+   "--color-brown": "#2a221b",
+
+   "--base-color1": "#d6c5b1",
+   "--base-color2": "#e0cfbb",
+   "--base-color3": "#eacfbb",
+   "--accent-color1": "#909744",
+   "--accent-color2": "#aeae58",
+   "--normal-text-color": "var(--color-darkbrown)",
+   "--highlight-text-color": "#2a221b",
+   "--text-selection-color": "color-mix(in srgb, var(--accent-color2) 50%, transparent)",
+   "--text-highlight-color": "color-mix(in srgb, var(--accent-color1) 60%, transparent)",
+   "--text-selected-highlight-color": "color-mix(in srgb, var(--accent-color1) 90%, transparent)",
+   "--editor-caret-color": "var(--normal-text-color)",
+   "--control-hover-color": "var(--accent-color2)",
+
+   "--actionbar-background-color": "color-mix(in srgb, var(--color-black) 70%, transparent)",
+
+   "--actionmenu-accent-color": "var(--accent-color1)",
+   "--actionmenu-control-hover-color": "color-mix(in srgb, var(--accent-color2) 65%, transparent)",
+   "--actionmenu-control-mousedown-color": "color-mix(in srgb, var(--accent-color2) 80%, transparent)",
+   "--actionmenu-dropdown-hover-text-color": "var(--color-black)",
+   "--actionmenu-dropdown-hover-background-color":
+      "color-mix(in srgb, var(--accent-color1) 80%, transparent)",
+   "--actionmenu-dropdown-selected-text-color":
+      "var(--base-color2)",
+   "--actionmenu-dropdown-selected-background-color": "color-mix(in srgb, var(--color-brown) 70%, transparent)",
+
+
+   "--editor-sidebar-tab-selected-text-color": "color-mix(in srgb, var(--color-black) 85%, transparent)",
+   "--editor-sidebar-tab-selected-hover-text-color": "var(--accent-color2)",
+   "--editor-sidebar-button-selected-color": "var(--editor-sidebar-tab-selected-text-color)",
+   "--editor-sidebar-button-hover-color": "var(--base-color1)"
+}
