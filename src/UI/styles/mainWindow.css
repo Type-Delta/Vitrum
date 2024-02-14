@@ -48,7 +48,6 @@ mark.selected {
 }
 
 code {
-   white-space: pre-wrap;
    font-family: inherit;
    font-style: inherit;
    font-weight: inherit;
@@ -59,12 +58,11 @@ code {
 
 pre {
    display: inline;
-   white-space: pre-wrap;
    font-family: inherit;
    font-style: inherit;
    font-weight: inherit;
    font-size: inherit;
-   padding: none;
+   /* padding: none; */
    color: inherit;
 }
 
@@ -1020,7 +1018,7 @@ pre {
    outline: none;
    width: calc(100vw - var(--editor-sidebar-width));
    height: calc(100vh - var(--menubar-height));
-   padding: var(--editor-top-padding) 10px 10px 7px;
+   padding: var(--editor-top-padding) 10px 10px 13px;
    -webkit-box-shadow: none;
    box-shadow: none;
    resize: none;
@@ -1037,6 +1035,7 @@ pre {
 .editor-container > .editor > .backdrop > .display-area {
    background-color: var(--editor-background-color);
    color: var(--editor-text-color);
+   padding-bottom: calc(2em + 10px); /* QUICKFIX: @md3ia */
 }
 
 .editor-container > .editor > .backdrop > .display-area mark {
@@ -1047,7 +1046,8 @@ pre {
    z-index: 4;
    background-color: transparent;
    color: transparent;
-   /* color: color-mix(in srgb, var(--accent-color2) 70%, transparent); <- for testing*/
+   /* for testing */
+   /* color: color-mix(in srgb, var(--accent-color2) 70%, transparent); */
 }
 
 .sidebar {

@@ -528,7 +528,7 @@ const Vitrum = {
     * @returns {boolean} true == exit app
     */
    handleCLI(){
-      if(ParsedArgs.help){
+      if(ParsedArgs.help.value){
          sendConsoleOutput([
             {
                text: ' Usage \n',

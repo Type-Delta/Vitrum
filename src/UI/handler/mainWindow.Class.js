@@ -315,6 +315,7 @@ class EditorEffect {
     * this Markdown text can be displayed on `innerHTML` field
     * @param {string} text
     * @param {number} offset position offset when applying effect position
+    * @return {string} HTML Markdown
     */
    applyTo(text, offset){
       let oldLength, _text = text + '';
@@ -350,9 +351,9 @@ class EditorEffect {
          case 'htmlfix':
          {
             oldLength = _text.length;
-            _text = _text.replace(/\n/g, '<br>'); // newline fix
+            _text = _text.replace(/ {2,}|^ |(?<=\n) (?=.)/g, '<pre>$&</pre>'); // spacing fix
             _text = _text.replace(/\t/g, '<pre>&#9;</pre>'); // tab characters fix
-            _text = _text.replace(/ {2,}/g, '<pre>$&</pre>'); // spacing fix
+            _text = _text.replace(/\n/g, '<br>'); // newline fix
             offset += _text.length - oldLength;
             break;
          }

@@ -985,7 +985,10 @@ const EditorUI = {
       }
    },
 
-
+   /**tis function will apply all effects to the content
+    * as well as update the Editor's display area to match the interactive area
+    * @param {string} id editor ID that has content changed
+    */
    updateEditorDisplay(id){
       const editor = this.editors.get(id);
       const effects = this.EffectBase.get(id);

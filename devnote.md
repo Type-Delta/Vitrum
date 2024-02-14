@@ -3,7 +3,8 @@
 - **?**: done (not tested)
 - **✔**: tested & stable
 - **!**: required fix/changes as soon as one busy man can dream of... >m<
-- **I(n)**: to be improved (see Improvements)
+- **I(n)**: done & tested but there are something to be improved (see Improvements)
+- **q**: quick fix & tested (not a good way to fix things but if it works it works)
 
 
 
@@ -25,7 +26,7 @@
 - [!] **when insert tab display area and interactive area not properly synced**
 - [!] **actionmenu control not working properly**
 - [ ] **some opened editors didn't save to state.json**
-- [!] **displayarea f\**ked up... when displaying:** (different display area and interactive area scroll length?)
+- [x] (#dm4k1) **displayarea f\**ked up... when displaying:** (different display area and interactive area scroll length?)
       ```js
       let dropdownItems = [...this.dropdownElement.children];
       let topIndex = 0;
@@ -46,12 +47,23 @@
 - [x] **OpenFile content not loaded**
 - [!] **Fontloader sometimes picked up some trash**
 - [!] **Replace ALL broke**
-- [!] **scrollbar bug**
-- [!] **typing single space doesn't produce any result in display area** could caused by how HTLM renders SPACE
+- [x] **scrollbar bug**
+- [x] **typing single space at start doesn't produce any result in display area** could caused by how HTLM renders SPACE
 - [ ] **when undo changes the cusor position will be set to one step older cusor position**
 - [!] **when insert a NEWLINE char, sometimes will scroll down making the cusor sit on the top most visible line**
 - [ ] **when placing long text, the program freeze for a bit**
 - [!] **the program failed to restore it's last state**: have it saved it's state?, if so can it restore them?
+- [q] **when scrolling to the very bottom: Editor's display and interactive area became out of sync**
+      related to *#dm4k1*
+      the cause is from the two element has a different `scrollHeight`.
+      quick fixed by adding 2em more of bottom padding to the display area (@md3ia)
+      this make their's `scrollHeight` close to the same
+- [x] **zooming in (make font larger) too much make Editor's display and interactive area became out of sync**
+      the display has somehow shift some line down while interactive doesn't?
+      have someting to with text wrap of the display area?
+      **Fixed:** turns out `<pre>` and `<code>` has `white-space: pre-wrap;` inside.
+- [ ] **Ctrl key stuck after opening DevConsole**
+- [ ] **when use tab insert it doesn't trigger History change**
 
 
 
@@ -62,7 +74,7 @@
 - [x] preserves case
 - [I1] add more scroll space when Findpanel is active
 - [x] overwrite normal copy paste cut behavior
-- [?] sync font size across all editors
+- [x] sync font size across all editors
 - [x] changing editor font size var keybinds
 - [x] add action panel
 - [ ] add setting (Preferences)
@@ -97,7 +109,7 @@
 - [ ] **I1**: add animation when Findpanel closed
 - [ ] make `getNativeFontFamily()` more flexible
 - [ ] reduce input delay when typing
-- [ ] add a bit more of padding on the left side of the Editor area
+- [x] add a bit more of padding on the left side of the Editor area
 
 
 
